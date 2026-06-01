@@ -2,7 +2,7 @@
 @section('title', 'Sign Up — Art Bangkok')
 @section('content')
 <div class="min-h-screen bg-gray-50 flex items-center justify-center px-4 pt-24 pb-12">
-    <div class="w-full max-w-md bg-white rounded-2xl shadow-sm border border-gray-100 px-10 py-12">
+    <div class="w-full max-w-md bg-white rounded-2xl shadow-sm border border-gray-100 px-6 sm:px-10 py-8 sm:py-12">
 
         {{-- Logo --}}
         <div class="text-center mb-8">

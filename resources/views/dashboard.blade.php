@@ -2,11 +2,11 @@
 @section('title', 'Dashboard — Art Bangkok')
 @section('content')
 <div class="min-h-screen bg-gray-50 pt-20">
-    <div class="max-w-7xl mx-auto px-4 py-8 flex gap-8">
+    <div class="max-w-7xl mx-auto px-4 py-8 flex flex-col lg:flex-row gap-6">
 
         {{-- Sidebar --}}
-        <aside class="w-64 flex-shrink-0">
-            <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 sticky top-24">
+        <aside class="w-full lg:w-64 flex-shrink-0">
+            <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 lg:sticky lg:top-24">
 
                 {{-- Profile Photo --}}
                 <div class="text-center mb-6">

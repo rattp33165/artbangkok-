@@ -23,7 +23,7 @@
                 </select>
             </div>
 
-            <div class="grid grid-cols-2 gap-4">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                     <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Gallery Name (ENG)</label>
                     <input wire:model="gallery_name" type="text" placeholder="Gallery name"
@@ -43,7 +43,7 @@
                           class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-black resize-none"></textarea>
             </div>
 
-            <div class="grid grid-cols-2 gap-4">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                     <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Website URL</label>
                     <input wire:model="website_url" type="url" placeholder="https://yourgallery.com"
@@ -56,7 +56,7 @@
                 </div>
             </div>
 
-            <div class="grid grid-cols-3 gap-4">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 <div>
                     <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Phone Number</label>
                     <input wire:model="phone" type="text" placeholder="+66 2 000 0000"
@@ -126,7 +126,7 @@
             @endif
         </div>
         <div class="p-6 space-y-4">
-            <div class="grid grid-cols-3 gap-4">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 <div>
                     <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Country</label>
                     <input wire:model="office_country" type="text" placeholder="Country"
@@ -148,7 +148,7 @@
                 <textarea wire:model="office_address" rows="2" placeholder="Full address"
                           class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-black resize-none"></textarea>
             </div>
-            <div class="grid grid-cols-3 gap-4">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 <div>
                     <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Director's Name</label>
                     <input wire:model="director_name" type="text" placeholder="Full name"
@@ -189,7 +189,7 @@
             @foreach($branches as $i => $branch)
             <div class="pb-6 {{ $i < 2 ? 'border-b border-gray-100' : '' }}">
                 <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">Branch {{ $i + 1 }}</p>
-                <div class="grid grid-cols-3 gap-4">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                     <div>
                         <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Venue/Branch Name</label>
                         <input wire:model="branches.{{ $i }}.name" type="text" placeholder="Branch name"
@@ -268,7 +268,7 @@
             </div>
             <div>
                 <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">Type of Booth</label>
-                <div class="grid grid-cols-2 gap-4">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <label class="flex items-start gap-3 p-4 border-2 rounded-xl cursor-pointer transition {{ $booth_type === 'A' ? 'border-black bg-gray-50' : 'border-gray-200 hover:border-gray-300' }}">
                         <input wire:model="booth_type" type="radio" value="A" class="mt-0.5">
                         <div>
@@ -309,7 +309,7 @@
             @foreach($persons_in_charge as $i => $person)
             <div class="{{ $i < 1 ? 'pb-6 border-b border-gray-100' : '' }}">
                 <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">{{ $person['position'] }}</p>
-                <div class="grid grid-cols-2 gap-4">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                         <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Name</label>
                         <input wire:model="persons_in_charge.{{ $i }}.name" type="text" placeholder="Full name"
@@ -350,7 +350,7 @@
         </div>
         <div class="p-6 space-y-3">
             @foreach($art_fairs as $i => $fair)
-            <div class="grid grid-cols-3 gap-4">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 <div class="col-span-2">
                     <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Art Fair Name {{ $i + 1 }}</label>
                     <input wire:model="art_fairs.{{ $i }}.name" type="text" placeholder="Fair name"
