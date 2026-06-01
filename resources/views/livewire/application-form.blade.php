@@ -285,16 +285,20 @@
             <h2 class="font-semibold text-black">Gallery Branch Information</h2>
             <p class="text-xs text-gray-400 mt-0.5">Up to 3 branch locations</p>
         </div>
-        <div class="p-6 space-y-6">
+        <div class="p-6 space-y-4">
             @foreach($branches as $i => $branch)
-            <div class="pb-6 {{ $i < 2 ? 'border-b border-gray-100' : '' }}">
-                <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">
-                    Branch {{ $i + 1 }} @if($i === 0)<span class="text-red-500 normal-case font-normal ml-1">* required</span>@endif
-                </p>
+            <div class="border border-gray-100 rounded-xl p-4">
+                <div class="flex items-center justify-between mb-3">
+                    <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Branch {{ $i + 1 }}</p>
+                    @if(count($branches) > 1)
+                        <button wire:click="removeBranch({{ $i }})" type="button"
+                                class="text-xs text-red-400 hover:text-red-600 transition">Remove</button>
+                    @endif
+                </div>
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                     <div>
                         <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
-                            Venue/Branch Name @if($i === 0)<span class="text-red-500">*</span>@endif
+                            Venue/Branch Name <span class="text-red-500">*</span>
                         </label>
                         <input wire:model="branches.{{ $i }}.name" type="text" placeholder="Branch name"
                                class="w-full border rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 @error("branches.{$i}.name") border-red-400 bg-red-50 focus:ring-red-200 @else border-gray-200 focus:ring-black @enderror">
@@ -304,7 +308,7 @@
                     </div>
                     <div>
                         <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
-                            Country @if($i === 0)<span class="text-red-500">*</span>@endif
+                            Country <span class="text-red-500">*</span>
                         </label>
                         <input wire:model="branches.{{ $i }}.country" type="text" placeholder="Country"
                                class="w-full border rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 @error("branches.{$i}.country") border-red-400 bg-red-50 focus:ring-red-200 @else border-gray-200 focus:ring-black @enderror">
@@ -314,7 +318,7 @@
                     </div>
                     <div>
                         <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
-                            City @if($i === 0)<span class="text-red-500">*</span>@endif
+                            City <span class="text-red-500">*</span>
                         </label>
                         <input wire:model="branches.{{ $i }}.city" type="text" placeholder="City"
                                class="w-full border rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 @error("branches.{$i}.city") border-red-400 bg-red-50 focus:ring-red-200 @else border-gray-200 focus:ring-black @enderror">
@@ -325,7 +329,12 @@
                 </div>
             </div>
             @endforeach
-            <div class="flex justify-end">
+            <button wire:click="addBranch" type="button"
+                    class="inline-flex items-center gap-1.5 text-sm text-gray-500 hover:text-black transition border border-dashed border-gray-300 hover:border-gray-500 rounded-xl px-4 py-2.5 w-full justify-center">
+                <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                Add Branch
+            </button>
+            <div class="flex justify-end pt-2">
                 <button wire:click="saveBranches"
                         wire:loading.attr="disabled"
                         wire:loading.class="opacity-70 cursor-not-allowed"
@@ -348,19 +357,32 @@
             <h2 class="font-semibold text-black">Represented Artists</h2>
             <p class="text-xs text-gray-400 mt-0.5">Artists represented by your gallery</p>
         </div>
-        <div class="p-6 space-y-4">
+        <div class="p-6 space-y-3">
             @foreach($represented_artists as $i => $artist)
-            <div>
-                <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
-                    Artist Name {{ $i + 1 }} @if($i === 0)<span class="text-red-500">*</span>@endif
-                </label>
-                <input wire:model="represented_artists.{{ $i }}" type="text" placeholder="Artist full name"
-                       class="w-full border rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 @error("represented_artists.{$i}") border-red-400 bg-red-50 focus:ring-red-200 @else border-gray-200 focus:ring-black @enderror">
-                @error("represented_artists.{$i}")
-                    <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
-                @enderror
+            <div class="flex items-start gap-2">
+                <div class="flex-1">
+                    <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
+                        Artist Name {{ $i + 1 }} <span class="text-red-500">*</span>
+                    </label>
+                    <input wire:model="represented_artists.{{ $i }}" type="text" placeholder="Artist full name"
+                           class="w-full border rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 @error("represented_artists.{$i}") border-red-400 bg-red-50 focus:ring-red-200 @else border-gray-200 focus:ring-black @enderror">
+                    @error("represented_artists.{$i}")
+                        <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
+                    @enderror
+                </div>
+                @if(count($represented_artists) > 1)
+                    <button wire:click="removeRepresentedArtist({{ $i }})" type="button"
+                            class="mt-7 p-2 text-gray-300 hover:text-red-500 transition flex-shrink-0">
+                        <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                    </button>
+                @endif
             </div>
             @endforeach
+            <button wire:click="addRepresentedArtist" type="button"
+                    class="inline-flex items-center gap-1.5 text-sm text-gray-500 hover:text-black transition border border-dashed border-gray-300 hover:border-gray-500 rounded-xl px-4 py-2.5 w-full justify-center">
+                <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                Add Artist
+            </button>
             <div class="flex justify-end pt-2">
                 <button wire:click="saveRepresentedArtists"
                         wire:loading.attr="disabled"
@@ -400,22 +422,30 @@
                 @enderror
             </div>
             <div>
-                <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">
-                    Type of Booth <span class="text-red-500">*</span>
-                </label>
+                <div class="flex items-center justify-between mb-3">
+                    <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                        Type of Booth <span class="text-red-500">*</span>
+                    </label>
+                    @if($booth_type)
+                        <button wire:click="clearBoothType" type="button"
+                                class="text-xs text-gray-400 hover:text-red-500 transition">
+                            Clear selection
+                        </button>
+                    @endif
+                </div>
                 @error('booth_type')
                     <p class="text-xs text-red-500 mb-2">{{ $message }}</p>
                 @enderror
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <label class="flex items-start gap-3 p-4 border-2 rounded-xl cursor-pointer transition {{ $booth_type === 'A' ? 'border-black bg-gray-50' : ($errors->has('booth_type') ? 'border-red-300 bg-red-50' : 'border-gray-200 hover:border-gray-300') }}">
-                        <input wire:model="booth_type" type="radio" value="A" class="mt-0.5">
+                        <input wire:model="booth_type" type="radio" name="booth_type" value="A" class="mt-0.5">
                         <div>
                             <p class="font-semibold text-sm text-black">(A) 5 × 5 m</p>
                             <p class="text-xs text-gray-400">25 sqm</p>
                         </div>
                     </label>
                     <label class="flex items-start gap-3 p-4 border-2 rounded-xl cursor-pointer transition {{ $booth_type === 'B' ? 'border-black bg-gray-50' : ($errors->has('booth_type') ? 'border-red-300 bg-red-50' : 'border-gray-200 hover:border-gray-300') }}">
-                        <input wire:model="booth_type" type="radio" value="B" class="mt-0.5">
+                        <input wire:model="booth_type" type="radio" name="booth_type" value="B" class="mt-0.5">
                         <div>
                             <p class="font-semibold text-sm text-black">(B) 4 × 6 m</p>
                             <p class="text-xs text-gray-400">24 sqm</p>
@@ -511,34 +541,47 @@
         </div>
         <div class="p-6 space-y-3">
             @foreach($art_fairs as $i => $fair)
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                <div class="col-span-2">
-                    <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
-                        Art Fair Name {{ $i + 1 }} @if($i === 0)<span class="text-red-500">*</span>@endif
-                    </label>
-                    <input wire:model="art_fairs.{{ $i }}.name" type="text" placeholder="Fair name"
-                           class="w-full border rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 @error("art_fairs.{$i}.name") border-red-400 bg-red-50 focus:ring-red-200 @else border-gray-200 focus:ring-black @enderror">
-                    @error("art_fairs.{$i}.name")
-                        <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
-                    @enderror
+            <div class="flex items-start gap-2">
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 flex-1">
+                    <div class="sm:col-span-2">
+                        <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
+                            Art Fair Name {{ $i + 1 }} <span class="text-red-500">*</span>
+                        </label>
+                        <input wire:model="art_fairs.{{ $i }}.name" type="text" placeholder="Fair name"
+                               class="w-full border rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 @error("art_fairs.{$i}.name") border-red-400 bg-red-50 focus:ring-red-200 @else border-gray-200 focus:ring-black @enderror">
+                        @error("art_fairs.{$i}.name")
+                            <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
+                        @enderror
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
+                            Year <span class="text-red-500">*</span>
+                        </label>
+                        <select wire:model="art_fairs.{{ $i }}.year"
+                                class="w-full border rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 @error("art_fairs.{$i}.year") border-red-400 bg-red-50 focus:ring-red-200 @else border-gray-200 focus:ring-black @enderror">
+                            <option value="">Select year</option>
+                            @for($y = date('Y'); $y >= 2000; $y--)
+                                <option value="{{ $y }}">{{ $y }}</option>
+                            @endfor
+                        </select>
+                        @error("art_fairs.{$i}.year")
+                            <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
+                        @enderror
+                    </div>
                 </div>
-                <div>
-                    <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
-                        Year @if($i === 0)<span class="text-red-500">*</span>@endif
-                    </label>
-                    <select wire:model="art_fairs.{{ $i }}.year"
-                            class="w-full border rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 @error("art_fairs.{$i}.year") border-red-400 bg-red-50 focus:ring-red-200 @else border-gray-200 focus:ring-black @enderror">
-                        <option value="">Select year</option>
-                        @for($y = date('Y'); $y >= 2000; $y--)
-                            <option value="{{ $y }}">{{ $y }}</option>
-                        @endfor
-                    </select>
-                    @error("art_fairs.{$i}.year")
-                        <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
-                    @enderror
-                </div>
+                @if(count($art_fairs) > 1)
+                    <button wire:click="removeArtFair({{ $i }})" type="button"
+                            class="mt-7 p-2 text-gray-300 hover:text-red-500 transition flex-shrink-0">
+                        <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                    </button>
+                @endif
             </div>
             @endforeach
+            <button wire:click="addArtFair" type="button"
+                    class="inline-flex items-center gap-1.5 text-sm text-gray-500 hover:text-black transition border border-dashed border-gray-300 hover:border-gray-500 rounded-xl px-4 py-2.5 w-full justify-center">
+                <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                Add Art Fair
+            </button>
             <div class="flex justify-end pt-2">
                 <button wire:click="saveArtFairs"
                         wire:loading.attr="disabled"

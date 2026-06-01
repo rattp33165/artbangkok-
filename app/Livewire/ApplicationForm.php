@@ -40,12 +40,10 @@ class ApplicationForm extends Component
     // Branches
     public $branches = [
         ['name' => '', 'country' => '', 'city' => ''],
-        ['name' => '', 'country' => '', 'city' => ''],
-        ['name' => '', 'country' => '', 'city' => ''],
     ];
 
     // Represented Artists
-    public $represented_artists = ['', '', ''];
+    public $represented_artists = [''];
 
     // Booth
     public $booth_section = '';
@@ -72,10 +70,6 @@ class ApplicationForm extends Component
 
     // Art Fairs
     public $art_fairs = [
-        ['name' => '', 'year' => ''],
-        ['name' => '', 'year' => ''],
-        ['name' => '', 'year' => ''],
-        ['name' => '', 'year' => ''],
         ['name' => '', 'year' => ''],
     ];
 
@@ -112,10 +106,54 @@ class ApplicationForm extends Component
         $this->booth_section   = $app->booth_section ?? '';
         $this->booth_type      = $app->booth_type ?? '';
 
-        if ($app->branches)          $this->branches = $app->branches;
-        if ($app->represented_artists) $this->represented_artists = $app->represented_artists;
-        if ($app->persons_in_charge) $this->persons_in_charge = $app->persons_in_charge;
-        if ($app->art_fairs)         $this->art_fairs = $app->art_fairs;
+        if (!empty($app->branches))           $this->branches = $app->branches;
+        if (!empty($app->represented_artists)) $this->represented_artists = $app->represented_artists;
+        if (!empty($app->persons_in_charge))   $this->persons_in_charge = $app->persons_in_charge;
+        if (!empty($app->art_fairs))           $this->art_fairs = $app->art_fairs;
+    }
+
+    public function clearBoothType()
+    {
+        $this->booth_type = '';
+    }
+
+    public function addBranch()
+    {
+        $this->branches[] = ['name' => '', 'country' => '', 'city' => ''];
+    }
+
+    public function removeBranch($index)
+    {
+        if (count($this->branches) > 1) {
+            array_splice($this->branches, $index, 1);
+            $this->branches = array_values($this->branches);
+        }
+    }
+
+    public function addRepresentedArtist()
+    {
+        $this->represented_artists[] = '';
+    }
+
+    public function removeRepresentedArtist($index)
+    {
+        if (count($this->represented_artists) > 1) {
+            array_splice($this->represented_artists, $index, 1);
+            $this->represented_artists = array_values($this->represented_artists);
+        }
+    }
+
+    public function addArtFair()
+    {
+        $this->art_fairs[] = ['name' => '', 'year' => ''];
+    }
+
+    public function removeArtFair($index)
+    {
+        if (count($this->art_fairs) > 1) {
+            array_splice($this->art_fairs, $index, 1);
+            $this->art_fairs = array_values($this->art_fairs);
+        }
     }
 
     private function tryValidate(array $rules): bool
@@ -201,15 +239,9 @@ class ApplicationForm extends Component
     public function saveBranches()
     {
         $this->tryValidate([
-            'branches.0.name'    => 'required|string|max:255',
-            'branches.0.country' => 'required|string|max:100',
-            'branches.0.city'    => 'required|string|max:100',
-            'branches.1.name'    => 'nullable|string|max:255',
-            'branches.1.country' => 'nullable|string|max:100',
-            'branches.1.city'    => 'nullable|string|max:100',
-            'branches.2.name'    => 'nullable|string|max:255',
-            'branches.2.country' => 'nullable|string|max:100',
-            'branches.2.city'    => 'nullable|string|max:100',
+            'branches.*.name'    => 'required|string|max:255',
+            'branches.*.country' => 'required|string|max:100',
+            'branches.*.city'    => 'required|string|max:100',
         ]);
 
         $this->application->update([
@@ -226,9 +258,7 @@ class ApplicationForm extends Component
     public function saveRepresentedArtists()
     {
         $this->tryValidate([
-            'represented_artists.0' => 'required|string|max:255',
-            'represented_artists.1' => 'nullable|string|max:255',
-            'represented_artists.2' => 'nullable|string|max:255',
+            'represented_artists.*' => 'required|string|max:255',
         ]);
 
         $this->application->update([
@@ -279,16 +309,8 @@ class ApplicationForm extends Component
     public function saveArtFairs()
     {
         $this->tryValidate([
-            'art_fairs.0.name' => 'required|string|max:255',
-            'art_fairs.0.year' => 'required|integer|min:2000|max:' . date('Y'),
-            'art_fairs.1.name' => 'nullable|string|max:255',
-            'art_fairs.1.year' => 'nullable|integer|min:2000|max:' . date('Y'),
-            'art_fairs.2.name' => 'nullable|string|max:255',
-            'art_fairs.2.year' => 'nullable|integer|min:2000|max:' . date('Y'),
-            'art_fairs.3.name' => 'nullable|string|max:255',
-            'art_fairs.3.year' => 'nullable|integer|min:2000|max:' . date('Y'),
-            'art_fairs.4.name' => 'nullable|string|max:255',
-            'art_fairs.4.year' => 'nullable|integer|min:2000|max:' . date('Y'),
+            'art_fairs.*.name' => 'required|string|max:255',
+            'art_fairs.*.year' => 'required|integer|min:2000|max:' . date('Y'),
         ]);
 
         $this->application->update([

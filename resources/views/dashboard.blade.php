@@ -84,12 +84,17 @@
             </div>
 
             {{-- Status Cards --}}
-            @php $app = Auth::user()->application; @endphp
+            @php
+                $app = Auth::user()->application;
+                $galleryComplete = $app?->gallery_type && $app?->gallery_name && $app?->year_founded &&
+                                   $app?->description && $app?->website_url && $app?->gallery_email &&
+                                   $app?->phone && $app?->instagram && $app?->facebook;
+            @endphp
             <div class="grid grid-cols-3 gap-4 mb-8">
                 <div class="bg-white rounded-xl border border-gray-100 p-4">
                     <p class="text-xs text-gray-400 mb-1">Gallery Info</p>
-                    <p class="text-sm font-semibold {{ $app?->gallery_name ? 'text-green-600' : 'text-gray-400' }}">
-                        {{ $app?->gallery_name ? '✓ Completed' : '○ Pending' }}
+                    <p class="text-sm font-semibold {{ $galleryComplete ? 'text-green-600' : 'text-gray-400' }}">
+                        {{ $galleryComplete ? '✓ Completed' : '○ Pending' }}
                     </p>
                 </div>
                 <div class="bg-white rounded-xl border border-gray-100 p-4">
