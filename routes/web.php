@@ -8,12 +8,6 @@ Route::get('/', function () {
     return view('home');
 });
 
-// TEMPORARY — delete after use
-Route::get('/run-storage-link', function () {
-    Artisan::call('storage:link');
-    return 'Done: storage linked.';
-});
-
 
 // Auth Routes
 Route::middleware('guest')->group(function () {
