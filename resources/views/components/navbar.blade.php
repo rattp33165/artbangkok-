@@ -95,7 +95,10 @@
                 </a>
 
             @else
-                <a href="{{ route('sign-in') }}" class="hidden lg:block text-sm text-gray-700 hover:text-black">Sign In</a>
+                <a href="{{ route('sign-in') }}"
+                   class="hidden lg:block text-xs px-5 py-2 rounded-full border border-gray-300 text-gray-700 hover:border-gray-500 hover:text-black transition tracking-wide">
+                    Sign In
+                </a>
                 <a href="{{ route('sign-up') }}"
                    class="hidden lg:block bg-black text-white text-xs px-5 py-2 rounded-full hover:bg-gray-800 transition tracking-wide">
                     Sign Up
@@ -153,8 +156,12 @@
                         </button>
                     </form>
                 @else
-                    <a href="{{ route('sign-in') }}" class="px-3 py-3 text-sm text-gray-700 hover:bg-gray-50 rounded-xl block">Sign In</a>
-                    <a href="{{ route('sign-up') }}" class="mt-1 mx-3 bg-black text-white text-sm px-5 py-3 rounded-xl hover:bg-gray-800 transition text-center block">
+                    <a href="{{ route('sign-in') }}"
+                       class="mx-3 border border-gray-300 text-gray-700 text-sm py-3 rounded-xl hover:border-gray-500 hover:text-black transition text-center block">
+                        Sign In
+                    </a>
+                    <a href="{{ route('sign-up') }}"
+                       class="mt-2 mx-3 bg-black text-white text-sm py-3 rounded-xl hover:bg-gray-800 transition text-center block">
                         Sign Up
                     </a>
                 @endauth
