@@ -38,13 +38,9 @@
                     <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
                         Year Founded <span class="text-red-500">*</span>
                     </label>
-                    <select wire:model="year_founded"
-                            class="w-full border rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 @error('year_founded') border-red-400 bg-red-50 focus:ring-red-200 @else border-gray-200 focus:ring-black @enderror">
-                        <option value="">Select year</option>
-                        @for($y = date('Y'); $y >= 1900; $y--)
-                            <option value="{{ $y }}">{{ $y }}</option>
-                        @endfor
-                    </select>
+                    <input wire:model="year_founded" type="number"
+                           placeholder="e.g. 1990" min="1800" max="{{ date('Y') }}"
+                           class="w-full border rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 @error('year_founded') border-red-400 bg-red-50 focus:ring-red-200 @else border-gray-200 focus:ring-black @enderror">
                     @error('year_founded')
                         <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
                     @enderror
