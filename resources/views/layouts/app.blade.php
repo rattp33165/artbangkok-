@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="https://use.typekit.net/hjg1ity.css">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @livewireStyles
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
 <body class="bg-white font-['agenda-one']">
 
