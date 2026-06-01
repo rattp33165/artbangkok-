@@ -14,6 +14,7 @@
         {{-- Form --}}
         <livewire:sign-up />
 
+
         {{-- Divider --}}
         <div class="flex items-center gap-3 my-6">
             <hr class="flex-1 border-gray-200">

@@ -118,18 +118,29 @@ class ApplicationForm extends Component
         if ($app->art_fairs)         $this->art_fairs = $app->art_fairs;
     }
 
+    private function tryValidate(array $rules): bool
+    {
+        try {
+            $this->validate($rules);
+            return true;
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            $this->dispatch('toast', message: 'Please fill in all required fields.', type: 'error');
+            throw $e;
+        }
+    }
+
     public function saveGalleryInfo()
     {
-        $this->validate([
-            'gallery_type'  => 'nullable|in:international,thai',
-            'gallery_name'  => 'nullable|string|max:255',
-            'year_founded'  => 'nullable|integer|min:1800|max:' . date('Y'),
-            'description'   => 'nullable|string|max:1000',
-            'website_url'   => 'nullable|url',
-            'gallery_email' => 'nullable|email',
-            'phone'         => 'nullable|string|max:50',
-            'instagram'     => 'nullable|string|max:255',
-            'facebook'      => 'nullable|string|max:255',
+        $this->tryValidate([
+            'gallery_type'  => 'required|in:international,thai',
+            'gallery_name'  => 'required|string|max:255',
+            'year_founded'  => 'required|integer|min:1800|max:' . date('Y'),
+            'description'   => 'required|string|max:1000',
+            'website_url'   => 'required|url',
+            'gallery_email' => 'required|email',
+            'phone'         => 'required|string|max:50',
+            'instagram'     => 'required|string|max:255',
+            'facebook'      => 'required|string|max:255',
         ]);
 
         $this->application->update([
@@ -144,14 +155,14 @@ class ApplicationForm extends Component
             'facebook'      => $this->facebook ?: null,
         ]);
         $this->updateProgress();
-        session()->flash('saved_gallery', 'Saved!');
+        $this->dispatch('toast', message: 'Gallery information saved.', type: 'success');
     }
 
     public function saveBusinessInfo()
     {
-        $this->validate([
-            'business_name'    => 'nullable|string|max:255',
-            'business_license' => 'nullable|string|max:100',
+        $this->tryValidate([
+            'business_name'    => 'required|string|max:255',
+            'business_license' => 'required|string|max:100',
         ]);
 
         $this->application->update([
@@ -159,19 +170,19 @@ class ApplicationForm extends Component
             'business_license' => $this->business_license ?: null,
         ]);
         $this->updateProgress();
-        session()->flash('saved_business', 'Saved!');
+        $this->dispatch('toast', message: 'Business information saved.', type: 'success');
     }
 
     public function saveHeadOffice()
     {
-        $this->validate([
-            'office_country'  => 'nullable|string|max:100',
-            'office_city'     => 'nullable|string|max:100',
-            'office_zipcode'  => 'nullable|string|max:20',
-            'office_address'  => 'nullable|string|max:500',
-            'director_name'   => 'nullable|string|max:255',
-            'director_phone'  => 'nullable|string|max:50',
-            'director_email'  => 'nullable|email',
+        $this->tryValidate([
+            'office_country'  => 'required|string|max:100',
+            'office_city'     => 'required|string|max:100',
+            'office_zipcode'  => 'required|string|max:20',
+            'office_address'  => 'required|string|max:500',
+            'director_name'   => 'required|string|max:255',
+            'director_phone'  => 'required|string|max:50',
+            'director_email'  => 'required|email',
         ]);
 
         $this->application->update([
@@ -184,11 +195,23 @@ class ApplicationForm extends Component
             'director_email'  => $this->director_email ?: null,
         ]);
         $this->updateProgress();
-        session()->flash('saved_office', 'Saved!');
+        $this->dispatch('toast', message: 'Head office information saved.', type: 'success');
     }
 
     public function saveBranches()
     {
+        $this->tryValidate([
+            'branches.0.name'    => 'required|string|max:255',
+            'branches.0.country' => 'required|string|max:100',
+            'branches.0.city'    => 'required|string|max:100',
+            'branches.1.name'    => 'nullable|string|max:255',
+            'branches.1.country' => 'nullable|string|max:100',
+            'branches.1.city'    => 'nullable|string|max:100',
+            'branches.2.name'    => 'nullable|string|max:255',
+            'branches.2.country' => 'nullable|string|max:100',
+            'branches.2.city'    => 'nullable|string|max:100',
+        ]);
+
         $this->application->update([
             'branches' => collect($this->branches)->map(fn($b) => [
                 'name'    => $b['name'] ?? '',
@@ -197,23 +220,29 @@ class ApplicationForm extends Component
             ])->toArray(),
         ]);
         $this->updateProgress();
-        session()->flash('saved_branches', 'Saved!');
+        $this->dispatch('toast', message: 'Branches saved.', type: 'success');
     }
 
     public function saveRepresentedArtists()
     {
+        $this->tryValidate([
+            'represented_artists.0' => 'required|string|max:255',
+            'represented_artists.1' => 'nullable|string|max:255',
+            'represented_artists.2' => 'nullable|string|max:255',
+        ]);
+
         $this->application->update([
             'represented_artists' => array_values(array_filter($this->represented_artists)),
         ]);
         $this->updateProgress();
-        session()->flash('saved_artists', 'Saved!');
+        $this->dispatch('toast', message: 'Represented artists saved.', type: 'success');
     }
 
     public function saveBooth()
     {
-        $this->validate([
-            'booth_section' => 'nullable|in:gallery,other',
-            'booth_type'    => 'nullable|in:A,B',
+        $this->tryValidate([
+            'booth_section' => 'required|in:gallery,other',
+            'booth_type'    => 'required|in:A,B',
         ]);
 
         $this->application->update([
@@ -221,11 +250,20 @@ class ApplicationForm extends Component
             'booth_type'    => $this->booth_type ?: null,
         ]);
         $this->updateProgress();
-        session()->flash('saved_booth', 'Saved!');
+        $this->dispatch('toast', message: 'Booth selection saved.', type: 'success');
     }
 
     public function savePersonsInCharge()
     {
+        $this->tryValidate([
+            'persons_in_charge.0.name'  => 'required|string|max:255',
+            'persons_in_charge.0.email' => 'required|email',
+            'persons_in_charge.0.phone' => 'required|string|max:50',
+            'persons_in_charge.1.name'  => 'required|string|max:255',
+            'persons_in_charge.1.email' => 'required|email',
+            'persons_in_charge.1.phone' => 'required|string|max:50',
+        ]);
+
         $this->application->update([
             'persons_in_charge' => collect($this->persons_in_charge)->map(fn($p) => [
                 'name'     => $p['name'] ?? '',
@@ -235,11 +273,24 @@ class ApplicationForm extends Component
             ])->toArray(),
         ]);
         $this->updateProgress();
-        session()->flash('saved_persons', 'Saved!');
+        $this->dispatch('toast', message: 'Persons in charge saved.', type: 'success');
     }
 
     public function saveArtFairs()
     {
+        $this->tryValidate([
+            'art_fairs.0.name' => 'required|string|max:255',
+            'art_fairs.0.year' => 'required|integer|min:2000|max:' . date('Y'),
+            'art_fairs.1.name' => 'nullable|string|max:255',
+            'art_fairs.1.year' => 'nullable|integer|min:2000|max:' . date('Y'),
+            'art_fairs.2.name' => 'nullable|string|max:255',
+            'art_fairs.2.year' => 'nullable|integer|min:2000|max:' . date('Y'),
+            'art_fairs.3.name' => 'nullable|string|max:255',
+            'art_fairs.3.year' => 'nullable|integer|min:2000|max:' . date('Y'),
+            'art_fairs.4.name' => 'nullable|string|max:255',
+            'art_fairs.4.year' => 'nullable|integer|min:2000|max:' . date('Y'),
+        ]);
+
         $this->application->update([
             'art_fairs' => collect($this->art_fairs)
                 ->filter(fn($f) => !empty($f['name']))
@@ -249,7 +300,7 @@ class ApplicationForm extends Component
                 ])->values()->toArray(),
         ]);
         $this->updateProgress();
-        session()->flash('saved_fairs', 'Saved!');
+        $this->dispatch('toast', message: 'Art fairs saved.', type: 'success');
     }
 
     public function updateProgress()
@@ -268,6 +319,22 @@ class ApplicationForm extends Component
         $percent = (int)(collect($sections)->filter()->count() / count($sections) * 100);
         $app->update(['completion_percent' => $percent]);
         $this->application = $app;
+    }
+
+    public function submitApplication()
+    {
+        if ($this->application->status === 'submitted') {
+            $this->dispatch('toast', message: 'Your application has already been submitted.', type: 'info');
+            return;
+        }
+
+        if ($this->application->completion_percent < 100) {
+            $this->dispatch('toast', message: 'Please complete all sections before submitting.', type: 'error');
+            return;
+        }
+
+        $this->application->update(['status' => 'submitted']);
+        $this->dispatch('toast', message: 'Application submitted successfully!', type: 'success');
     }
 
     public function render()

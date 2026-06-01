@@ -22,10 +22,12 @@ class SignIn extends Component
 
         if (Auth::attempt(['email' => $this->email, 'password' => $this->password], $this->remember)) {
             session()->regenerate();
+            session()->flash('toast', ['message' => 'Signed in successfully.', 'type' => 'success']);
             return redirect()->route('dashboard');
         }
 
         $this->addError('email', 'Email or password is incorrect.');
+        $this->dispatch('toast', message: 'Email or password is incorrect.', type: 'error');
     }
 
     public function render()

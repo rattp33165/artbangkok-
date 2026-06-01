@@ -31,6 +31,7 @@ class SignUp extends Component
 
         Auth::login($user);
 
+        session()->flash('toast', ['message' => 'Account created successfully. Welcome!', 'type' => 'success']);
         return redirect()->route('dashboard');
     }
 

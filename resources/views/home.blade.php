@@ -17,16 +17,6 @@
             <p class="text-gray-500 text-lg md:text-xl max-w-xl mx-auto mb-10">
                 Thailand's Premier International Art Fair
             </p>
-            <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                <a href="/register"
-                   class="bg-black text-white px-8 py-3 rounded-full text-sm font-semibold hover:bg-gray-800 transition tracking-wide">
-                    Gallery Application
-                </a>
-                <a href="#"
-                   class="border border-black text-black px-8 py-3 rounded-full text-sm hover:bg-black hover:text-white transition tracking-wide">
-                    Learn More
-                </a>
-            </div>
         </div>
     </section>
 
