@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'Art Bangkok 2026')</title>
+    <link rel="icon" type="image/png" href="{{ asset('images/Logo-art_bangkok-b.png') }}">
     <link rel="stylesheet" href="https://use.typekit.net/hjg1ity.css">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @livewireStyles

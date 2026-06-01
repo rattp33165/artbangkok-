@@ -6,6 +6,7 @@ use Livewire\Component;
 use Livewire\WithFileUploads;
 use App\Models\Application;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class ApplicationForm extends Component
 {
@@ -23,12 +24,15 @@ class ApplicationForm extends Component
     public $phone = '';
     public $instagram = '';
     public $facebook = '';
+    public $gallery_images = [];         // stored paths
+    public $gallery_images_upload = [];  // temp uploads
 
     // Business Registration
     public $business_name = '';
     public $business_license = '';
 
     // Head Office
+    public $head_office_gallery_name = '';
     public $office_country = '';
     public $office_city = '';
     public $office_zipcode = '';
@@ -49,12 +53,12 @@ class ApplicationForm extends Component
     public $booth_section = '';
     public $booth_type = '';
 
-    // Participating Artists
+    // Participating Artists (dynamic)
     public $participating_artists = [
-        ['name' => '', 'year_of_birth' => '', 'nationality' => '', 'introduction' => ''],
-        ['name' => '', 'year_of_birth' => '', 'nationality' => '', 'introduction' => ''],
-        ['name' => '', 'year_of_birth' => '', 'nationality' => '', 'introduction' => ''],
+        ['name' => '', 'year_of_birth' => '', 'nationality' => '', 'introduction' => '', 'images' => []],
     ];
+    public $artist_images_upload = [];
+    public $active_artist_upload_index = 0;
 
     // Person in Charge
     public $persons_in_charge = [
@@ -62,11 +66,12 @@ class ApplicationForm extends Component
         ['name' => '', 'position' => 'Gallery Manager', 'email' => '', 'phone' => ''],
     ];
 
-    // Exhibitions
+    // Exhibitions (dynamic)
     public $exhibitions = [
-        ['title' => '', 'date_start' => '', 'date_end' => '', 'introduction' => ''],
-        ['title' => '', 'date_start' => '', 'date_end' => '', 'introduction' => ''],
+        ['title' => '', 'date_start' => '', 'date_end' => '', 'introduction' => '', 'images' => []],
     ];
+    public $exhibition_images_upload = [];
+    public $active_exhibition_upload_index = 0;
 
     // Art Fairs
     public $art_fairs = [
@@ -85,32 +90,117 @@ class ApplicationForm extends Component
     public function loadData()
     {
         $app = $this->application;
-        $this->gallery_type    = $app->gallery_type ?? '';
-        $this->gallery_name    = $app->gallery_name ?? '';
-        $this->year_founded    = $app->year_founded ?? '';
-        $this->description     = $app->description ?? '';
-        $this->website_url     = $app->website_url ?? '';
-        $this->gallery_email   = $app->gallery_email ?? '';
-        $this->phone           = $app->phone ?? '';
-        $this->instagram       = $app->instagram ?? '';
-        $this->facebook        = $app->facebook ?? '';
-        $this->business_name   = $app->business_name ?? '';
-        $this->business_license = $app->business_license ?? '';
-        $this->office_country  = $app->office_country ?? '';
-        $this->office_city     = $app->office_city ?? '';
-        $this->office_zipcode  = $app->office_zipcode ?? '';
-        $this->office_address  = $app->office_address ?? '';
-        $this->director_name   = $app->director_name ?? '';
-        $this->director_phone  = $app->director_phone ?? '';
-        $this->director_email  = $app->director_email ?? '';
-        $this->booth_section   = $app->booth_section ?? '';
-        $this->booth_type      = $app->booth_type ?? '';
+        $this->gallery_type             = $app->gallery_type ?? '';
+        $this->gallery_name             = $app->gallery_name ?? '';
+        $this->year_founded             = $app->year_founded ?? '';
+        $this->description              = $app->description ?? '';
+        $this->website_url              = $app->website_url ?? '';
+        $this->gallery_email            = $app->gallery_email ?? '';
+        $this->phone                    = $app->phone ?? '';
+        $this->instagram                = $app->instagram ?? '';
+        $this->facebook                 = $app->facebook ?? '';
+        $this->gallery_images           = $app->gallery_images ?? [];
+        $this->business_name            = $app->business_name ?? '';
+        $this->business_license         = $app->business_license ?? '';
+        $this->head_office_gallery_name = $app->head_office_gallery_name ?? '';
+        $this->office_country           = $app->office_country ?? '';
+        $this->office_city              = $app->office_city ?? '';
+        $this->office_zipcode           = $app->office_zipcode ?? '';
+        $this->office_address           = $app->office_address ?? '';
+        $this->director_name            = $app->director_name ?? '';
+        $this->director_phone           = $app->director_phone ?? '';
+        $this->director_email           = $app->director_email ?? '';
+        $this->booth_section            = $app->booth_section ?? '';
+        $this->booth_type               = $app->booth_type ?? '';
 
-        if (!empty($app->branches))           $this->branches = $app->branches;
-        if (!empty($app->represented_artists)) $this->represented_artists = $app->represented_artists;
-        if (!empty($app->persons_in_charge))   $this->persons_in_charge = $app->persons_in_charge;
-        if (!empty($app->art_fairs))           $this->art_fairs = $app->art_fairs;
+        if (!empty($app->branches))             $this->branches = $app->branches;
+        if (!empty($app->represented_artists))  $this->represented_artists = $app->represented_artists;
+        if (!empty($app->persons_in_charge))    $this->persons_in_charge = $app->persons_in_charge;
+        if (!empty($app->art_fairs))            $this->art_fairs = $app->art_fairs;
+        if (!empty($app->participating_artists)) $this->participating_artists = $app->participating_artists;
+        if (!empty($app->exhibitions))           $this->exhibitions = $app->exhibitions;
     }
+
+    // ── Image uploads ──────────────────────────────────────────────
+
+    public function updatedGalleryImagesUpload()
+    {
+        $existing = $this->gallery_images ?? [];
+        foreach ((array)$this->gallery_images_upload as $file) {
+            if (count($existing) >= 3) break;
+            $path = $file->store('applications/' . Auth::id() . '/gallery', 'public');
+            $existing[] = $path;
+        }
+        $this->application->update(['gallery_images' => $existing]);
+        $this->gallery_images = $existing;
+        $this->gallery_images_upload = [];
+        $this->dispatch('toast', message: 'Gallery images uploaded.', type: 'success');
+    }
+
+    public function removeGalleryImage($index)
+    {
+        $images = $this->gallery_images;
+        Storage::disk('public')->delete($images[$index]);
+        array_splice($images, $index, 1);
+        $this->gallery_images = array_values($images);
+        $this->application->update(['gallery_images' => $this->gallery_images]);
+    }
+
+    public function prepareArtistUpload($index)
+    {
+        $this->active_artist_upload_index = $index;
+    }
+
+    public function updatedArtistImagesUpload()
+    {
+        $i = $this->active_artist_upload_index;
+        $existing = $this->participating_artists[$i]['images'] ?? [];
+        foreach ((array)$this->artist_images_upload as $file) {
+            if (count($existing) >= 3) break;
+            $path = $file->store('applications/' . Auth::id() . '/artists', 'public');
+            $existing[] = $path;
+        }
+        $this->participating_artists[$i]['images'] = $existing;
+        $this->artist_images_upload = [];
+        $this->dispatch('toast', message: 'Artwork images uploaded.', type: 'success');
+    }
+
+    public function removeArtistImage($artistIndex, $imgIndex)
+    {
+        $images = $this->participating_artists[$artistIndex]['images'] ?? [];
+        Storage::disk('public')->delete($images[$imgIndex]);
+        array_splice($images, $imgIndex, 1);
+        $this->participating_artists[$artistIndex]['images'] = array_values($images);
+    }
+
+    public function prepareExhibitionUpload($index)
+    {
+        $this->active_exhibition_upload_index = $index;
+    }
+
+    public function updatedExhibitionImagesUpload()
+    {
+        $i = $this->active_exhibition_upload_index;
+        $existing = $this->exhibitions[$i]['images'] ?? [];
+        foreach ((array)$this->exhibition_images_upload as $file) {
+            if (count($existing) >= 3) break;
+            $path = $file->store('applications/' . Auth::id() . '/exhibitions', 'public');
+            $existing[] = $path;
+        }
+        $this->exhibitions[$i]['images'] = $existing;
+        $this->exhibition_images_upload = [];
+        $this->dispatch('toast', message: 'Exhibition images uploaded.', type: 'success');
+    }
+
+    public function removeExhibitionImage($exhibitionIndex, $imgIndex)
+    {
+        $images = $this->exhibitions[$exhibitionIndex]['images'] ?? [];
+        Storage::disk('public')->delete($images[$imgIndex]);
+        array_splice($images, $imgIndex, 1);
+        $this->exhibitions[$exhibitionIndex]['images'] = array_values($images);
+    }
+
+    // ── Dynamic rows ───────────────────────────────────────────────
 
     public function clearBoothType()
     {
@@ -143,6 +233,32 @@ class ApplicationForm extends Component
         }
     }
 
+    public function addParticipatingArtist()
+    {
+        $this->participating_artists[] = ['name' => '', 'year_of_birth' => '', 'nationality' => '', 'introduction' => '', 'images' => []];
+    }
+
+    public function removeParticipatingArtist($index)
+    {
+        if (count($this->participating_artists) > 1) {
+            array_splice($this->participating_artists, $index, 1);
+            $this->participating_artists = array_values($this->participating_artists);
+        }
+    }
+
+    public function addExhibition()
+    {
+        $this->exhibitions[] = ['title' => '', 'date_start' => '', 'date_end' => '', 'introduction' => '', 'images' => []];
+    }
+
+    public function removeExhibition($index)
+    {
+        if (count($this->exhibitions) > 1) {
+            array_splice($this->exhibitions, $index, 1);
+            $this->exhibitions = array_values($this->exhibitions);
+        }
+    }
+
     public function addArtFair()
     {
         $this->art_fairs[] = ['name' => '', 'year' => ''];
@@ -156,6 +272,8 @@ class ApplicationForm extends Component
         }
     }
 
+    // ── Validation helper ──────────────────────────────────────────
+
     private function tryValidate(array $rules): bool
     {
         try {
@@ -166,6 +284,8 @@ class ApplicationForm extends Component
             throw $e;
         }
     }
+
+    // ── Save methods ───────────────────────────────────────────────
 
     public function saveGalleryInfo()
     {
@@ -214,23 +334,25 @@ class ApplicationForm extends Component
     public function saveHeadOffice()
     {
         $this->tryValidate([
-            'office_country'  => 'required|string|max:100',
-            'office_city'     => 'required|string|max:100',
-            'office_zipcode'  => 'required|string|max:20',
-            'office_address'  => 'required|string|max:500',
-            'director_name'   => 'required|string|max:255',
-            'director_phone'  => 'required|string|max:50',
-            'director_email'  => 'required|email',
+            'head_office_gallery_name' => 'required|string|max:255',
+            'office_country'           => 'required|string|max:100',
+            'office_city'              => 'required|string|max:100',
+            'office_zipcode'           => 'required|string|max:20',
+            'office_address'           => 'required|string|max:500',
+            'director_name'            => 'required|string|max:255',
+            'director_phone'           => 'required|string|max:50',
+            'director_email'           => 'required|email',
         ]);
 
         $this->application->update([
-            'office_country'  => $this->office_country ?: null,
-            'office_city'     => $this->office_city ?: null,
-            'office_zipcode'  => $this->office_zipcode ?: null,
-            'office_address'  => $this->office_address ?: null,
-            'director_name'   => $this->director_name ?: null,
-            'director_phone'  => $this->director_phone ?: null,
-            'director_email'  => $this->director_email ?: null,
+            'head_office_gallery_name' => $this->head_office_gallery_name ?: null,
+            'office_country'           => $this->office_country ?: null,
+            'office_city'              => $this->office_city ?: null,
+            'office_zipcode'           => $this->office_zipcode ?: null,
+            'office_address'           => $this->office_address ?: null,
+            'director_name'            => $this->director_name ?: null,
+            'director_phone'           => $this->director_phone ?: null,
+            'director_email'           => $this->director_email ?: null,
         ]);
         $this->updateProgress();
         $this->dispatch('toast', message: 'Head office information saved.', type: 'success');
@@ -283,6 +405,28 @@ class ApplicationForm extends Component
         $this->dispatch('toast', message: 'Booth selection saved.', type: 'success');
     }
 
+    public function saveParticipatingArtists()
+    {
+        $this->tryValidate([
+            'participating_artists.*.name'         => 'required|string|max:255',
+            'participating_artists.*.year_of_birth' => 'required|integer|min:1900|max:' . date('Y'),
+            'participating_artists.*.nationality'   => 'required|string|max:100',
+            'participating_artists.*.introduction'  => 'required|string|max:5000',
+        ]);
+
+        $this->application->update([
+            'participating_artists' => collect($this->participating_artists)->map(fn($a) => [
+                'name'         => $a['name'] ?? '',
+                'year_of_birth' => $a['year_of_birth'] ?? '',
+                'nationality'  => $a['nationality'] ?? '',
+                'introduction' => $a['introduction'] ?? '',
+                'images'       => $a['images'] ?? [],
+            ])->toArray(),
+        ]);
+        $this->updateProgress();
+        $this->dispatch('toast', message: 'Participating artists saved.', type: 'success');
+    }
+
     public function savePersonsInCharge()
     {
         $this->tryValidate([
@@ -306,6 +450,28 @@ class ApplicationForm extends Component
         $this->dispatch('toast', message: 'Persons in charge saved.', type: 'success');
     }
 
+    public function saveExhibitions()
+    {
+        $this->tryValidate([
+            'exhibitions.*.title'        => 'required|string|max:255',
+            'exhibitions.*.date_start'   => 'required|date',
+            'exhibitions.*.date_end'     => 'required|date|after_or_equal:exhibitions.*.date_start',
+            'exhibitions.*.introduction' => 'required|string|max:5000',
+        ]);
+
+        $this->application->update([
+            'exhibitions' => collect($this->exhibitions)->map(fn($e) => [
+                'title'        => $e['title'] ?? '',
+                'date_start'   => $e['date_start'] ?? '',
+                'date_end'     => $e['date_end'] ?? '',
+                'introduction' => $e['introduction'] ?? '',
+                'images'       => $e['images'] ?? [],
+            ])->toArray(),
+        ]);
+        $this->updateProgress();
+        $this->dispatch('toast', message: 'Exhibitions saved.', type: 'success');
+    }
+
     public function saveArtFairs()
     {
         $this->tryValidate([
@@ -314,12 +480,10 @@ class ApplicationForm extends Component
         ]);
 
         $this->application->update([
-            'art_fairs' => collect($this->art_fairs)
-                ->filter(fn($f) => !empty($f['name']))
-                ->map(fn($f) => [
-                    'name' => $f['name'] ?? '',
-                    'year' => $f['year'] ?? '',
-                ])->values()->toArray(),
+            'art_fairs' => collect($this->art_fairs)->map(fn($f) => [
+                'name' => $f['name'] ?? '',
+                'year' => $f['year'] ?? '',
+            ])->values()->toArray(),
         ]);
         $this->updateProgress();
         $this->dispatch('toast', message: 'Art fairs saved.', type: 'success');
@@ -332,11 +496,13 @@ class ApplicationForm extends Component
             (bool)$app->gallery_name,
             (bool)$app->business_name,
             (bool)$app->office_country,
-            (bool)($app->branches && collect($app->branches)->first()['name'] ?? false),
+            (bool)(!empty($app->branches) && ($app->branches[0]['name'] ?? '')),
             (bool)$app->booth_section,
-            (bool)($app->represented_artists && $app->represented_artists[0] ?? false),
-            (bool)($app->persons_in_charge && collect($app->persons_in_charge)->first()['name'] ?? false),
-            (bool)$app->art_fairs,
+            (bool)(!empty($app->represented_artists) && $app->represented_artists[0]),
+            (bool)(!empty($app->participating_artists) && ($app->participating_artists[0]['name'] ?? '')),
+            (bool)(!empty($app->persons_in_charge) && ($app->persons_in_charge[0]['name'] ?? '')),
+            (bool)(!empty($app->exhibitions) && ($app->exhibitions[0]['title'] ?? '')),
+            (bool)(!empty($app->art_fairs) && ($app->art_fairs[0]['name'] ?? '')),
         ];
         $percent = (int)(collect($sections)->filter()->count() / count($sections) * 100);
         $app->update(['completion_percent' => $percent]);

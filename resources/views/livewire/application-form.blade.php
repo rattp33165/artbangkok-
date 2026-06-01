@@ -120,6 +120,35 @@
                 </div>
             </div>
 
+            {{-- Gallery Images --}}
+            <div>
+                <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
+                    Gallery Images <span class="text-gray-400 normal-case font-normal">(max 3 images)</span>
+                </label>
+                @if(count($gallery_images) > 0)
+                <div class="flex flex-wrap gap-3 mb-3">
+                    @foreach($gallery_images as $idx => $img)
+                    <div class="relative group">
+                        <img src="{{ Storage::url($img) }}" class="w-24 h-24 object-cover rounded-xl border border-gray-200">
+                        <button wire:click="removeGalleryImage({{ $idx }})" type="button"
+                                class="absolute -top-2 -right-2 w-5 h-5 bg-red-500 text-white rounded-full text-xs flex items-center justify-center opacity-0 group-hover:opacity-100 transition">✕</button>
+                    </div>
+                    @endforeach
+                </div>
+                @endif
+                @if(count($gallery_images) < 3)
+                <div x-data>
+                    <input type="file" wire:model="gallery_images_upload" x-ref="galleryFile" class="hidden" multiple accept="image/jpeg,image/png,image/webp">
+                    <button type="button" @click="$refs.galleryFile.click()"
+                            class="inline-flex items-center gap-2 border border-dashed border-gray-300 hover:border-gray-500 text-sm text-gray-500 hover:text-black rounded-xl px-4 py-2.5 transition">
+                        <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                        <span wire:loading.remove wire:target="gallery_images_upload">Choose Images</span>
+                        <span wire:loading wire:target="gallery_images_upload">Uploading...</span>
+                    </button>
+                </div>
+                @endif
+            </div>
+
             <div class="flex justify-end pt-2">
                 <button wire:click="saveGalleryInfo"
                         wire:loading.attr="disabled"
@@ -188,6 +217,16 @@
             <p class="text-xs text-gray-400 mt-0.5">Main office location and director details</p>
         </div>
         <div class="p-6 space-y-4">
+            <div>
+                <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
+                    Gallery Name <span class="text-red-500">*</span>
+                </label>
+                <input wire:model="head_office_gallery_name" type="text" placeholder="Gallery name at head office"
+                       class="w-full border rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 @error('head_office_gallery_name') border-red-400 bg-red-50 focus:ring-red-200 @else border-gray-200 focus:ring-black @enderror">
+                @error('head_office_gallery_name')
+                    <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
+                @enderror
+            </div>
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 <div>
                     <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
@@ -470,7 +509,122 @@
         </div>
     </div>
 
-    {{-- 7. Person in Charge --}}
+    {{-- 7. Participating Artists --}}
+    <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+        <div class="px-6 py-4 border-b border-gray-100">
+            <h2 class="font-semibold text-black">Participating Artist Information</h2>
+            <p class="text-xs text-gray-400 mt-0.5">Artists participating in your booth</p>
+        </div>
+        <div class="p-6 space-y-4">
+            @foreach($participating_artists as $i => $artist)
+            <div class="border border-gray-100 rounded-xl p-4 space-y-4">
+                <div class="flex items-center justify-between">
+                    <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Artist {{ $i + 1 }}</p>
+                    @if(count($participating_artists) > 1)
+                        <button wire:click="removeParticipatingArtist({{ $i }})" type="button"
+                                class="text-xs text-red-400 hover:text-red-600 transition">Remove</button>
+                    @endif
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <div class="sm:col-span-2 lg:col-span-1">
+                        <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
+                            Artist Name <span class="text-red-500">*</span>
+                        </label>
+                        <input wire:model="participating_artists.{{ $i }}.name" type="text" placeholder="Full name"
+                               class="w-full border rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 @error("participating_artists.{$i}.name") border-red-400 bg-red-50 focus:ring-red-200 @else border-gray-200 focus:ring-black @enderror">
+                        @error("participating_artists.{$i}.name")
+                            <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
+                        @enderror
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
+                            Year of Birth <span class="text-red-500">*</span>
+                        </label>
+                        <input wire:model="participating_artists.{{ $i }}.year_of_birth" type="number"
+                               placeholder="e.g. 1985" min="1900" max="{{ date('Y') }}"
+                               class="w-full border rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 @error("participating_artists.{$i}.year_of_birth") border-red-400 bg-red-50 focus:ring-red-200 @else border-gray-200 focus:ring-black @enderror">
+                        @error("participating_artists.{$i}.year_of_birth")
+                            <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
+                        @enderror
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
+                            Nationality <span class="text-red-500">*</span>
+                        </label>
+                        <input wire:model="participating_artists.{{ $i }}.nationality" type="text" placeholder="e.g. Thai"
+                               class="w-full border rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 @error("participating_artists.{$i}.nationality") border-red-400 bg-red-50 focus:ring-red-200 @else border-gray-200 focus:ring-black @enderror">
+                        @error("participating_artists.{$i}.nationality")
+                            <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
+                        @enderror
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
+                        Artist's Brief Introduction <span class="text-red-500">*</span>
+                        <span class="text-gray-400 normal-case font-normal">(max 1,000 words)</span>
+                    </label>
+                    <textarea wire:model="participating_artists.{{ $i }}.introduction" rows="3"
+                              placeholder="Artist biography and practice..."
+                              class="w-full border rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 resize-none @error("participating_artists.{$i}.introduction") border-red-400 bg-red-50 focus:ring-red-200 @else border-gray-200 focus:ring-black @enderror"></textarea>
+                    @error("participating_artists.{$i}.introduction")
+                        <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
+                    @enderror
+                </div>
+                {{-- Artwork Images --}}
+                <div>
+                    <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
+                        Images of Artwork <span class="text-gray-400 normal-case font-normal">(max 3 images)</span>
+                    </label>
+                    @if(!empty($artist['images']))
+                    <div class="flex flex-wrap gap-3 mb-3">
+                        @foreach($artist['images'] as $imgIdx => $img)
+                        <div class="relative group">
+                            <img src="{{ Storage::url($img) }}" class="w-24 h-24 object-cover rounded-xl border border-gray-200">
+                            <button wire:click="removeArtistImage({{ $i }}, {{ $imgIdx }})" type="button"
+                                    class="absolute -top-2 -right-2 w-5 h-5 bg-red-500 text-white rounded-full text-xs flex items-center justify-center opacity-0 group-hover:opacity-100 transition">✕</button>
+                        </div>
+                        @endforeach
+                    </div>
+                    @endif
+                    @if(count($artist['images'] ?? []) < 3)
+                    <div x-data>
+                        <input type="file" wire:model="artist_images_upload"
+                               x-ref="artistFile{{ $i }}" class="hidden" multiple accept="image/jpeg,image/png,image/webp">
+                        <button type="button"
+                                wire:click="prepareArtistUpload({{ $i }})"
+                                @click="$nextTick(() => $refs['artistFile{{ $i }}'].click())"
+                                class="inline-flex items-center gap-2 border border-dashed border-gray-300 hover:border-gray-500 text-sm text-gray-500 hover:text-black rounded-xl px-4 py-2.5 transition">
+                            <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                            Choose Images
+                        </button>
+                    </div>
+                    @endif
+                </div>
+            </div>
+            @endforeach
+            <button wire:click="addParticipatingArtist" type="button"
+                    class="inline-flex items-center gap-1.5 text-sm text-gray-500 hover:text-black transition border border-dashed border-gray-300 hover:border-gray-500 rounded-xl px-4 py-2.5 w-full justify-center">
+                <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                Add Artist
+            </button>
+            <div class="flex justify-end pt-2">
+                <button wire:click="saveParticipatingArtists"
+                        wire:loading.attr="disabled"
+                        wire:loading.class="opacity-70 cursor-not-allowed"
+                        wire:target="saveParticipatingArtists"
+                        class="bg-black text-white px-6 py-2.5 rounded-xl text-sm font-semibold hover:bg-gray-800 transition inline-flex items-center gap-2">
+                    <svg wire:loading wire:target="saveParticipatingArtists" class="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 22 6.477 22 12h-4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    <span wire:loading.remove wire:target="saveParticipatingArtists">Save Draft</span>
+                    <span wire:loading wire:target="saveParticipatingArtists">Saving...</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    {{-- 8. Person in Charge --}}
     <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
         <div class="px-6 py-4 border-b border-gray-100">
             <h2 class="font-semibold text-black">Person in Charge</h2>
@@ -533,7 +687,121 @@
         </div>
     </div>
 
-    {{-- 8. Art Fairs --}}
+    {{-- 9. Featured Exhibitions --}}
+    <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+        <div class="px-6 py-4 border-b border-gray-100">
+            <h2 class="font-semibold text-black">Featured Exhibitions at the Gallery</h2>
+            <p class="text-xs text-gray-400 mt-0.5">Recent or upcoming exhibitions</p>
+        </div>
+        <div class="p-6 space-y-4">
+            @foreach($exhibitions as $i => $exhibition)
+            <div class="border border-gray-100 rounded-xl p-4 space-y-4">
+                <div class="flex items-center justify-between">
+                    <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Exhibition {{ $i + 1 }}</p>
+                    @if(count($exhibitions) > 1)
+                        <button wire:click="removeExhibition({{ $i }})" type="button"
+                                class="text-xs text-red-400 hover:text-red-600 transition">Remove</button>
+                    @endif
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
+                        Exhibition Title <span class="text-red-500">*</span>
+                    </label>
+                    <input wire:model="exhibitions.{{ $i }}.title" type="text" placeholder="Exhibition title"
+                           class="w-full border rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 @error("exhibitions.{$i}.title") border-red-400 bg-red-50 focus:ring-red-200 @else border-gray-200 focus:ring-black @enderror">
+                    @error("exhibitions.{$i}.title")
+                        <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
+                    @enderror
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
+                            Start Date <span class="text-red-500">*</span>
+                        </label>
+                        <input wire:model="exhibitions.{{ $i }}.date_start" type="date"
+                               class="w-full border rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 @error("exhibitions.{$i}.date_start") border-red-400 bg-red-50 focus:ring-red-200 @else border-gray-200 focus:ring-black @enderror">
+                        @error("exhibitions.{$i}.date_start")
+                            <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
+                        @enderror
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
+                            End Date <span class="text-red-500">*</span>
+                        </label>
+                        <input wire:model="exhibitions.{{ $i }}.date_end" type="date"
+                               class="w-full border rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 @error("exhibitions.{$i}.date_end") border-red-400 bg-red-50 focus:ring-red-200 @else border-gray-200 focus:ring-black @enderror">
+                        @error("exhibitions.{$i}.date_end")
+                            <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
+                        @enderror
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
+                        Exhibition / Artist Introduction <span class="text-red-500">*</span>
+                        <span class="text-gray-400 normal-case font-normal">(max 1,000 words)</span>
+                    </label>
+                    <textarea wire:model="exhibitions.{{ $i }}.introduction" rows="3"
+                              placeholder="Describe the exhibition and featured artists..."
+                              class="w-full border rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 resize-none @error("exhibitions.{$i}.introduction") border-red-400 bg-red-50 focus:ring-red-200 @else border-gray-200 focus:ring-black @enderror"></textarea>
+                    @error("exhibitions.{$i}.introduction")
+                        <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
+                    @enderror
+                </div>
+                {{-- Installation Images --}}
+                <div>
+                    <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
+                        Installation Images <span class="text-gray-400 normal-case font-normal">(max 3 images)</span>
+                    </label>
+                    @if(!empty($exhibition['images']))
+                    <div class="flex flex-wrap gap-3 mb-3">
+                        @foreach($exhibition['images'] as $imgIdx => $img)
+                        <div class="relative group">
+                            <img src="{{ Storage::url($img) }}" class="w-24 h-24 object-cover rounded-xl border border-gray-200">
+                            <button wire:click="removeExhibitionImage({{ $i }}, {{ $imgIdx }})" type="button"
+                                    class="absolute -top-2 -right-2 w-5 h-5 bg-red-500 text-white rounded-full text-xs flex items-center justify-center opacity-0 group-hover:opacity-100 transition">✕</button>
+                        </div>
+                        @endforeach
+                    </div>
+                    @endif
+                    @if(count($exhibition['images'] ?? []) < 3)
+                    <div x-data>
+                        <input type="file" wire:model="exhibition_images_upload"
+                               x-ref="exhibitionFile{{ $i }}" class="hidden" multiple accept="image/jpeg,image/png,image/webp">
+                        <button type="button"
+                                wire:click="prepareExhibitionUpload({{ $i }})"
+                                @click="$nextTick(() => $refs['exhibitionFile{{ $i }}'].click())"
+                                class="inline-flex items-center gap-2 border border-dashed border-gray-300 hover:border-gray-500 text-sm text-gray-500 hover:text-black rounded-xl px-4 py-2.5 transition">
+                            <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                            Choose Images
+                        </button>
+                    </div>
+                    @endif
+                </div>
+            </div>
+            @endforeach
+            <button wire:click="addExhibition" type="button"
+                    class="inline-flex items-center gap-1.5 text-sm text-gray-500 hover:text-black transition border border-dashed border-gray-300 hover:border-gray-500 rounded-xl px-4 py-2.5 w-full justify-center">
+                <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                Add Exhibition
+            </button>
+            <div class="flex justify-end pt-2">
+                <button wire:click="saveExhibitions"
+                        wire:loading.attr="disabled"
+                        wire:loading.class="opacity-70 cursor-not-allowed"
+                        wire:target="saveExhibitions"
+                        class="bg-black text-white px-6 py-2.5 rounded-xl text-sm font-semibold hover:bg-gray-800 transition inline-flex items-center gap-2">
+                    <svg wire:loading wire:target="saveExhibitions" class="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 22 6.477 22 12h-4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    <span wire:loading.remove wire:target="saveExhibitions">Save Draft</span>
+                    <span wire:loading wire:target="saveExhibitions">Saving...</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    {{-- 10. Art Fairs --}}
     <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
         <div class="px-6 py-4 border-b border-gray-100">
             <h2 class="font-semibold text-black">Art Fairs Participated</h2>
