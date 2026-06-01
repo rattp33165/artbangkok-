@@ -36,7 +36,7 @@
             add(toast) {
                 const id = Date.now();
                 this.toasts.push({ id, ...toast });
-                setTimeout(() => this.remove(id), 3500);
+                setTimeout(() => this.remove(id), 4000);
             },
             remove(id) {
                 this.toasts = this.toasts.filter(t => t.id !== id);
@@ -46,24 +46,24 @@
         @if(session('toast'))
         x-init="$nextTick(() => add({{ json_encode(session('toast')) }}))"
         @endif
-        class="fixed top-6 right-6 z-50 flex flex-col gap-3 pointer-events-none"
-        style="min-width: 260px; max-width: 380px;"
+        class="fixed top-6 right-6 z-50 flex flex-col gap-2 pointer-events-none"
+        style="min-width: 280px; max-width: 380px;"
     >
         <template x-for="toast in toasts" :key="toast.id">
             <div
-                x-transition:enter="transition ease-out duration-300"
-                x-transition:enter-start="opacity-0 -translate-y-2 scale-95"
-                x-transition:enter-end="opacity-100 translate-y-0 scale-100"
-                x-transition:leave="transition ease-in duration-200"
-                x-transition:leave-start="opacity-100 translate-y-0 scale-100"
-                x-transition:leave-end="opacity-0 -translate-y-2 scale-95"
+                x-transition:enter="transition ease-out duration-350"
+                x-transition:enter-start="opacity-0 translate-x-10"
+                x-transition:enter-end="opacity-100 translate-x-0"
+                x-transition:leave="transition ease-in duration-250"
+                x-transition:leave-start="opacity-100 translate-x-0"
+                x-transition:leave-end="opacity-0 translate-x-10"
                 :class="{
                     'border-green-500': toast.type === 'success',
                     'border-red-500':   toast.type === 'error',
                     'border-blue-500':  toast.type === 'info',
                     'border-yellow-500': toast.type === 'warning',
                 }"
-                class="pointer-events-auto flex items-center gap-3 bg-white border-l-4 shadow-lg rounded-lg px-4 py-3 text-sm text-gray-800"
+                class="pointer-events-auto flex items-center gap-3 bg-white border-l-4 shadow-md rounded-xl px-4 py-3 text-sm text-gray-800"
             >
                 <span
                     :class="{
@@ -73,12 +73,12 @@
                         'text-yellow-500': toast.type === 'warning',
                     }"
                     x-text="({'success':'✓','error':'✕','info':'ℹ','warning':'⚠'})[toast.type] ?? 'ℹ'"
-                    class="text-lg leading-none flex-shrink-0 font-bold"
+                    class="text-base leading-none flex-shrink-0 font-bold"
                 ></span>
                 <span x-text="toast.message" class="flex-1"></span>
                 <button
                     @click="remove(toast.id)"
-                    class="text-gray-400 hover:text-gray-600 ml-1 flex-shrink-0"
+                    class="text-gray-300 hover:text-gray-500 ml-1 flex-shrink-0 transition"
                 >✕</button>
             </div>
         </template>
