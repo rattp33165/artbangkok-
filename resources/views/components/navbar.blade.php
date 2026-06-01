@@ -20,11 +20,24 @@
 
         {{-- CTA Button --}}
         <div class="hidden md:flex items-center gap-4">
-            <a href="/login" class="text-sm text-gray-800 hover:text-black font-['agenda-one']">Login</a>
-            <a href="/register"
-               class="bg-black text-white text-sm px-5 py-2 rounded-full hover:bg-gray-800 transition font-['agenda-one'] tracking-wide">
-                Become a Member
-            </a>
+            @auth
+                <a href="{{ route('dashboard') }}" class="text-sm text-gray-800 hover:text-black">
+                    {{ Auth::user()->name }}
+                </a>
+                <form method="POST" action="{{ route('sign-out') }}">
+                    @csrf
+                    <button type="submit"
+                            class="bg-black text-white text-sm px-5 py-2 rounded-full hover:bg-gray-800 transition">
+                        Sign Out
+                    </button>
+                </form>
+            @else
+                <a href="{{ route('sign-in') }}" class="text-sm text-gray-800 hover:text-black">Sign In</a>
+                <a href="{{ route('sign-up') }}"
+                class="bg-black text-white text-sm px-5 py-2 rounded-full hover:bg-gray-800 transition">
+                    Sign Up
+                </a>
+            @endauth
         </div>
 
         {{-- Mobile Hamburger --}}
