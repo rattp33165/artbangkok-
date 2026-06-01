@@ -22,5 +22,6 @@ Route::get('/auth/google/callback', [GoogleController::class, 'callback'])->name
 
 // Protected Routes
 Route::middleware('auth')->group(function () {
-    Route::get('/dashboard', function () { return view('dashboard'); })->name('dashboard');
+    Route::get('/application', function () { return view('dashboard'); })->name('dashboard');
+    Route::get('/profile', function () { return view('profile'); })->name('profile');
 });

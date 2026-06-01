@@ -121,7 +121,7 @@
             </div>
 
             {{-- Gallery Images --}}
-            <div x-data="{ previews: [] }" x-on:gallery-uploaded.window="previews = []">
+            <div x-data="{ previews: [] }" x-init="$wire.on('gallery-uploaded', () => { previews = [] })">
                 <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
                     Gallery Images <span class="text-gray-400 normal-case font-normal">(max 3 — hover to remove)</span>
                 </label>
@@ -588,7 +588,7 @@
                     @enderror
                 </div>
                 {{-- Artwork Images --}}
-                <div x-data="{ previews: [] }" x-on:artist-uploaded.window="previews = []">
+                <div x-data="{ previews: [] }" x-init="$wire.on('artist-uploaded', () => { previews = [] })">
                     <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
                         Images of Artwork <span class="text-gray-400 normal-case font-normal">(max 3 — hover to remove)</span>
                     </label>
@@ -778,7 +778,7 @@
                     @enderror
                 </div>
                 {{-- Installation Images --}}
-                <div x-data="{ previews: [] }" x-on:exhibition-uploaded.window="previews = []">
+                <div x-data="{ previews: [] }" x-init="$wire.on('exhibition-uploaded', () => { previews = [] })">
                     <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
                         Installation Images <span class="text-gray-400 normal-case font-normal">(max 3 — hover to remove)</span>
                     </label>
