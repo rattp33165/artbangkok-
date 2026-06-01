@@ -30,6 +30,8 @@ class GoogleController extends Controller
 
         Auth::login($user);
 
+        session()->flash('toast', ['message' => 'Signed in with Google successfully.', 'type' => 'success']);
+
         return redirect()->route('dashboard');
     }
 }

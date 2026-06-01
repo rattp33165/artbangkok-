@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(grep -E \"google_id|profile_photo\" C:rattaponartbangkokdatabasemigrations*.php)"
+    ]
+  }
+}

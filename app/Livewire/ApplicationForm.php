@@ -134,6 +134,7 @@ class ApplicationForm extends Component
         $this->application->update(['gallery_images' => $existing]);
         $this->gallery_images = $existing;
         $this->gallery_images_upload = [];
+        $this->dispatch('gallery-uploaded');
         $this->dispatch('toast', message: 'Gallery images uploaded.', type: 'success');
     }
 
@@ -162,6 +163,7 @@ class ApplicationForm extends Component
         }
         $this->participating_artists[$i]['images'] = $existing;
         $this->artist_images_upload = [];
+        $this->dispatch('artist-uploaded');
         $this->dispatch('toast', message: 'Artwork images uploaded.', type: 'success');
     }
 
@@ -189,6 +191,7 @@ class ApplicationForm extends Component
         }
         $this->exhibitions[$i]['images'] = $existing;
         $this->exhibition_images_upload = [];
+        $this->dispatch('exhibition-uploaded');
         $this->dispatch('toast', message: 'Exhibition images uploaded.', type: 'success');
     }
 
@@ -261,6 +264,7 @@ class ApplicationForm extends Component
 
     public function addArtFair()
     {
+        if (count($this->art_fairs) >= 5) return;
         $this->art_fairs[] = ['name' => '', 'year' => ''];
     }
 

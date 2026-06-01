@@ -28,7 +28,7 @@
                     <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
                         Gallery Name (ENG) <span class="text-red-500">*</span>
                     </label>
-                    <input wire:model="gallery_name" type="text" placeholder="Gallery name"
+                    <input wire:model="gallery_name" type="text" placeholder="Gallery name" maxlength="255"
                            class="w-full border rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 @error('gallery_name') border-red-400 bg-red-50 focus:ring-red-200 @else border-gray-200 focus:ring-black @enderror">
                     @error('gallery_name')
                         <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
@@ -69,7 +69,7 @@
                     <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
                         Website URL <span class="text-red-500">*</span>
                     </label>
-                    <input wire:model="website_url" type="url" placeholder="https://yourgallery.com"
+                    <input wire:model="website_url" type="url" placeholder="https://yourgallery.com" maxlength="500"
                            class="w-full border rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 @error('website_url') border-red-400 bg-red-50 focus:ring-red-200 @else border-gray-200 focus:ring-black @enderror">
                     @error('website_url')
                         <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
@@ -79,7 +79,7 @@
                     <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
                         Gallery Email <span class="text-red-500">*</span>
                     </label>
-                    <input wire:model="gallery_email" type="email" placeholder="gallery@example.com"
+                    <input wire:model="gallery_email" type="email" placeholder="gallery@example.com" maxlength="255"
                            class="w-full border rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 @error('gallery_email') border-red-400 bg-red-50 focus:ring-red-200 @else border-gray-200 focus:ring-black @enderror">
                     @error('gallery_email')
                         <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
@@ -92,7 +92,7 @@
                     <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
                         Phone Number <span class="text-red-500">*</span>
                     </label>
-                    <input wire:model="phone" type="text" placeholder="+66 2 000 0000"
+                    <input wire:model="phone" type="tel" placeholder="+66 2 000 0000" maxlength="20"
                            class="w-full border rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 @error('phone') border-red-400 bg-red-50 focus:ring-red-200 @else border-gray-200 focus:ring-black @enderror">
                     @error('phone')
                         <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
@@ -102,7 +102,7 @@
                     <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
                         Instagram <span class="text-red-500">*</span>
                     </label>
-                    <input wire:model="instagram" type="text" placeholder="@yourgallery"
+                    <input wire:model="instagram" type="text" placeholder="@yourgallery" maxlength="100"
                            class="w-full border rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 @error('instagram') border-red-400 bg-red-50 focus:ring-red-200 @else border-gray-200 focus:ring-black @enderror">
                     @error('instagram')
                         <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
@@ -112,7 +112,7 @@
                     <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
                         Facebook <span class="text-red-500">*</span>
                     </label>
-                    <input wire:model="facebook" type="text" placeholder="facebook.com/yourgallery"
+                    <input wire:model="facebook" type="text" placeholder="facebook.com/yourgallery" maxlength="255"
                            class="w-full border rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 @error('facebook') border-red-400 bg-red-50 focus:ring-red-200 @else border-gray-200 focus:ring-black @enderror">
                     @error('facebook')
                         <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
@@ -121,31 +121,48 @@
             </div>
 
             {{-- Gallery Images --}}
-            <div>
+            <div x-data="{ previews: [] }" x-on:gallery-uploaded.window="previews = []">
                 <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
-                    Gallery Images <span class="text-gray-400 normal-case font-normal">(max 3 images)</span>
+                    Gallery Images <span class="text-gray-400 normal-case font-normal">(max 3 — hover to remove)</span>
                 </label>
-                @if(count($gallery_images) > 0)
                 <div class="flex flex-wrap gap-3 mb-3">
+                    {{-- Stored images --}}
                     @foreach($gallery_images as $idx => $img)
-                    <div class="relative group">
-                        <img src="{{ Storage::url($img) }}" class="w-24 h-24 object-cover rounded-xl border border-gray-200">
+                    <div class="relative group w-24 h-24">
+                        <img src="{{ Storage::url($img) }}" class="w-full h-full object-cover rounded-xl border border-gray-200">
                         <button wire:click="removeGalleryImage({{ $idx }})" type="button"
-                                class="absolute -top-2 -right-2 w-5 h-5 bg-red-500 text-white rounded-full text-xs flex items-center justify-center opacity-0 group-hover:opacity-100 transition">✕</button>
+                                title="Remove image"
+                                class="absolute inset-0 flex items-center justify-center bg-black/50 rounded-xl opacity-0 group-hover:opacity-100 transition text-white text-xs font-semibold">
+                            Remove
+                        </button>
                     </div>
                     @endforeach
+                    {{-- Client-side preview while uploading --}}
+                    <template x-for="src in previews" :key="src">
+                        <div class="relative w-24 h-24 rounded-xl border border-gray-200 overflow-hidden">
+                            <img :src="src" class="w-full h-full object-cover opacity-50">
+                            <div class="absolute inset-0 flex items-center justify-center">
+                                <svg class="animate-spin h-5 w-5 text-gray-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 22 6.477 22 12h-4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                </svg>
+                            </div>
+                        </div>
+                    </template>
                 </div>
-                @endif
                 @if(count($gallery_images) < 3)
-                <div x-data>
-                    <input type="file" wire:model="gallery_images_upload" x-ref="galleryFile" class="hidden" multiple accept="image/jpeg,image/png,image/webp">
-                    <button type="button" @click="$refs.galleryFile.click()"
-                            class="inline-flex items-center gap-2 border border-dashed border-gray-300 hover:border-gray-500 text-sm text-gray-500 hover:text-black rounded-xl px-4 py-2.5 transition">
-                        <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-                        <span wire:loading.remove wire:target="gallery_images_upload">Choose Images</span>
-                        <span wire:loading wire:target="gallery_images_upload">Uploading...</span>
-                    </button>
-                </div>
+                <input type="file" wire:model="gallery_images_upload" x-ref="galleryFile"
+                       class="hidden" multiple accept="image/jpeg,image/png,image/webp"
+                       x-on:change="
+                           previews = [];
+                           const remaining = {{ 3 - count($gallery_images) }};
+                           Array.from($event.target.files).slice(0, remaining).forEach(f => previews.push(URL.createObjectURL(f)));
+                       ">
+                <button type="button" @click="$refs.galleryFile.click()"
+                        class="inline-flex items-center gap-2 border border-dashed border-gray-300 hover:border-gray-500 text-sm text-gray-500 hover:text-black rounded-xl px-4 py-2.5 transition">
+                    <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                    Choose Images
+                </button>
                 @endif
             </div>
 
@@ -177,7 +194,7 @@
                 <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
                     Business or Company Name <span class="text-red-500">*</span>
                 </label>
-                <input wire:model="business_name" type="text" placeholder="Company name"
+                <input wire:model="business_name" type="text" placeholder="Company name" maxlength="255"
                        class="w-full border rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 @error('business_name') border-red-400 bg-red-50 focus:ring-red-200 @else border-gray-200 focus:ring-black @enderror">
                 @error('business_name')
                     <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
@@ -187,7 +204,7 @@
                 <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
                     Business License Number <span class="text-red-500">*</span>
                 </label>
-                <input wire:model="business_license" type="text" placeholder="License number"
+                <input wire:model="business_license" type="text" placeholder="License number" maxlength="100"
                        class="w-full border rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 @error('business_license') border-red-400 bg-red-50 focus:ring-red-200 @else border-gray-200 focus:ring-black @enderror">
                 @error('business_license')
                     <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
@@ -221,7 +238,7 @@
                 <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
                     Gallery Name <span class="text-red-500">*</span>
                 </label>
-                <input wire:model="head_office_gallery_name" type="text" placeholder="Gallery name at head office"
+                <input wire:model="head_office_gallery_name" type="text" placeholder="Gallery name at head office" maxlength="255"
                        class="w-full border rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 @error('head_office_gallery_name') border-red-400 bg-red-50 focus:ring-red-200 @else border-gray-200 focus:ring-black @enderror">
                 @error('head_office_gallery_name')
                     <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
@@ -232,7 +249,7 @@
                     <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
                         Country <span class="text-red-500">*</span>
                     </label>
-                    <input wire:model="office_country" type="text" placeholder="Country"
+                    <input wire:model="office_country" type="text" placeholder="Country" maxlength="100"
                            class="w-full border rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 @error('office_country') border-red-400 bg-red-50 focus:ring-red-200 @else border-gray-200 focus:ring-black @enderror">
                     @error('office_country')
                         <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
@@ -242,7 +259,7 @@
                     <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
                         City <span class="text-red-500">*</span>
                     </label>
-                    <input wire:model="office_city" type="text" placeholder="City"
+                    <input wire:model="office_city" type="text" placeholder="City" maxlength="100"
                            class="w-full border rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 @error('office_city') border-red-400 bg-red-50 focus:ring-red-200 @else border-gray-200 focus:ring-black @enderror">
                     @error('office_city')
                         <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
@@ -252,7 +269,7 @@
                     <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
                         Zipcode <span class="text-red-500">*</span>
                     </label>
-                    <input wire:model="office_zipcode" type="text" placeholder="00000"
+                    <input wire:model="office_zipcode" type="text" placeholder="00000" maxlength="10"
                            class="w-full border rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 @error('office_zipcode') border-red-400 bg-red-50 focus:ring-red-200 @else border-gray-200 focus:ring-black @enderror">
                     @error('office_zipcode')
                         <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
@@ -274,7 +291,7 @@
                     <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
                         Director's Name <span class="text-red-500">*</span>
                     </label>
-                    <input wire:model="director_name" type="text" placeholder="Full name"
+                    <input wire:model="director_name" type="text" placeholder="Full name" maxlength="255"
                            class="w-full border rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 @error('director_name') border-red-400 bg-red-50 focus:ring-red-200 @else border-gray-200 focus:ring-black @enderror">
                     @error('director_name')
                         <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
@@ -284,7 +301,7 @@
                     <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
                         Phone Number <span class="text-red-500">*</span>
                     </label>
-                    <input wire:model="director_phone" type="text" placeholder="+66 2 000 0000"
+                    <input wire:model="director_phone" type="tel" placeholder="+66 2 000 0000" maxlength="20"
                            class="w-full border rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 @error('director_phone') border-red-400 bg-red-50 focus:ring-red-200 @else border-gray-200 focus:ring-black @enderror">
                     @error('director_phone')
                         <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
@@ -294,7 +311,7 @@
                     <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
                         Email Address <span class="text-red-500">*</span>
                     </label>
-                    <input wire:model="director_email" type="email" placeholder="director@gallery.com"
+                    <input wire:model="director_email" type="email" placeholder="director@gallery.com" maxlength="255"
                            class="w-full border rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 @error('director_email') border-red-400 bg-red-50 focus:ring-red-200 @else border-gray-200 focus:ring-black @enderror">
                     @error('director_email')
                         <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
@@ -339,7 +356,7 @@
                         <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
                             Venue/Branch Name <span class="text-red-500">*</span>
                         </label>
-                        <input wire:model="branches.{{ $i }}.name" type="text" placeholder="Branch name"
+                        <input wire:model="branches.{{ $i }}.name" type="text" placeholder="Branch name" maxlength="255"
                                class="w-full border rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 @error("branches.{$i}.name") border-red-400 bg-red-50 focus:ring-red-200 @else border-gray-200 focus:ring-black @enderror">
                         @error("branches.{$i}.name")
                             <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
@@ -349,7 +366,7 @@
                         <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
                             Country <span class="text-red-500">*</span>
                         </label>
-                        <input wire:model="branches.{{ $i }}.country" type="text" placeholder="Country"
+                        <input wire:model="branches.{{ $i }}.country" type="text" placeholder="Country" maxlength="100"
                                class="w-full border rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 @error("branches.{$i}.country") border-red-400 bg-red-50 focus:ring-red-200 @else border-gray-200 focus:ring-black @enderror">
                         @error("branches.{$i}.country")
                             <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
@@ -359,7 +376,7 @@
                         <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
                             City <span class="text-red-500">*</span>
                         </label>
-                        <input wire:model="branches.{{ $i }}.city" type="text" placeholder="City"
+                        <input wire:model="branches.{{ $i }}.city" type="text" placeholder="City" maxlength="100"
                                class="w-full border rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 @error("branches.{$i}.city") border-red-400 bg-red-50 focus:ring-red-200 @else border-gray-200 focus:ring-black @enderror">
                         @error("branches.{$i}.city")
                             <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
@@ -403,7 +420,7 @@
                     <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
                         Artist Name {{ $i + 1 }} <span class="text-red-500">*</span>
                     </label>
-                    <input wire:model="represented_artists.{{ $i }}" type="text" placeholder="Artist full name"
+                    <input wire:model="represented_artists.{{ $i }}" type="text" placeholder="Artist full name" maxlength="255"
                            class="w-full border rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 @error("represented_artists.{$i}") border-red-400 bg-red-50 focus:ring-red-200 @else border-gray-200 focus:ring-black @enderror">
                     @error("represented_artists.{$i}")
                         <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
@@ -530,7 +547,7 @@
                         <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
                             Artist Name <span class="text-red-500">*</span>
                         </label>
-                        <input wire:model="participating_artists.{{ $i }}.name" type="text" placeholder="Full name"
+                        <input wire:model="participating_artists.{{ $i }}.name" type="text" placeholder="Full name" maxlength="255"
                                class="w-full border rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 @error("participating_artists.{$i}.name") border-red-400 bg-red-50 focus:ring-red-200 @else border-gray-200 focus:ring-black @enderror">
                         @error("participating_artists.{$i}.name")
                             <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
@@ -551,7 +568,7 @@
                         <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
                             Nationality <span class="text-red-500">*</span>
                         </label>
-                        <input wire:model="participating_artists.{{ $i }}.nationality" type="text" placeholder="e.g. Thai"
+                        <input wire:model="participating_artists.{{ $i }}.nationality" type="text" placeholder="e.g. Thai" maxlength="100"
                                class="w-full border rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 @error("participating_artists.{$i}.nationality") border-red-400 bg-red-50 focus:ring-red-200 @else border-gray-200 focus:ring-black @enderror">
                         @error("participating_artists.{$i}.nationality")
                             <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
@@ -571,33 +588,46 @@
                     @enderror
                 </div>
                 {{-- Artwork Images --}}
-                <div>
+                <div x-data="{ previews: [] }" x-on:artist-uploaded.window="previews = []">
                     <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
-                        Images of Artwork <span class="text-gray-400 normal-case font-normal">(max 3 images)</span>
+                        Images of Artwork <span class="text-gray-400 normal-case font-normal">(max 3 — hover to remove)</span>
                     </label>
-                    @if(!empty($artist['images']))
                     <div class="flex flex-wrap gap-3 mb-3">
-                        @foreach($artist['images'] as $imgIdx => $img)
-                        <div class="relative group">
-                            <img src="{{ Storage::url($img) }}" class="w-24 h-24 object-cover rounded-xl border border-gray-200">
+                        @foreach($artist['images'] ?? [] as $imgIdx => $img)
+                        <div class="relative group w-24 h-24">
+                            <img src="{{ Storage::url($img) }}" class="w-full h-full object-cover rounded-xl border border-gray-200">
                             <button wire:click="removeArtistImage({{ $i }}, {{ $imgIdx }})" type="button"
-                                    class="absolute -top-2 -right-2 w-5 h-5 bg-red-500 text-white rounded-full text-xs flex items-center justify-center opacity-0 group-hover:opacity-100 transition">✕</button>
+                                    class="absolute inset-0 flex items-center justify-center bg-black/50 rounded-xl opacity-0 group-hover:opacity-100 transition text-white text-xs font-semibold">
+                                Remove
+                            </button>
                         </div>
                         @endforeach
+                        <template x-for="src in previews" :key="src">
+                            <div class="relative w-24 h-24 rounded-xl border border-gray-200 overflow-hidden">
+                                <img :src="src" class="w-full h-full object-cover opacity-50">
+                                <div class="absolute inset-0 flex items-center justify-center">
+                                    <svg class="animate-spin h-5 w-5 text-gray-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 22 6.477 22 12h-4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                    </svg>
+                                </div>
+                            </div>
+                        </template>
                     </div>
-                    @endif
                     @if(count($artist['images'] ?? []) < 3)
-                    <div x-data>
-                        <input type="file" wire:model="artist_images_upload"
-                               x-ref="artistFile{{ $i }}" class="hidden" multiple accept="image/jpeg,image/png,image/webp">
-                        <button type="button"
-                                wire:click="prepareArtistUpload({{ $i }})"
-                                @click="$nextTick(() => $refs['artistFile{{ $i }}'].click())"
-                                class="inline-flex items-center gap-2 border border-dashed border-gray-300 hover:border-gray-500 text-sm text-gray-500 hover:text-black rounded-xl px-4 py-2.5 transition">
-                            <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-                            Choose Images
-                        </button>
-                    </div>
+                    <input type="file" wire:model="artist_images_upload"
+                           x-ref="artistFile{{ $i }}" class="hidden" multiple accept="image/jpeg,image/png,image/webp"
+                           x-on:change="
+                               previews = [];
+                               const remaining = {{ 3 - count($artist['images'] ?? []) }};
+                               Array.from($event.target.files).slice(0, remaining).forEach(f => previews.push(URL.createObjectURL(f)));
+                           ">
+                    <button type="button"
+                            @click="$wire.call('prepareArtistUpload', {{ $i }}).then(() => $refs['artistFile{{ $i }}'].click())"
+                            class="inline-flex items-center gap-2 border border-dashed border-gray-300 hover:border-gray-500 text-sm text-gray-500 hover:text-black rounded-xl px-4 py-2.5 transition">
+                        <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                        Choose Images
+                    </button>
                     @endif
                 </div>
             </div>
@@ -641,7 +671,7 @@
                         <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
                             Name <span class="text-red-500">*</span>
                         </label>
-                        <input wire:model="persons_in_charge.{{ $i }}.name" type="text" placeholder="Full name"
+                        <input wire:model="persons_in_charge.{{ $i }}.name" type="text" placeholder="Full name" maxlength="255"
                                class="w-full border rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 @error("persons_in_charge.{$i}.name") border-red-400 bg-red-50 focus:ring-red-200 @else border-gray-200 focus:ring-black @enderror">
                         @error("persons_in_charge.{$i}.name")
                             <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
@@ -651,7 +681,7 @@
                         <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
                             Contact Number <span class="text-red-500">*</span>
                         </label>
-                        <input wire:model="persons_in_charge.{{ $i }}.phone" type="text" placeholder="+66 2 000 0000"
+                        <input wire:model="persons_in_charge.{{ $i }}.phone" type="tel" placeholder="+66 2 000 0000" maxlength="20"
                                class="w-full border rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 @error("persons_in_charge.{$i}.phone") border-red-400 bg-red-50 focus:ring-red-200 @else border-gray-200 focus:ring-black @enderror">
                         @error("persons_in_charge.{$i}.phone")
                             <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
@@ -661,7 +691,7 @@
                         <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
                             Email Address <span class="text-red-500">*</span>
                         </label>
-                        <input wire:model="persons_in_charge.{{ $i }}.email" type="email" placeholder="email@gallery.com"
+                        <input wire:model="persons_in_charge.{{ $i }}.email" type="email" placeholder="email@gallery.com" maxlength="255"
                                class="w-full border rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 @error("persons_in_charge.{$i}.email") border-red-400 bg-red-50 focus:ring-red-200 @else border-gray-200 focus:ring-black @enderror">
                         @error("persons_in_charge.{$i}.email")
                             <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
@@ -707,7 +737,7 @@
                     <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
                         Exhibition Title <span class="text-red-500">*</span>
                     </label>
-                    <input wire:model="exhibitions.{{ $i }}.title" type="text" placeholder="Exhibition title"
+                    <input wire:model="exhibitions.{{ $i }}.title" type="text" placeholder="Exhibition title" maxlength="255"
                            class="w-full border rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 @error("exhibitions.{$i}.title") border-red-400 bg-red-50 focus:ring-red-200 @else border-gray-200 focus:ring-black @enderror">
                     @error("exhibitions.{$i}.title")
                         <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
@@ -748,33 +778,46 @@
                     @enderror
                 </div>
                 {{-- Installation Images --}}
-                <div>
+                <div x-data="{ previews: [] }" x-on:exhibition-uploaded.window="previews = []">
                     <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
-                        Installation Images <span class="text-gray-400 normal-case font-normal">(max 3 images)</span>
+                        Installation Images <span class="text-gray-400 normal-case font-normal">(max 3 — hover to remove)</span>
                     </label>
-                    @if(!empty($exhibition['images']))
                     <div class="flex flex-wrap gap-3 mb-3">
-                        @foreach($exhibition['images'] as $imgIdx => $img)
-                        <div class="relative group">
-                            <img src="{{ Storage::url($img) }}" class="w-24 h-24 object-cover rounded-xl border border-gray-200">
+                        @foreach($exhibition['images'] ?? [] as $imgIdx => $img)
+                        <div class="relative group w-24 h-24">
+                            <img src="{{ Storage::url($img) }}" class="w-full h-full object-cover rounded-xl border border-gray-200">
                             <button wire:click="removeExhibitionImage({{ $i }}, {{ $imgIdx }})" type="button"
-                                    class="absolute -top-2 -right-2 w-5 h-5 bg-red-500 text-white rounded-full text-xs flex items-center justify-center opacity-0 group-hover:opacity-100 transition">✕</button>
+                                    class="absolute inset-0 flex items-center justify-center bg-black/50 rounded-xl opacity-0 group-hover:opacity-100 transition text-white text-xs font-semibold">
+                                Remove
+                            </button>
                         </div>
                         @endforeach
+                        <template x-for="src in previews" :key="src">
+                            <div class="relative w-24 h-24 rounded-xl border border-gray-200 overflow-hidden">
+                                <img :src="src" class="w-full h-full object-cover opacity-50">
+                                <div class="absolute inset-0 flex items-center justify-center">
+                                    <svg class="animate-spin h-5 w-5 text-gray-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 22 6.477 22 12h-4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                    </svg>
+                                </div>
+                            </div>
+                        </template>
                     </div>
-                    @endif
                     @if(count($exhibition['images'] ?? []) < 3)
-                    <div x-data>
-                        <input type="file" wire:model="exhibition_images_upload"
-                               x-ref="exhibitionFile{{ $i }}" class="hidden" multiple accept="image/jpeg,image/png,image/webp">
-                        <button type="button"
-                                wire:click="prepareExhibitionUpload({{ $i }})"
-                                @click="$nextTick(() => $refs['exhibitionFile{{ $i }}'].click())"
-                                class="inline-flex items-center gap-2 border border-dashed border-gray-300 hover:border-gray-500 text-sm text-gray-500 hover:text-black rounded-xl px-4 py-2.5 transition">
-                            <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-                            Choose Images
-                        </button>
-                    </div>
+                    <input type="file" wire:model="exhibition_images_upload"
+                           x-ref="exhibitionFile{{ $i }}" class="hidden" multiple accept="image/jpeg,image/png,image/webp"
+                           x-on:change="
+                               previews = [];
+                               const remaining = {{ 3 - count($exhibition['images'] ?? []) }};
+                               Array.from($event.target.files).slice(0, remaining).forEach(f => previews.push(URL.createObjectURL(f)));
+                           ">
+                    <button type="button"
+                            @click="$wire.call('prepareExhibitionUpload', {{ $i }}).then(() => $refs['exhibitionFile{{ $i }}'].click())"
+                            class="inline-flex items-center gap-2 border border-dashed border-gray-300 hover:border-gray-500 text-sm text-gray-500 hover:text-black rounded-xl px-4 py-2.5 transition">
+                        <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                        Choose Images
+                    </button>
                     @endif
                 </div>
             </div>
@@ -815,7 +858,7 @@
                         <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
                             Art Fair Name {{ $i + 1 }} <span class="text-red-500">*</span>
                         </label>
-                        <input wire:model="art_fairs.{{ $i }}.name" type="text" placeholder="Fair name"
+                        <input wire:model="art_fairs.{{ $i }}.name" type="text" placeholder="Fair name" maxlength="255"
                                class="w-full border rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 @error("art_fairs.{$i}.name") border-red-400 bg-red-50 focus:ring-red-200 @else border-gray-200 focus:ring-black @enderror">
                         @error("art_fairs.{$i}.name")
                             <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
@@ -845,11 +888,15 @@
                 @endif
             </div>
             @endforeach
+            @if(count($art_fairs) < 5)
             <button wire:click="addArtFair" type="button"
                     class="inline-flex items-center gap-1.5 text-sm text-gray-500 hover:text-black transition border border-dashed border-gray-300 hover:border-gray-500 rounded-xl px-4 py-2.5 w-full justify-center">
                 <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
                 Add Art Fair
             </button>
+            @else
+            <p class="text-xs text-gray-400 text-center py-2">Maximum 5 art fairs reached</p>
+            @endif
             <div class="flex justify-end pt-2">
                 <button wire:click="saveArtFairs"
                         wire:loading.attr="disabled"
