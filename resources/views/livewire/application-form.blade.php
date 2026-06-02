@@ -4,10 +4,16 @@
              const el = document.querySelector('.border-red-400');
              if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
          }, 50)
+     "
+     x-on:scroll-to-section.window="
+         setTimeout(() => {
+             const el = document.getElementById($event.detail.id);
+             if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+         }, 50)
      ">
 
     {{-- 1. Gallery Information --}}
-    <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+    <div id="section-gallery" class="bg-white rounded-2xl border shadow-sm overflow-hidden {{ in_array('section-gallery', $incompleteSections) ? 'border-red-400 ring-2 ring-red-50' : 'border-gray-100' }}">
         <div class="px-6 py-4 border-b border-gray-100">
             <h2 class="font-semibold text-black">Gallery Information</h2>
             <p class="text-xs text-gray-400 mt-0.5">Basic information about your gallery</p>
@@ -187,7 +193,7 @@
     </div>
 
     {{-- 2. Business Registration --}}
-    <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+    <div id="section-business" class="bg-white rounded-2xl border shadow-sm overflow-hidden {{ in_array('section-business', $incompleteSections) ? 'border-red-400 ring-2 ring-red-50' : 'border-gray-100' }}">
         <div class="px-6 py-4 border-b border-gray-100">
             <h2 class="font-semibold text-black">Business Registration Information</h2>
             <p class="text-xs text-gray-400 mt-0.5">Official business details</p>
@@ -231,7 +237,7 @@
     </div>
 
     {{-- 3. Gallery Head Office --}}
-    <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+    <div id="section-office" class="bg-white rounded-2xl border shadow-sm overflow-hidden {{ in_array('section-office', $incompleteSections) ? 'border-red-400 ring-2 ring-red-50' : 'border-gray-100' }}">
         <div class="px-6 py-4 border-b border-gray-100">
             <h2 class="font-semibold text-black">Gallery Head Office Information</h2>
             <p class="text-xs text-gray-400 mt-0.5">Main office location and director details</p>
@@ -339,7 +345,7 @@
     </div>
 
     {{-- 4. Gallery Branches --}}
-    <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+    <div id="section-branches" class="bg-white rounded-2xl border shadow-sm overflow-hidden {{ in_array('section-branches', $incompleteSections) ? 'border-red-400 ring-2 ring-red-50' : 'border-gray-100' }}">
         <div class="px-6 py-4 border-b border-gray-100">
             <h2 class="font-semibold text-black">Gallery Branch Information</h2>
             <p class="text-xs text-gray-400 mt-0.5">Up to 3 branch locations</p>
@@ -411,7 +417,7 @@
     </div>
 
     {{-- 5. Represented Artists --}}
-    <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+    <div id="section-artists" class="bg-white rounded-2xl border shadow-sm overflow-hidden {{ in_array('section-artists', $incompleteSections) ? 'border-red-400 ring-2 ring-red-50' : 'border-gray-100' }}">
         <div class="px-6 py-4 border-b border-gray-100">
             <h2 class="font-semibold text-black">Represented Artists</h2>
             <p class="text-xs text-gray-400 mt-0.5">Artists represented by your gallery</p>
@@ -460,7 +466,7 @@
     </div>
 
     {{-- 6. Booth Selection --}}
-    <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+    <div id="section-booth" class="bg-white rounded-2xl border shadow-sm overflow-hidden {{ in_array('section-booth', $incompleteSections) ? 'border-red-400 ring-2 ring-red-50' : 'border-gray-100' }}">
         <div class="px-6 py-4 border-b border-gray-100">
             <h2 class="font-semibold text-black">Booth Selection</h2>
             <p class="text-xs text-gray-400 mt-0.5">Select your preferred booth type</p>
@@ -530,7 +536,7 @@
     </div>
 
     {{-- 7. Participating Artists --}}
-    <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+    <div id="section-participating" class="bg-white rounded-2xl border shadow-sm overflow-hidden {{ in_array('section-participating', $incompleteSections) ? 'border-red-400 ring-2 ring-red-50' : 'border-gray-100' }}">
         <div class="px-6 py-4 border-b border-gray-100">
             <h2 class="font-semibold text-black">Participating Artist Information</h2>
             <p class="text-xs text-gray-400 mt-0.5">Artists participating in your booth</p>
@@ -658,7 +664,7 @@
     </div>
 
     {{-- 8. Person in Charge --}}
-    <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+    <div id="section-persons" class="bg-white rounded-2xl border shadow-sm overflow-hidden {{ in_array('section-persons', $incompleteSections) ? 'border-red-400 ring-2 ring-red-50' : 'border-gray-100' }}">
         <div class="px-6 py-4 border-b border-gray-100">
             <h2 class="font-semibold text-black">Person in Charge</h2>
             <p class="text-xs text-gray-400 mt-0.5">Contact persons for this application</p>
@@ -721,7 +727,7 @@
     </div>
 
     {{-- 9. Featured Exhibitions --}}
-    <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+    <div id="section-exhibitions" class="bg-white rounded-2xl border shadow-sm overflow-hidden {{ in_array('section-exhibitions', $incompleteSections) ? 'border-red-400 ring-2 ring-red-50' : 'border-gray-100' }}">
         <div class="px-6 py-4 border-b border-gray-100">
             <h2 class="font-semibold text-black">Featured Exhibitions at the Gallery</h2>
             <p class="text-xs text-gray-400 mt-0.5">Recent or upcoming exhibitions</p>
@@ -848,7 +854,7 @@
     </div>
 
     {{-- 10. Art Fairs --}}
-    <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+    <div id="section-fairs" class="bg-white rounded-2xl border shadow-sm overflow-hidden {{ in_array('section-fairs', $incompleteSections) ? 'border-red-400 ring-2 ring-red-50' : 'border-gray-100' }}">
         <div class="px-6 py-4 border-b border-gray-100">
             <h2 class="font-semibold text-black">Art Fairs Participated</h2>
             <p class="text-xs text-gray-400 mt-0.5">Art fairs participated in the past 3 years (max 5)</p>
@@ -929,21 +935,6 @@
                 Make sure all sections are complete before submitting
             @endif
         </p>
-        @if(!empty($incompleteSections))
-        <div class="mb-5 inline-block text-left bg-white/10 rounded-xl px-5 py-4">
-            <p class="text-red-400 text-xs font-semibold uppercase tracking-wide mb-2">Incomplete sections:</p>
-            <ul class="space-y-1.5">
-                @foreach($incompleteSections as $section)
-                <li class="flex items-center gap-2 text-xs text-red-300">
-                    <svg width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"/>
-                    </svg>
-                    {{ $section }}
-                </li>
-                @endforeach
-            </ul>
-        </div>
-        @endif
         @if($application->status !== 'submitted')
         <button wire:click="submitApplication"
                 wire:loading.attr="disabled"

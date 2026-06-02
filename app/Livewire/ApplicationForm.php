@@ -280,6 +280,11 @@ class ApplicationForm extends Component
 
     // ── Validation helper ──────────────────────────────────────────
 
+    private function clearIncomplete(string $sectionId): void
+    {
+        $this->incompleteSections = array_values(array_diff($this->incompleteSections, [$sectionId]));
+    }
+
     private function tryValidate(array $rules, array $messages = []): bool
     {
         try {
@@ -322,6 +327,7 @@ class ApplicationForm extends Component
             'facebook'      => $this->facebook ?: null,
         ]);
         $this->updateProgress();
+        $this->clearIncomplete('section-gallery');
         $this->dispatch('toast', message: 'Gallery information saved.', type: 'success');
     }
 
@@ -337,6 +343,7 @@ class ApplicationForm extends Component
             'business_license' => $this->business_license ?: null,
         ]);
         $this->updateProgress();
+        $this->clearIncomplete('section-business');
         $this->dispatch('toast', message: 'Business information saved.', type: 'success');
     }
 
@@ -364,6 +371,7 @@ class ApplicationForm extends Component
             'director_email'           => $this->director_email ?: null,
         ]);
         $this->updateProgress();
+        $this->clearIncomplete('section-office');
         $this->dispatch('toast', message: 'Head office information saved.', type: 'success');
     }
 
@@ -383,6 +391,7 @@ class ApplicationForm extends Component
             ])->toArray(),
         ]);
         $this->updateProgress();
+        $this->clearIncomplete('section-branches');
         $this->dispatch('toast', message: 'Branches saved.', type: 'success');
     }
 
@@ -396,6 +405,7 @@ class ApplicationForm extends Component
             'represented_artists' => array_values(array_filter($this->represented_artists)),
         ]);
         $this->updateProgress();
+        $this->clearIncomplete('section-artists');
         $this->dispatch('toast', message: 'Represented artists saved.', type: 'success');
     }
 
@@ -411,6 +421,7 @@ class ApplicationForm extends Component
             'booth_type'    => $this->booth_type ?: null,
         ]);
         $this->updateProgress();
+        $this->clearIncomplete('section-booth');
         $this->dispatch('toast', message: 'Booth selection saved.', type: 'success');
     }
 
@@ -433,6 +444,7 @@ class ApplicationForm extends Component
             ])->toArray(),
         ]);
         $this->updateProgress();
+        $this->clearIncomplete('section-participating');
         $this->dispatch('toast', message: 'Participating artists saved.', type: 'success');
     }
 
@@ -456,6 +468,7 @@ class ApplicationForm extends Component
             ])->toArray(),
         ]);
         $this->updateProgress();
+        $this->clearIncomplete('section-persons');
         $this->dispatch('toast', message: 'Persons in charge saved.', type: 'success');
     }
 
@@ -478,6 +491,7 @@ class ApplicationForm extends Component
             ])->toArray(),
         ]);
         $this->updateProgress();
+        $this->clearIncomplete('section-exhibitions');
         $this->dispatch('toast', message: 'Exhibitions saved.', type: 'success');
     }
 
@@ -495,6 +509,7 @@ class ApplicationForm extends Component
             ])->values()->toArray(),
         ]);
         $this->updateProgress();
+        $this->clearIncomplete('section-fairs');
         $this->dispatch('toast', message: 'Art fairs saved.', type: 'success');
     }
 
@@ -528,21 +543,23 @@ class ApplicationForm extends Component
         $app = $this->application->fresh();
         $incomplete = [];
 
-        if (!$app->gallery_name)                                                          $incomplete[] = 'Gallery Information';
-        if (!$app->business_name)                                                         $incomplete[] = 'Business Registration';
-        if (!$app->office_country)                                                        $incomplete[] = 'Head Office Information';
-        if (empty($app->branches) || !($app->branches[0]['name'] ?? ''))                 $incomplete[] = 'Gallery Branches';
-        if (!$app->booth_section)                                                         $incomplete[] = 'Booth Selection';
-        if (empty($app->represented_artists) || !$app->represented_artists[0])           $incomplete[] = 'Represented Artists';
-        if (empty($app->participating_artists) || !($app->participating_artists[0]['name'] ?? '')) $incomplete[] = 'Participating Artists';
-        if (empty($app->persons_in_charge) || !($app->persons_in_charge[0]['name'] ?? ''))        $incomplete[] = 'Persons in Charge';
-        if (empty($app->exhibitions) || !($app->exhibitions[0]['title'] ?? ''))          $incomplete[] = 'Featured Exhibitions';
-        if (empty($app->art_fairs) || !($app->art_fairs[0]['name'] ?? ''))              $incomplete[] = 'Art Fairs';
+        if (!$app->gallery_name)                                                                   $incomplete['section-gallery']       = 'Gallery Information';
+        if (!$app->business_name)                                                                  $incomplete['section-business']      = 'Business Registration';
+        if (!$app->office_country)                                                                 $incomplete['section-office']        = 'Head Office Information';
+        if (empty($app->branches) || !($app->branches[0]['name'] ?? ''))                          $incomplete['section-branches']      = 'Gallery Branches';
+        if (!$app->booth_section)                                                                  $incomplete['section-booth']         = 'Booth Selection';
+        if (empty($app->represented_artists) || !$app->represented_artists[0])                    $incomplete['section-artists']       = 'Represented Artists';
+        if (empty($app->participating_artists) || !($app->participating_artists[0]['name'] ?? '')) $incomplete['section-participating'] = 'Participating Artists';
+        if (empty($app->persons_in_charge) || !($app->persons_in_charge[0]['name'] ?? ''))        $incomplete['section-persons']       = 'Persons in Charge';
+        if (empty($app->exhibitions) || !($app->exhibitions[0]['title'] ?? ''))                   $incomplete['section-exhibitions']   = 'Featured Exhibitions';
+        if (empty($app->art_fairs) || !($app->art_fairs[0]['name'] ?? ''))                       $incomplete['section-fairs']         = 'Art Fairs';
 
-        $this->incompleteSections = $incomplete;
+        $this->incompleteSections = array_keys($incomplete);
 
         if (!empty($incomplete)) {
-            $this->dispatch('toast', message: 'Please complete all sections before submitting.', type: 'error');
+            $names = implode(', ', array_values($incomplete));
+            $this->dispatch('toast', message: 'Please save: ' . $names, type: 'error');
+            $this->dispatch('scroll-to-section', id: array_key_first($incomplete));
             return;
         }
 
