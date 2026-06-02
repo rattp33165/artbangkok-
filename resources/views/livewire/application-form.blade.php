@@ -929,6 +929,21 @@
                 Make sure all sections are complete before submitting
             @endif
         </p>
+        @if(!empty($incompleteSections))
+        <div class="mb-5 inline-block text-left bg-white/10 rounded-xl px-5 py-4">
+            <p class="text-red-400 text-xs font-semibold uppercase tracking-wide mb-2">Incomplete sections:</p>
+            <ul class="space-y-1.5">
+                @foreach($incompleteSections as $section)
+                <li class="flex items-center gap-2 text-xs text-red-300">
+                    <svg width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                    {{ $section }}
+                </li>
+                @endforeach
+            </ul>
+        </div>
+        @endif
         @if($application->status !== 'submitted')
         <button wire:click="submitApplication"
                 wire:loading.attr="disabled"

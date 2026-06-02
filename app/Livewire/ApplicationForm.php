@@ -60,6 +60,8 @@ class ApplicationForm extends Component
     public $artist_images_upload = [];
     public $active_artist_upload_index = 0;
 
+    public $incompleteSections = [];
+
     // Person in Charge
     public $persons_in_charge = [
         ['name' => '', 'position' => 'Curator', 'email' => '', 'phone' => ''],
@@ -523,11 +525,28 @@ class ApplicationForm extends Component
             return;
         }
 
-        if ($this->application->completion_percent < 100) {
+        $app = $this->application->fresh();
+        $incomplete = [];
+
+        if (!$app->gallery_name)                                                          $incomplete[] = 'Gallery Information';
+        if (!$app->business_name)                                                         $incomplete[] = 'Business Registration';
+        if (!$app->office_country)                                                        $incomplete[] = 'Head Office Information';
+        if (empty($app->branches) || !($app->branches[0]['name'] ?? ''))                 $incomplete[] = 'Gallery Branches';
+        if (!$app->booth_section)                                                         $incomplete[] = 'Booth Selection';
+        if (empty($app->represented_artists) || !$app->represented_artists[0])           $incomplete[] = 'Represented Artists';
+        if (empty($app->participating_artists) || !($app->participating_artists[0]['name'] ?? '')) $incomplete[] = 'Participating Artists';
+        if (empty($app->persons_in_charge) || !($app->persons_in_charge[0]['name'] ?? ''))        $incomplete[] = 'Persons in Charge';
+        if (empty($app->exhibitions) || !($app->exhibitions[0]['title'] ?? ''))          $incomplete[] = 'Featured Exhibitions';
+        if (empty($app->art_fairs) || !($app->art_fairs[0]['name'] ?? ''))              $incomplete[] = 'Art Fairs';
+
+        $this->incompleteSections = $incomplete;
+
+        if (!empty($incomplete)) {
             $this->dispatch('toast', message: 'Please complete all sections before submitting.', type: 'error');
             return;
         }
 
+        $this->incompleteSections = [];
         $this->application->update(['status' => 'submitted']);
         $this->dispatch('toast', message: 'Application submitted successfully!', type: 'success');
     }
