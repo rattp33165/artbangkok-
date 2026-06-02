@@ -278,13 +278,14 @@ class ApplicationForm extends Component
 
     // ── Validation helper ──────────────────────────────────────────
 
-    private function tryValidate(array $rules): bool
+    private function tryValidate(array $rules, array $messages = []): bool
     {
         try {
-            $this->validate($rules);
+            $this->validate($rules, $messages);
             return true;
         } catch (\Illuminate\Validation\ValidationException $e) {
             $this->dispatch('toast', message: 'Please fill in all required fields.', type: 'error');
+            $this->dispatch('scroll-to-error');
             throw $e;
         }
     }
@@ -298,11 +299,13 @@ class ApplicationForm extends Component
             'gallery_name'  => 'required|string|max:255',
             'year_founded'  => 'required|integer|min:1800|max:' . date('Y'),
             'description'   => 'required|string|max:1000',
-            'website_url'   => 'required|url',
+            'website_url'   => 'required|url:http,https',
             'gallery_email' => 'required|email',
             'phone'         => 'required|string|max:50',
             'instagram'     => 'required|string|max:255',
             'facebook'      => 'required|string|max:255',
+        ], [
+            'website_url.url' => 'The website URL must start with http:// or https:// (e.g., https://yourgallery.com)',
         ]);
 
         $this->application->update([

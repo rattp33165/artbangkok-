@@ -1,4 +1,10 @@
-<div class="space-y-6">
+<div class="space-y-6"
+     x-on:scroll-to-error.window="
+         setTimeout(() => {
+             const el = document.querySelector('.border-red-400');
+             if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+         }, 50)
+     ">
 
     {{-- 1. Gallery Information --}}
     <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
@@ -64,6 +70,7 @@
                 <div>
                     <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
                         Website URL <span class="text-red-500">*</span>
+                        <span class="text-gray-400 normal-case font-normal">(must include https://)</span>
                     </label>
                     <input wire:model="website_url" type="url" placeholder="https://yourgallery.com" maxlength="500"
                            class="w-full border rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 @error('website_url') border-red-400 bg-red-50 focus:ring-red-200 @else border-gray-200 focus:ring-black @enderror">
