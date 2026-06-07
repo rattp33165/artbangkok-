@@ -47,7 +47,7 @@
                        class="block px-4 py-2.5 text-xs tracking-widest uppercase transition {{ request()->routeIs('exhibitors') ? 'text-black font-semibold bg-gray-50' : 'text-gray-700 hover:bg-gray-50 hover:text-black' }}">
                         List of Exhibitors
                     </a>
-                    <a href="{{ route('dashboard') }}"
+                    <a href="{{ auth()->check() ? route('dashboard') : route('sign-in') }}"
                        class="block px-4 py-2.5 text-xs tracking-widest uppercase transition {{ request()->routeIs('dashboard') ? 'text-black font-semibold bg-gray-50' : 'text-gray-700 hover:bg-gray-50 hover:text-black' }}">
                         Gallery Application
                     </a>
@@ -187,7 +187,8 @@
                     <a href="{{ route('exhibitors') }}" class="px-3 py-2.5 text-sm rounded-xl uppercase tracking-widest {{ request()->routeIs('exhibitors') ? 'text-black font-semibold bg-gray-50' : 'text-gray-500 hover:bg-gray-50 hover:text-black' }}">
                         List of Exhibitors
                     </a>
-                    <a href="{{ route('dashboard') }}" class="px-3 py-2.5 text-sm text-gray-500 hover:bg-gray-50 hover:text-black rounded-xl uppercase tracking-widest">
+                    <a href="{{ auth()->check() ? route('dashboard') : route('sign-in') }}"
+                       class="px-3 py-2.5 text-sm rounded-xl uppercase tracking-widest {{ request()->routeIs('dashboard') ? 'text-black font-semibold bg-gray-50' : 'text-gray-500 hover:bg-gray-50 hover:text-black' }}">
                         Gallery Application
                     </a>
                 </div>
