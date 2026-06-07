@@ -8,9 +8,10 @@
 
     {{-- Section 1: Hero Banner --}}
     <div class="rounded-3xl overflow-hidden relative h-[400px] md:h-[520px] mb-10">
-        <img src="{{ asset('images/NEX-HALL.webp') }}"
+        <img src="{{ asset('images/NEX-HALL.jpg') }}"
              alt="NEX HALL"
-             class="absolute inset-0 w-full h-full object-cover">
+             class="absolute inset-0 w-full h-full object-cover"
+             onerror="this.src='{{ asset('images/NEX-HALL.webp') }}'">
         <div class="absolute inset-0 bg-black/55"></div>
         <div class="absolute inset-0 flex flex-col items-center justify-center text-center px-6">
             <p class="text-white/90 text-lg md:text-2xl font-semibold tracking-wide mb-3">
