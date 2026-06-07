@@ -610,7 +610,7 @@ class ApplicationForm extends Component
             (bool)$app->business_name,
             (bool)$app->office_country,
             (bool)(!empty($app->branches) && ($app->branches[0]['name'] ?? '')),
-            (bool)$app->booth_section,
+            (bool)($app->booth_section && $app->booth_hall && $app->booth_type),
             (bool)(!empty($app->represented_artists) && $app->represented_artists[0]),
             (bool)(!empty($app->participating_artists) && ($app->participating_artists[0]['name'] ?? '')),
             (bool)(!empty($app->persons_in_charge) && ($app->persons_in_charge[0]['name'] ?? '')),

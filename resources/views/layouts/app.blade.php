@@ -24,10 +24,35 @@
 
     @livewireScripts
 
+    {{-- Facebook SDK --}}
+    @if(config('services.facebook.app_id'))
+    <div id="fb-root"></div>
+    <script async defer crossorigin="anonymous"
+        src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v19.0&appId={{ config('services.facebook.app_id') }}">
+    </script>
+    @endif
+
     {{-- Page Loading Bar --}}
-    <div wire:loading.delay class="fixed top-0 left-0 right-0 z-[60] pointer-events-none">
-        <div class="h-[3px] bg-black w-full animate-pulse"></div>
+    <div wire:loading.delay="300"
+         x-data
+         x-show="true"
+         x-transition:enter="transition-opacity duration-200"
+         x-transition:enter-start="opacity-0"
+         x-transition:enter-end="opacity-100"
+         x-transition:leave="transition-opacity duration-500"
+         x-transition:leave-start="opacity-100"
+         x-transition:leave-end="opacity-0"
+         class="fixed top-0 left-0 right-0 z-[60] pointer-events-none">
+        <div class="h-[2px] bg-black origin-left animate-[progress_1.5s_ease-in-out_infinite]"
+             style="animation: progress 1.5s ease-in-out infinite;"></div>
     </div>
+    <style>
+        @keyframes progress {
+            0%   { transform: scaleX(0); transform-origin: left; }
+            50%  { transform: scaleX(0.7); transform-origin: left; }
+            100% { transform: scaleX(1); transform-origin: left; opacity: 0; }
+        }
+    </style>
 
     {{-- Toast Notifications --}}
     <div
@@ -46,7 +71,7 @@
         @if(session('toast'))
         x-init="$nextTick(() => add({{ json_encode(session('toast')) }}))"
         @endif
-        class="fixed top-6 right-6 z-50 flex flex-col gap-2 pointer-events-none"
+        class="fixed top-6 right-6 z-[200] flex flex-col gap-2 pointer-events-none"
         style="min-width: 280px; max-width: 380px;"
     >
         <template x-for="toast in toasts" :key="toast.id">

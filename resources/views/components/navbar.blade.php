@@ -8,15 +8,55 @@
                  class="h-6 w-auto">
         </a>
 
-        <!-- {{-- Desktop Menu --}}
+        {{-- Desktop Menu --}}
+        @php
+            $navLink = 'text-xs tracking-widest uppercase transition';
+            $active  = 'text-black font-semibold border-b border-black pb-0.5';
+            $inactive = 'text-gray-700 hover:text-black';
+        @endphp
         <div class="hidden lg:flex items-center gap-6">
-            <a href="#" class="text-xs text-gray-700 hover:text-black tracking-widest uppercase">About</a>
-            <a href="#" class="text-xs text-gray-700 hover:text-black tracking-widest uppercase">Exhibition Preview</a>
-            <a href="#" class="text-xs text-gray-700 hover:text-black tracking-widest uppercase">Visitor Information</a>
-            <a href="#" class="text-xs text-gray-700 hover:text-black tracking-widest uppercase">Fair & Event</a>
-            <a href="#" class="text-xs text-gray-700 hover:text-black tracking-widest uppercase">Gallery Application</a>
-            <a href="#" class="text-xs text-gray-700 hover:text-black tracking-widest uppercase">Ticket</a>
-        </div> -->
+            <a href="{{ route('about') }}"
+               class="{{ $navLink }} {{ request()->routeIs('about') ? $active : $inactive }}">About</a>
+            <a href="{{ route('exhibition-preview') }}"
+               class="{{ $navLink }} {{ request()->routeIs('exhibition-preview') ? $active : $inactive }}">Exhibition Preview</a>
+            <a href="{{ route('visitor-information') }}"
+               class="{{ $navLink }} {{ request()->routeIs('visitor-information') ? $active : $inactive }}">Visitor Information</a>
+            <a href="{{ route('fair-and-event') }}"
+               class="{{ $navLink }} {{ request()->routeIs('fair-and-event') ? $active : $inactive }}">Fair & Event</a>
+
+            {{-- Exhibitors & Application Dropdown --}}
+            @php $exhibitorActive = request()->routeIs('dashboard'); @endphp
+            <div class="relative" x-data="{ open: false }" @mouseenter="open = true" @mouseleave="open = false">
+                <button class="flex items-center gap-1 {{ $navLink }} {{ $exhibitorActive ? $active : $inactive }}">
+                    Exhibitors & Application
+                    <svg width="10" height="10" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                         class="transition-transform duration-200" :class="open ? 'rotate-180' : ''">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/>
+                    </svg>
+                </button>
+                <div x-show="open"
+                     x-transition:enter="transition ease-out duration-150"
+                     x-transition:enter-start="opacity-0 translate-y-1"
+                     x-transition:enter-end="opacity-100 translate-y-0"
+                     x-transition:leave="transition ease-in duration-100"
+                     x-transition:leave-start="opacity-100 translate-y-0"
+                     x-transition:leave-end="opacity-0 translate-y-1"
+                     class="absolute top-full left-0 mt-2 w-52 bg-white rounded-xl shadow-lg border border-gray-100 py-1.5 z-50"
+                     style="display:none;">
+                    <a href="{{ route('exhibitors') }}"
+                       class="block px-4 py-2.5 text-xs tracking-widest uppercase transition {{ request()->routeIs('exhibitors') ? 'text-black font-semibold bg-gray-50' : 'text-gray-700 hover:bg-gray-50 hover:text-black' }}">
+                        List of Exhibitors
+                    </a>
+                    <a href="{{ route('dashboard') }}"
+                       class="block px-4 py-2.5 text-xs tracking-widest uppercase transition {{ request()->routeIs('dashboard') ? 'text-black font-semibold bg-gray-50' : 'text-gray-700 hover:bg-gray-50 hover:text-black' }}">
+                        Gallery Application
+                    </a>
+                </div>
+            </div>
+
+            <a href="{{ route('ticket') }}"
+               class="{{ $navLink }} {{ request()->routeIs('ticket') ? $active : $inactive }}">Ticket</a>
+        </div>
 
         {{-- Right Side --}}
         <div class="flex items-center gap-3">
@@ -127,12 +167,33 @@
          style="display:none;">
 
         <div class="flex flex-col gap-1">
-            <a href="#" class="px-3 py-3 text-sm text-gray-700 hover:bg-gray-50 rounded-xl uppercase tracking-widest">About</a>
-            <a href="#" class="px-3 py-3 text-sm text-gray-700 hover:bg-gray-50 rounded-xl uppercase tracking-widest">Exhibition Preview</a>
-            <a href="#" class="px-3 py-3 text-sm text-gray-700 hover:bg-gray-50 rounded-xl uppercase tracking-widest">Visitor Information</a>
-            <a href="#" class="px-3 py-3 text-sm text-gray-700 hover:bg-gray-50 rounded-xl uppercase tracking-widest">Fair & Event</a>
-            <a href="#" class="px-3 py-3 text-sm text-gray-700 hover:bg-gray-50 rounded-xl uppercase tracking-widest">Gallery Application</a>
-            <a href="#" class="px-3 py-3 text-sm text-gray-700 hover:bg-gray-50 rounded-xl uppercase tracking-widest">Ticket</a>
+            @php $mobileLink = 'px-3 py-3 text-sm rounded-xl uppercase tracking-widest transition'; @endphp
+            <a href="{{ route('about') }}" class="{{ $mobileLink }} {{ request()->routeIs('about') ? 'text-black font-semibold bg-gray-50' : 'text-gray-700 hover:bg-gray-50' }}">About</a>
+            <a href="{{ route('exhibition-preview') }}" class="{{ $mobileLink }} {{ request()->routeIs('exhibition-preview') ? 'text-black font-semibold bg-gray-50' : 'text-gray-700 hover:bg-gray-50' }}">Exhibition Preview</a>
+            <a href="{{ route('visitor-information') }}" class="{{ $mobileLink }} {{ request()->routeIs('visitor-information') ? 'text-black font-semibold bg-gray-50' : 'text-gray-700 hover:bg-gray-50' }}">Visitor Information</a>
+            <a href="{{ route('fair-and-event') }}" class="{{ $mobileLink }} {{ request()->routeIs('fair-and-event') ? 'text-black font-semibold bg-gray-50' : 'text-gray-700 hover:bg-gray-50' }}">Fair & Event</a>
+
+            {{-- Exhibitors & Application (mobile accordion) --}}
+            <div x-data="{ open: false }">
+                <button @click="open = !open"
+                        class="w-full flex items-center justify-between px-3 py-3 text-sm text-gray-700 hover:bg-gray-50 rounded-xl uppercase tracking-widest">
+                    Exhibitors & Application
+                    <svg width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                         class="transition-transform duration-200" :class="open ? 'rotate-180' : ''">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/>
+                    </svg>
+                </button>
+                <div x-show="open" x-transition class="flex flex-col gap-0.5 pl-4" style="display:none;">
+                    <a href="{{ route('exhibitors') }}" class="px-3 py-2.5 text-sm rounded-xl uppercase tracking-widest {{ request()->routeIs('exhibitors') ? 'text-black font-semibold bg-gray-50' : 'text-gray-500 hover:bg-gray-50 hover:text-black' }}">
+                        List of Exhibitors
+                    </a>
+                    <a href="{{ route('dashboard') }}" class="px-3 py-2.5 text-sm text-gray-500 hover:bg-gray-50 hover:text-black rounded-xl uppercase tracking-widest">
+                        Gallery Application
+                    </a>
+                </div>
+            </div>
+
+            <a href="{{ route('ticket') }}" class="px-3 py-3 text-sm text-gray-700 hover:bg-gray-50 rounded-xl uppercase tracking-widest">Ticket</a>
 
             <div class="border-t border-gray-100 mt-2 pt-2">
                 @auth

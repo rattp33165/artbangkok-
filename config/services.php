@@ -41,4 +41,11 @@ return [
         'redirect'      => env('GOOGLE_REDIRECT_URI'),
     ],
 
+    'facebook' => [
+        'app_id'      => env('FACEBOOK_APP_ID'),
+        'page_url'    => env('FACEBOOK_PAGE_URL'),
+        'page_id'     => env('FACEBOOK_PAGE_ID'),
+        'page_token'  => env('FACEBOOK_PAGE_TOKEN'),
+    ],
+
 ];
