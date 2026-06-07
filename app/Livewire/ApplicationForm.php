@@ -5,6 +5,8 @@ namespace App\Livewire;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use App\Models\Application;
+use App\Models\BoothHall;
+use App\Models\BoothType;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
@@ -51,7 +53,10 @@ class ApplicationForm extends Component
 
     // Booth
     public $booth_section = '';
+    public $booth_hall = '';
     public $booth_type = '';
+    public $booth_rate_standard = null;
+    public $booth_rate_special = null;
 
     // Participating Artists (dynamic)
     public $participating_artists = [
@@ -113,7 +118,10 @@ class ApplicationForm extends Component
         $this->director_phone           = $app->director_phone ?? '';
         $this->director_email           = $app->director_email ?? '';
         $this->booth_section            = $app->booth_section ?? '';
+        $this->booth_hall               = $app->booth_hall ?? '';
         $this->booth_type               = $app->booth_type ?? '';
+        $this->booth_rate_standard      = $app->booth_rate_standard ?? null;
+        $this->booth_rate_special       = $app->booth_rate_special ?? null;
 
         if (!empty($app->branches))             $this->branches = $app->branches;
         if (!empty($app->represented_artists))  $this->represented_artists = $app->represented_artists;
@@ -207,9 +215,25 @@ class ApplicationForm extends Component
 
     // ── Dynamic rows ───────────────────────────────────────────────
 
+    public function updatedBoothHall(): void
+    {
+        $this->booth_type          = '';
+        $this->booth_rate_standard = null;
+        $this->booth_rate_special  = null;
+    }
+
+    public function updatedBoothType($value): void
+    {
+        $type = BoothType::where('type_code', $value)->first();
+        $this->booth_rate_standard = $type?->rate_standard;
+        $this->booth_rate_special  = $type?->rate_special;
+    }
+
     public function clearBoothType()
     {
         $this->booth_type = '';
+        $this->booth_rate_standard = null;
+        $this->booth_rate_special  = null;
     }
 
     public function addBranch()
@@ -278,43 +302,155 @@ class ApplicationForm extends Component
         }
     }
 
-    // ── Validation helper ──────────────────────────────────────────
+    // ── Validation helpers ─────────────────────────────────────────
 
     private function clearIncomplete(string $sectionId): void
     {
         $this->incompleteSections = array_values(array_diff($this->incompleteSections, [$sectionId]));
     }
 
-    private function tryValidate(array $rules, array $messages = []): bool
+    private function allValidationRules(): array
     {
-        try {
-            $this->validate($rules, $messages);
-            return true;
-        } catch (\Illuminate\Validation\ValidationException $e) {
-            $this->dispatch('toast', message: 'Please fill in all required fields.', type: 'error');
-            $this->dispatch('scroll-to-error');
-            throw $e;
-        }
+        return [
+            'gallery_type'             => 'required|in:international,thai',
+            'gallery_name'             => 'required|string|max:255',
+            'year_founded'             => 'required|integer|min:1800|max:' . date('Y'),
+            'description'              => 'required|string|max:1000',
+            'website_url'              => 'required|url:http,https',
+            'gallery_email'            => 'required|email',
+            'phone'                    => 'required|string|max:50',
+            'instagram'                => 'required|string|max:255',
+            'facebook'                 => 'required|string|max:255',
+            'business_name'            => 'required|string|max:255',
+            'business_license'         => 'required|string|max:100',
+            'head_office_gallery_name' => 'required|string|max:255',
+            'office_country'           => 'required|string|max:100',
+            'office_city'              => 'required|string|max:100',
+            'office_zipcode'           => 'required|string|max:20',
+            'office_address'           => 'required|string|max:500',
+            'director_name'            => 'required|string|max:255',
+            'director_phone'           => 'required|string|max:50',
+            'director_email'           => 'required|email',
+            'branches.*.name'          => 'required|string|max:255',
+            'branches.*.country'       => 'required|string|max:100',
+            'branches.*.city'          => 'required|string|max:100',
+            'represented_artists.*'    => 'required|string|max:255',
+            'booth_section'            => 'required|in:gallery,other',
+            'booth_hall'               => 'required|exists:booth_halls,code',
+            'booth_type'               => 'required|exists:booth_types,type_code',
+            'participating_artists.*.name'          => 'required|string|max:255',
+            'participating_artists.*.year_of_birth' => 'required|integer|min:1900|max:' . date('Y'),
+            'participating_artists.*.nationality'   => 'required|string|max:100',
+            'participating_artists.*.introduction'  => 'required|string|max:5000',
+            'persons_in_charge.0.name'  => 'required|string|max:255',
+            'persons_in_charge.0.email' => 'required|email',
+            'persons_in_charge.0.phone' => 'required|string|max:50',
+            'persons_in_charge.1.name'  => 'required|string|max:255',
+            'persons_in_charge.1.email' => 'required|email',
+            'persons_in_charge.1.phone' => 'required|string|max:50',
+            'exhibitions.*.title'       => 'required|string|max:255',
+            'exhibitions.*.date_start'  => 'required|date',
+            'exhibitions.*.date_end'    => 'required|date|after_or_equal:exhibitions.*.date_start',
+            'exhibitions.*.introduction' => 'required|string|max:5000',
+            'art_fairs.*.name'          => 'required|string|max:255',
+            'art_fairs.*.year'          => 'required|integer|min:2000|max:' . date('Y'),
+        ];
     }
 
-    // ── Save methods ───────────────────────────────────────────────
+    private function sectionsFromErrors(array $errorKeys): array
+    {
+        $map = [
+            'section-gallery'       => ['gallery_type', 'gallery_name', 'year_founded', 'description', 'website_url', 'gallery_email', 'phone', 'instagram', 'facebook'],
+            'section-business'      => ['business_name', 'business_license'],
+            'section-office'        => ['head_office_gallery_name', 'office_country', 'office_city', 'office_zipcode', 'office_address', 'director_name', 'director_phone', 'director_email'],
+            'section-branches'      => ['branches'],
+            'section-artists'       => ['represented_artists'],
+            'section-booth'         => ['booth_section', 'booth_hall', 'booth_type'],
+            'section-participating' => ['participating_artists'],
+            'section-persons'       => ['persons_in_charge'],
+            'section-exhibitions'   => ['exhibitions'],
+            'section-fairs'         => ['art_fairs'],
+        ];
+
+        $sections = [];
+        foreach ($map as $sectionId => $prefixes) {
+            foreach ($errorKeys as $key) {
+                foreach ($prefixes as $prefix) {
+                    if (str_starts_with($key, $prefix)) {
+                        $sections[] = $sectionId;
+                        break 2;
+                    }
+                }
+            }
+        }
+        return array_unique(array_values($sections));
+    }
+
+    private function allApplicationData(): array
+    {
+        return [
+            'gallery_type'             => $this->gallery_type ?: null,
+            'gallery_name'             => $this->gallery_name ?: null,
+            'year_founded'             => $this->year_founded ?: null,
+            'description'              => $this->description ?: null,
+            'website_url'              => $this->website_url ?: null,
+            'gallery_email'            => $this->gallery_email ?: null,
+            'phone'                    => $this->phone ?: null,
+            'instagram'                => $this->instagram ?: null,
+            'facebook'                 => $this->facebook ?: null,
+            'business_name'            => $this->business_name ?: null,
+            'business_license'         => $this->business_license ?: null,
+            'head_office_gallery_name' => $this->head_office_gallery_name ?: null,
+            'office_country'           => $this->office_country ?: null,
+            'office_city'              => $this->office_city ?: null,
+            'office_zipcode'           => $this->office_zipcode ?: null,
+            'office_address'           => $this->office_address ?: null,
+            'director_name'            => $this->director_name ?: null,
+            'director_phone'           => $this->director_phone ?: null,
+            'director_email'           => $this->director_email ?: null,
+            'booth_section'            => $this->booth_section ?: null,
+            'booth_hall'               => $this->booth_hall ?: null,
+            'booth_type'               => $this->booth_type ?: null,
+            'booth_rate_standard'      => $this->booth_rate_standard ?: null,
+            'booth_rate_special'       => $this->booth_rate_special ?: null,
+            'branches'                 => collect($this->branches)->map(fn($b) => [
+                'name'    => $b['name'] ?? '',
+                'country' => $b['country'] ?? '',
+                'city'    => $b['city'] ?? '',
+            ])->toArray(),
+            'represented_artists'      => array_values(array_filter($this->represented_artists)),
+            'participating_artists'    => collect($this->participating_artists)->map(fn($a) => [
+                'name'          => $a['name'] ?? '',
+                'year_of_birth' => $a['year_of_birth'] ?? '',
+                'nationality'   => $a['nationality'] ?? '',
+                'introduction'  => $a['introduction'] ?? '',
+                'images'        => $a['images'] ?? [],
+            ])->toArray(),
+            'persons_in_charge'        => collect($this->persons_in_charge)->map(fn($p) => [
+                'name'     => $p['name'] ?? '',
+                'position' => $p['position'] ?? '',
+                'email'    => $p['email'] ?? '',
+                'phone'    => $p['phone'] ?? '',
+            ])->toArray(),
+            'exhibitions'              => collect($this->exhibitions)->map(fn($e) => [
+                'title'        => $e['title'] ?? '',
+                'date_start'   => $e['date_start'] ?? '',
+                'date_end'     => $e['date_end'] ?? '',
+                'introduction' => $e['introduction'] ?? '',
+                'images'       => $e['images'] ?? [],
+            ])->toArray(),
+            'art_fairs'                => collect($this->art_fairs)->map(fn($f) => [
+                'name' => $f['name'] ?? '',
+                'year' => $f['year'] ?? '',
+            ])->values()->toArray(),
+        ];
+    }
+
+    // ── Save methods (no validation — draft only) ──────────────────
 
     public function saveGalleryInfo()
     {
-        $this->tryValidate([
-            'gallery_type'  => 'required|in:international,thai',
-            'gallery_name'  => 'required|string|max:255',
-            'year_founded'  => 'required|integer|min:1800|max:' . date('Y'),
-            'description'   => 'required|string|max:1000',
-            'website_url'   => 'required|url:http,https',
-            'gallery_email' => 'required|email',
-            'phone'         => 'required|string|max:50',
-            'instagram'     => 'required|string|max:255',
-            'facebook'      => 'required|string|max:255',
-        ], [
-            'website_url.url' => 'The website URL must start with http:// or https:// (e.g., https://yourgallery.com)',
-        ]);
-
+        $this->resetErrorBag();
         $this->application->update([
             'gallery_type'  => $this->gallery_type ?: null,
             'gallery_name'  => $this->gallery_name ?: null,
@@ -333,11 +469,7 @@ class ApplicationForm extends Component
 
     public function saveBusinessInfo()
     {
-        $this->tryValidate([
-            'business_name'    => 'required|string|max:255',
-            'business_license' => 'required|string|max:100',
-        ]);
-
+        $this->resetErrorBag();
         $this->application->update([
             'business_name'    => $this->business_name ?: null,
             'business_license' => $this->business_license ?: null,
@@ -349,17 +481,7 @@ class ApplicationForm extends Component
 
     public function saveHeadOffice()
     {
-        $this->tryValidate([
-            'head_office_gallery_name' => 'required|string|max:255',
-            'office_country'           => 'required|string|max:100',
-            'office_city'              => 'required|string|max:100',
-            'office_zipcode'           => 'required|string|max:20',
-            'office_address'           => 'required|string|max:500',
-            'director_name'            => 'required|string|max:255',
-            'director_phone'           => 'required|string|max:50',
-            'director_email'           => 'required|email',
-        ]);
-
+        $this->resetErrorBag();
         $this->application->update([
             'head_office_gallery_name' => $this->head_office_gallery_name ?: null,
             'office_country'           => $this->office_country ?: null,
@@ -377,12 +499,7 @@ class ApplicationForm extends Component
 
     public function saveBranches()
     {
-        $this->tryValidate([
-            'branches.*.name'    => 'required|string|max:255',
-            'branches.*.country' => 'required|string|max:100',
-            'branches.*.city'    => 'required|string|max:100',
-        ]);
-
+        $this->resetErrorBag();
         $this->application->update([
             'branches' => collect($this->branches)->map(fn($b) => [
                 'name'    => $b['name'] ?? '',
@@ -397,10 +514,7 @@ class ApplicationForm extends Component
 
     public function saveRepresentedArtists()
     {
-        $this->tryValidate([
-            'represented_artists.*' => 'required|string|max:255',
-        ]);
-
+        $this->resetErrorBag();
         $this->application->update([
             'represented_artists' => array_values(array_filter($this->represented_artists)),
         ]);
@@ -411,14 +525,13 @@ class ApplicationForm extends Component
 
     public function saveBooth()
     {
-        $this->tryValidate([
-            'booth_section' => 'required|in:gallery,other',
-            'booth_type'    => 'required|in:A,B',
-        ]);
-
+        $this->resetErrorBag();
         $this->application->update([
-            'booth_section' => $this->booth_section ?: null,
-            'booth_type'    => $this->booth_type ?: null,
+            'booth_section'       => $this->booth_section ?: null,
+            'booth_hall'          => $this->booth_hall ?: null,
+            'booth_type'          => $this->booth_type ?: null,
+            'booth_rate_standard' => $this->booth_rate_standard ?: null,
+            'booth_rate_special'  => $this->booth_rate_special ?: null,
         ]);
         $this->updateProgress();
         $this->clearIncomplete('section-booth');
@@ -427,20 +540,14 @@ class ApplicationForm extends Component
 
     public function saveParticipatingArtists()
     {
-        $this->tryValidate([
-            'participating_artists.*.name'         => 'required|string|max:255',
-            'participating_artists.*.year_of_birth' => 'required|integer|min:1900|max:' . date('Y'),
-            'participating_artists.*.nationality'   => 'required|string|max:100',
-            'participating_artists.*.introduction'  => 'required|string|max:5000',
-        ]);
-
+        $this->resetErrorBag();
         $this->application->update([
             'participating_artists' => collect($this->participating_artists)->map(fn($a) => [
-                'name'         => $a['name'] ?? '',
+                'name'          => $a['name'] ?? '',
                 'year_of_birth' => $a['year_of_birth'] ?? '',
-                'nationality'  => $a['nationality'] ?? '',
-                'introduction' => $a['introduction'] ?? '',
-                'images'       => $a['images'] ?? [],
+                'nationality'   => $a['nationality'] ?? '',
+                'introduction'  => $a['introduction'] ?? '',
+                'images'        => $a['images'] ?? [],
             ])->toArray(),
         ]);
         $this->updateProgress();
@@ -450,15 +557,7 @@ class ApplicationForm extends Component
 
     public function savePersonsInCharge()
     {
-        $this->tryValidate([
-            'persons_in_charge.0.name'  => 'required|string|max:255',
-            'persons_in_charge.0.email' => 'required|email',
-            'persons_in_charge.0.phone' => 'required|string|max:50',
-            'persons_in_charge.1.name'  => 'required|string|max:255',
-            'persons_in_charge.1.email' => 'required|email',
-            'persons_in_charge.1.phone' => 'required|string|max:50',
-        ]);
-
+        $this->resetErrorBag();
         $this->application->update([
             'persons_in_charge' => collect($this->persons_in_charge)->map(fn($p) => [
                 'name'     => $p['name'] ?? '',
@@ -474,13 +573,7 @@ class ApplicationForm extends Component
 
     public function saveExhibitions()
     {
-        $this->tryValidate([
-            'exhibitions.*.title'        => 'required|string|max:255',
-            'exhibitions.*.date_start'   => 'required|date',
-            'exhibitions.*.date_end'     => 'required|date|after_or_equal:exhibitions.*.date_start',
-            'exhibitions.*.introduction' => 'required|string|max:5000',
-        ]);
-
+        $this->resetErrorBag();
         $this->application->update([
             'exhibitions' => collect($this->exhibitions)->map(fn($e) => [
                 'title'        => $e['title'] ?? '',
@@ -497,11 +590,7 @@ class ApplicationForm extends Component
 
     public function saveArtFairs()
     {
-        $this->tryValidate([
-            'art_fairs.*.name' => 'required|string|max:255',
-            'art_fairs.*.year' => 'required|integer|min:2000|max:' . date('Y'),
-        ]);
-
+        $this->resetErrorBag();
         $this->application->update([
             'art_fairs' => collect($this->art_fairs)->map(fn($f) => [
                 'name' => $f['name'] ?? '',
@@ -540,36 +629,30 @@ class ApplicationForm extends Component
             return;
         }
 
-        $app = $this->application->fresh();
-        $incomplete = [];
-
-        if (!$app->gallery_name)                                                                   $incomplete['section-gallery']       = 'Gallery Information';
-        if (!$app->business_name)                                                                  $incomplete['section-business']      = 'Business Registration';
-        if (!$app->office_country)                                                                 $incomplete['section-office']        = 'Head Office Information';
-        if (empty($app->branches) || !($app->branches[0]['name'] ?? ''))                          $incomplete['section-branches']      = 'Gallery Branches';
-        if (!$app->booth_section)                                                                  $incomplete['section-booth']         = 'Booth Selection';
-        if (empty($app->represented_artists) || !$app->represented_artists[0])                    $incomplete['section-artists']       = 'Represented Artists';
-        if (empty($app->participating_artists) || !($app->participating_artists[0]['name'] ?? '')) $incomplete['section-participating'] = 'Participating Artists';
-        if (empty($app->persons_in_charge) || !($app->persons_in_charge[0]['name'] ?? ''))        $incomplete['section-persons']       = 'Persons in Charge';
-        if (empty($app->exhibitions) || !($app->exhibitions[0]['title'] ?? ''))                   $incomplete['section-exhibitions']   = 'Featured Exhibitions';
-        if (empty($app->art_fairs) || !($app->art_fairs[0]['name'] ?? ''))                       $incomplete['section-fairs']         = 'Art Fairs';
-
-        $this->incompleteSections = array_keys($incomplete);
-
-        if (!empty($incomplete)) {
-            $names = implode(', ', array_values($incomplete));
-            $this->dispatch('toast', message: 'Please save: ' . $names, type: 'error');
-            $this->dispatch('scroll-to-section', id: array_key_first($incomplete));
+        try {
+            $this->validate($this->allValidationRules(), [
+                'website_url.url' => 'The website URL must start with http:// or https:// (e.g., https://yourgallery.com)',
+            ]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            $this->incompleteSections = $this->sectionsFromErrors(array_keys($e->errors()));
+            $this->dispatch('toast', message: 'Please fill in all required fields.', type: 'error');
+            $this->dispatch('scroll-to-error');
             return;
         }
 
+        $this->application->update($this->allApplicationData() + ['status' => 'submitted']);
         $this->incompleteSections = [];
-        $this->application->update(['status' => 'submitted']);
+        $this->updateProgress();
         $this->dispatch('toast', message: 'Application submitted successfully!', type: 'success');
     }
 
     public function render()
     {
-        return view('livewire.application-form');
+        return view('livewire.application-form', [
+            'boothHalls' => BoothHall::with(['activeTypes'])
+                ->where('is_active', true)
+                ->orderBy('sort_order')
+                ->get(),
+        ]);
     }
 }

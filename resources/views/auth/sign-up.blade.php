@@ -4,9 +4,8 @@
 <div class="min-h-screen bg-gray-50 flex items-center justify-center px-4 pt-24 pb-12">
     <div class="w-full max-w-md bg-white rounded-2xl shadow-sm border border-gray-100 px-6 sm:px-10 py-8 sm:py-12">
 
-        {{-- Logo --}}
+        {{-- Header --}}
         <div class="text-center mb-8">
-            <img src="{{ asset('images/Logo-art_bangkok-b.png') }}" alt="Art Bangkok" class="h-7 mx-auto mb-8">
             <h1 class="text-xl font-bold text-black tracking-wide">Sign Up</h1>
             <p class="text-gray-400 text-sm mt-1">Create your Art Bangkok gallery account</p>
         </div>

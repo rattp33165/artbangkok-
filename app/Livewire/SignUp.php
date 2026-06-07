@@ -19,6 +19,11 @@ class SignUp extends Component
         'password' => 'required|min:8|confirmed',
     ];
 
+    protected $messages = [
+        'name.required' => 'Gallery name is required.',
+        'name.min'      => 'Gallery name must be at least 2 characters.',
+    ];
+
     public function submit()
     {
         $this->validate();

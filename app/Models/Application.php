@@ -14,7 +14,8 @@ class Application extends Model
         'office_country', 'office_city', 'office_zipcode', 'office_address',
         'head_office_gallery_name',
         'director_name', 'director_phone', 'director_email',
-        'branches', 'represented_artists', 'booth_section', 'booth_type',
+        'branches', 'represented_artists', 'booth_section', 'booth_hall', 'booth_type',
+        'booth_rate_standard', 'booth_rate_special',
         'participating_artists', 'exhibitions',
         'persons_in_charge', 'art_fairs',
     ];

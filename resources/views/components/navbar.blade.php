@@ -8,7 +8,7 @@
                  class="h-6 w-auto">
         </a>
 
-        {{-- Desktop Menu --}}
+        <!-- {{-- Desktop Menu --}}
         <div class="hidden lg:flex items-center gap-6">
             <a href="#" class="text-xs text-gray-700 hover:text-black tracking-widest uppercase">About</a>
             <a href="#" class="text-xs text-gray-700 hover:text-black tracking-widest uppercase">Exhibition Preview</a>
@@ -16,7 +16,7 @@
             <a href="#" class="text-xs text-gray-700 hover:text-black tracking-widest uppercase">Fair & Event</a>
             <a href="#" class="text-xs text-gray-700 hover:text-black tracking-widest uppercase">Gallery Application</a>
             <a href="#" class="text-xs text-gray-700 hover:text-black tracking-widest uppercase">Ticket</a>
-        </div>
+        </div> -->
 
         {{-- Right Side --}}
         <div class="flex items-center gap-3">

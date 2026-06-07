@@ -469,9 +469,11 @@
     <div id="section-booth" class="bg-white rounded-2xl border shadow-sm overflow-hidden {{ in_array('section-booth', $incompleteSections) ? 'border-red-400 ring-2 ring-red-50' : 'border-gray-100' }}">
         <div class="px-6 py-4 border-b border-gray-100">
             <h2 class="font-semibold text-black">Booth Selection</h2>
-            <p class="text-xs text-gray-400 mt-0.5">Select your preferred booth type</p>
+            <p class="text-xs text-gray-400 mt-0.5">Select your preferred hall and booth type</p>
         </div>
-        <div class="p-6 space-y-4">
+        <div class="p-6 space-y-6">
+
+            {{-- Section --}}
             <div>
                 <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
                     Section <span class="text-red-500">*</span>
@@ -486,10 +488,38 @@
                     <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
                 @enderror
             </div>
+
+            {{-- Hall Selection --}}
+            <div>
+                <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">
+                    Hall <span class="text-red-500">*</span>
+                </label>
+                @error('booth_hall')
+                    <p class="text-xs text-red-500 mb-2">{{ $message }}</p>
+                @enderror
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    @foreach($boothHalls as $hall)
+                    <label class="flex items-start gap-3 p-4 border-2 rounded-xl cursor-pointer transition {{ $booth_hall === $hall->code ? 'border-black bg-gray-50' : ($errors->has('booth_hall') ? 'border-red-300 bg-red-50' : 'border-gray-200 hover:border-gray-300') }}">
+                        <input wire:model.live="booth_hall" type="radio" name="booth_hall" value="{{ $hall->code }}" class="mt-0.5">
+                        <div>
+                            <p class="font-semibold text-sm text-black">{{ $hall->label }}</p>
+                            @if($hall->description)
+                                <p class="text-xs text-gray-400 mt-0.5">{{ $hall->description }}</p>
+                            @endif
+                        </div>
+                    </label>
+                    @endforeach
+                </div>
+            </div>
+
+            {{-- Booth Type (shown after hall is selected) --}}
+            @if($booth_hall)
+            @php $selectedHall = $boothHalls->firstWhere('code', $booth_hall); @endphp
+            @if($selectedHall)
             <div>
                 <div class="flex items-center justify-between mb-3">
                     <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                        Type of Booth <span class="text-red-500">*</span>
+                        Booth Type <span class="text-red-500">*</span>
                     </label>
                     @if($booth_type)
                         <button wire:click="clearBoothType" type="button"
@@ -501,23 +531,89 @@
                 @error('booth_type')
                     <p class="text-xs text-red-500 mb-2">{{ $message }}</p>
                 @enderror
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <label class="flex items-start gap-3 p-4 border-2 rounded-xl cursor-pointer transition {{ $booth_type === 'A' ? 'border-black bg-gray-50' : ($errors->has('booth_type') ? 'border-red-300 bg-red-50' : 'border-gray-200 hover:border-gray-300') }}">
-                        <input wire:model="booth_type" type="radio" name="booth_type" value="A" class="mt-0.5">
-                        <div>
-                            <p class="font-semibold text-sm text-black">(A) 5 × 5 m</p>
-                            <p class="text-xs text-gray-400">25 sqm</p>
+
+                @php $groups = $selectedHall->activeTypes->groupBy('group_key'); @endphp
+
+                {{-- Flat list (no group_key) --}}
+                @if($groups->has(null) && $groups->keys()->filter()->isEmpty())
+                <div class="space-y-2">
+                    @foreach($selectedHall->activeTypes as $b)
+                    <label class="flex items-center gap-4 p-4 border-2 rounded-xl cursor-pointer transition {{ $booth_type === $b->type_code ? 'border-black bg-gray-50' : ($errors->has('booth_type') ? 'border-red-300 bg-red-50' : 'border-gray-200 hover:border-gray-300') }}">
+                        <input wire:model="booth_type" type="radio" name="booth_type" value="{{ $b->type_code }}" class="flex-shrink-0">
+                        <div class="flex-1 flex items-center justify-between gap-4 min-w-0">
+                            <div>
+                                <p class="font-semibold text-sm text-black">{{ $b->label }}@if($b->dimensions) — {{ $b->dimensions }}@endif</p>
+                                <p class="text-xs text-gray-400">
+                                    {{ $b->sqm }} sqm
+                                    @if($b->qty) &middot; {{ $b->qty }} unit{{ $b->qty > 1 ? 's' : '' }} available @endif
+                                </p>
+                            </div>
+                            <div class="text-right flex-shrink-0">
+                                <p class="text-xs text-gray-500">Standard: <span class="font-semibold text-black">USD ${{ number_format($b->rate_standard) }}</span></p>
+                                <p class="text-xs text-gray-500">Special: <span class="font-semibold text-emerald-600">USD ${{ number_format($b->rate_special) }}</span></p>
+                            </div>
                         </div>
                     </label>
-                    <label class="flex items-start gap-3 p-4 border-2 rounded-xl cursor-pointer transition {{ $booth_type === 'B' ? 'border-black bg-gray-50' : ($errors->has('booth_type') ? 'border-red-300 bg-red-50' : 'border-gray-200 hover:border-gray-300') }}">
-                        <input wire:model="booth_type" type="radio" name="booth_type" value="B" class="mt-0.5">
-                        <div>
-                            <p class="font-semibold text-sm text-black">(B) 4 × 6 m</p>
-                            <p class="text-xs text-gray-400">24 sqm</p>
-                        </div>
-                    </label>
+                    @endforeach
                 </div>
+
+                {{-- Grouped list (has group_key) --}}
+                @else
+                <div class="space-y-4">
+                    @foreach($groups as $groupKey => $groupTypes)
+                    @php $groupLabel = $groupTypes->first()->group_label; @endphp
+                    <div class="border {{ $errors->has('booth_type') ? 'border-red-300' : 'border-gray-100' }} rounded-xl overflow-hidden">
+                        @if($groupLabel)
+                        <div class="px-4 py-2.5 bg-gray-50 border-b {{ $errors->has('booth_type') ? 'border-red-200' : 'border-gray-100' }}">
+                            <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider">{{ $groupLabel }}</p>
+                        </div>
+                        @endif
+                        <div class="divide-y {{ $errors->has('booth_type') ? 'divide-red-100' : 'divide-gray-100' }}">
+                            @foreach($groupTypes as $b)
+                            <label class="flex items-center gap-4 px-4 py-3.5 cursor-pointer transition {{ $booth_type === $b->type_code ? 'bg-gray-50' : ($errors->has('booth_type') ? 'bg-red-50 hover:bg-red-50' : 'hover:bg-gray-50') }}">
+                                <input wire:model="booth_type" type="radio" name="booth_type" value="{{ $b->type_code }}" class="flex-shrink-0">
+                                <div class="flex-1 flex items-center justify-between gap-4 min-w-0">
+                                    <div>
+                                        <p class="font-semibold text-sm text-black">{{ $b->label }}</p>
+                                        <p class="text-xs text-gray-400">
+                                            {{ $b->sqm }} sqm
+                                            @if($b->note) &middot; {{ $b->note }} @endif
+                                        </p>
+                                    </div>
+                                    <div class="text-right flex-shrink-0">
+                                        <p class="text-xs text-gray-500">Standard: <span class="font-semibold text-black">USD ${{ number_format($b->rate_standard) }}</span></p>
+                                        <p class="text-xs text-gray-500">Special: <span class="font-semibold text-emerald-600">USD ${{ number_format($b->rate_special) }}</span></p>
+                                    </div>
+                                </div>
+                            </label>
+                            @endforeach
+                        </div>
+                    </div>
+                    @endforeach
+                </div>
+                @endif
+
+                {{-- Selected Booth Summary --}}
+                @if($booth_type && $booth_rate_standard)
+                <div class="mt-4 p-4 bg-black rounded-xl flex flex-wrap items-center justify-between gap-4">
+                    <div>
+                        <p class="text-xs text-gray-400">Selected Booth</p>
+                        <p class="font-semibold text-white">Type {{ $booth_type }}</p>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-xs text-gray-400">Standard Rate</p>
+                        <p class="font-semibold text-white">USD ${{ number_format($booth_rate_standard) }}</p>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-xs text-gray-400">Special Invited Rate</p>
+                        <p class="font-semibold text-emerald-400">USD ${{ number_format($booth_rate_special) }}</p>
+                    </div>
+                </div>
+                @endif
             </div>
+            @endif
+            @endif
+
             <div class="flex justify-end pt-2">
                 <button wire:click="saveBooth"
                         wire:loading.attr="disabled"

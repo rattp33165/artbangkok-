@@ -2,9 +2,9 @@
 
     <div>
         <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
-            Full Name
+            Gallery Name
         </label>
-        <input wire:model="name" type="text" placeholder="Your full name"
+        <input wire:model="name" type="text" placeholder="Your gallery name"
                class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-800 placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent transition-all @error('name') border-red-400 bg-red-50 @enderror">
         @error('name')
             <p class="text-red-500 text-xs mt-1.5 flex items-center gap-1">
