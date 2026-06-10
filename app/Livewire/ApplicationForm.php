@@ -633,7 +633,23 @@ class ApplicationForm extends Component
             $this->validate($this->allValidationRules());
         } catch (\Illuminate\Validation\ValidationException $e) {
             $this->incompleteSections = $this->sectionsFromErrors(array_keys($e->errors()));
-            $this->dispatch('toast', message: 'Please fill in all required fields.', type: 'error');
+
+            $sectionLabels = [
+                'section-gallery'       => 'Gallery Information',
+                'section-business'      => 'Business Registration',
+                'section-office'        => 'Head Office',
+                'section-branches'      => 'Branches',
+                'section-artists'       => 'Represented Artists',
+                'section-booth'         => 'Booth Selection',
+                'section-participating' => 'Participating Artists',
+                'section-persons'       => 'Persons in Charge',
+                'section-exhibitions'   => 'Exhibitions',
+                'section-fairs'         => 'Art Fairs',
+            ];
+            $names = array_map(fn($s) => $sectionLabels[$s] ?? $s, $this->incompleteSections);
+            $message = 'Please fix errors in: ' . implode(', ', $names);
+
+            $this->dispatch('toast', message: $message, type: 'error');
             $this->dispatch('scroll-to-error');
             return;
         }

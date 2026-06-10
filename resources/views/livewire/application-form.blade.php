@@ -1,7 +1,7 @@
 <div class="space-y-6"
      x-on:scroll-to-error.window="
          setTimeout(() => {
-             const el = document.querySelector('.border-red-400');
+             const el = document.querySelector('input.border-red-400, select.border-red-400, textarea.border-red-400');
              if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
          }, 50)
      "
