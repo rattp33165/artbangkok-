@@ -1,8 +1,9 @@
 <div class="space-y-6"
      x-on:scroll-to-error.window="
          setTimeout(() => {
-             const el = document.querySelector('input.border-red-400, select.border-red-400, textarea.border-red-400');
-             if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+             const id = $event.detail.sectionId;
+             const el = id ? document.getElementById(id) : document.querySelector('.border-red-400');
+             if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
          }, 50)
      "
      x-on:scroll-to-section.window="

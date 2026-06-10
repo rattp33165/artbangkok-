@@ -650,7 +650,7 @@ class ApplicationForm extends Component
             $message = 'Please fix errors in: ' . implode(', ', $names);
 
             $this->dispatch('toast', message: $message, type: 'error');
-            $this->dispatch('scroll-to-error');
+            $this->dispatch('scroll-to-error', sectionId: $this->incompleteSections[0] ?? null);
             return;
         }
 
