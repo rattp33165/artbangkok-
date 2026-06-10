@@ -358,6 +358,54 @@ class ApplicationForm extends Component
         ];
     }
 
+    private function allValidationAttributes(): array
+    {
+        return [
+            'gallery_type'             => 'Gallery Type',
+            'gallery_name'             => 'Gallery Name',
+            'year_founded'             => 'Year Founded',
+            'description'              => 'Description',
+            'website_url'              => 'Website URL',
+            'gallery_email'            => 'Gallery Email',
+            'phone'                    => 'Phone',
+            'instagram'                => 'Instagram',
+            'facebook'                 => 'Facebook',
+            'business_name'            => 'Business Name',
+            'business_license'         => 'Business License',
+            'head_office_gallery_name' => 'Head Office Gallery Name',
+            'office_country'           => 'Country',
+            'office_city'              => 'City',
+            'office_zipcode'           => 'Zip Code',
+            'office_address'           => 'Address',
+            'director_name'            => 'Director Name',
+            'director_phone'           => 'Director Phone',
+            'director_email'           => 'Director Email',
+            'booth_section'            => 'Booth Section',
+            'booth_hall'               => 'Hall',
+            'booth_type'               => 'Booth Type',
+            'branches.*.name'          => 'Branch Name',
+            'branches.*.country'       => 'Branch Country',
+            'branches.*.city'          => 'Branch City',
+            'represented_artists.*'    => 'Artist Name',
+            'participating_artists.*.name'          => 'Artist Name',
+            'participating_artists.*.year_of_birth' => 'Year of Birth',
+            'participating_artists.*.nationality'   => 'Nationality',
+            'participating_artists.*.introduction'  => 'Artist Introduction',
+            'persons_in_charge.0.name'  => 'Curator Name',
+            'persons_in_charge.0.email' => 'Curator Email',
+            'persons_in_charge.0.phone' => 'Curator Phone',
+            'persons_in_charge.1.name'  => 'Gallery Manager Name',
+            'persons_in_charge.1.email' => 'Gallery Manager Email',
+            'persons_in_charge.1.phone' => 'Gallery Manager Phone',
+            'exhibitions.*.title'        => 'Exhibition Title',
+            'exhibitions.*.date_start'   => 'Start Date',
+            'exhibitions.*.date_end'     => 'End Date',
+            'exhibitions.*.introduction' => 'Exhibition Introduction',
+            'art_fairs.*.name'           => 'Art Fair Name',
+            'art_fairs.*.year'           => 'Art Fair Year',
+        ];
+    }
+
     private function sectionsFromErrors(array $errorKeys): array
     {
         $map = [
@@ -630,7 +678,7 @@ class ApplicationForm extends Component
             return;
         }
 
-        $validator = Validator::make($this->allApplicationData(), $this->allValidationRules());
+        $validator = Validator::make($this->allApplicationData(), $this->allValidationRules(), [], $this->allValidationAttributes());
 
         if ($validator->fails()) {
             $this->setErrorBag($validator->errors());
