@@ -316,7 +316,7 @@ class ApplicationForm extends Component
             'gallery_name'             => 'required|string|max:255',
             'year_founded'             => 'required|integer|min:1800|max:' . date('Y'),
             'description'              => 'required|string|max:1000',
-            'website_url'              => 'required|string|max:500',
+            'website_url'              => 'required|url|max:500',
             'gallery_email'            => 'required|email',
             'phone'                    => 'required|string|max:50',
             'instagram'                => 'required|string|max:255',

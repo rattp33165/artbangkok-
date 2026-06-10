@@ -8,8 +8,8 @@
                  class="h-6 w-auto">
         </a>
 
-        {{-- Desktop Menu --}}
-        @php
+        {{-- Desktop Menu (hidden) --}}
+        {{-- @php
             $navLink = 'text-xs tracking-widest uppercase transition';
             $active  = 'text-black font-semibold border-b border-black pb-0.5';
             $inactive = 'text-gray-700 hover:text-black';
@@ -31,7 +31,7 @@
 
             <a href="{{ route('ticket') }}"
                class="{{ $navLink }} {{ request()->routeIs('ticket') ? $active : $inactive }}">Ticket</a>
-        </div>
+        </div> --}}
 
         {{-- Right Side --}}
         <div class="flex items-center gap-3">
@@ -120,18 +120,18 @@
                 </a>
             @endauth
 
-            {{-- Hamburger --}}
-            <button @click="mobileOpen = !mobileOpen"
+            {{-- Hamburger (hidden) --}}
+            {{-- <button @click="mobileOpen = !mobileOpen"
                     class="lg:hidden flex flex-col gap-1.5 p-2 -mr-2">
                 <span class="w-5 h-0.5 bg-black block transition-all" :class="mobileOpen ? 'rotate-45 translate-y-2' : ''"></span>
                 <span class="w-5 h-0.5 bg-black block transition-all" :class="mobileOpen ? 'opacity-0' : ''"></span>
                 <span class="w-5 h-0.5 bg-black block transition-all" :class="mobileOpen ? '-rotate-45 -translate-y-2' : ''"></span>
-            </button>
+            </button> --}}
         </div>
     </div>
 
-    {{-- Mobile Menu --}}
-    <div x-show="mobileOpen"
+    {{-- Mobile Menu (hidden) --}}
+    {{-- <div x-show="mobileOpen"
          x-transition:enter="transition ease-out duration-200"
          x-transition:enter-start="opacity-0 -translate-y-2"
          x-transition:enter-end="opacity-100 translate-y-0"
@@ -185,5 +185,5 @@
                 @endauth
             </div>
         </div>
-    </div>
+    </div> --}}
 </nav>
