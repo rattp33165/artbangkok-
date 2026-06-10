@@ -9,6 +9,7 @@ use App\Models\BoothHall;
 use App\Models\BoothType;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 
 class ApplicationForm extends Component
 {
@@ -629,10 +630,11 @@ class ApplicationForm extends Component
             return;
         }
 
-        try {
-            $this->validate($this->allValidationRules());
-        } catch (\Illuminate\Validation\ValidationException $e) {
-            $this->incompleteSections = $this->sectionsFromErrors(array_keys($e->errors()));
+        $validator = Validator::make($this->allApplicationData(), $this->allValidationRules());
+
+        if ($validator->fails()) {
+            $this->setErrorBag($validator->errors());
+            $this->incompleteSections = $this->sectionsFromErrors(array_keys($validator->errors()->toArray()));
 
             $sectionLabels = [
                 'section-gallery'       => 'Gallery Information',
