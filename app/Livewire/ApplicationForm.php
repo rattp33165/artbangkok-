@@ -316,7 +316,7 @@ class ApplicationForm extends Component
             'gallery_name'             => 'required|string|max:255',
             'year_founded'             => 'required|integer|min:1800|max:' . date('Y'),
             'description'              => 'required|string|max:1000',
-            'website_url'              => 'required|url:http,https',
+            'website_url'              => 'required|string|max:500',
             'gallery_email'            => 'required|email',
             'phone'                    => 'required|string|max:50',
             'instagram'                => 'required|string|max:255',
@@ -630,9 +630,7 @@ class ApplicationForm extends Component
         }
 
         try {
-            $this->validate($this->allValidationRules(), [
-                'website_url.url' => 'The website URL must start with http:// or https:// (e.g., https://yourgallery.com)',
-            ]);
+            $this->validate($this->allValidationRules());
         } catch (\Illuminate\Validation\ValidationException $e) {
             $this->incompleteSections = $this->sectionsFromErrors(array_keys($e->errors()));
             $this->dispatch('toast', message: 'Please fill in all required fields.', type: 'error');
