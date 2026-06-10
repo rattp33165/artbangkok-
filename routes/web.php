@@ -5,7 +5,9 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\GoogleController;
 
 Route::get('/', function () {
-    return view('home');
+    return auth()->check()
+        ? redirect()->route('dashboard')
+        : redirect()->route('sign-in');
 });
 
 Route::get('/ticket', function () {

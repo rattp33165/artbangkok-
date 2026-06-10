@@ -2,7 +2,7 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
 
         {{-- Logo --}}
-        <a href="/" class="flex items-center flex-shrink-0">
+        <a href="{{ auth()->check() ? route('dashboard') : route('sign-in') }}" class="flex items-center flex-shrink-0">
             <img src="{{ asset('images/Logo-art_bangkok-b.png') }}"
                  alt="Art Bangkok"
                  class="h-6 w-auto">
