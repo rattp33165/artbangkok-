@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Application extends Model
 {
     protected $fillable = [
-        'user_id', 'status', 'completion_percent',
+        'user_id', 'status', 'reviewed_by', 'reviewed_at', 'admin_notes', 'completion_percent',
         'gallery_type', 'gallery_name', 'year_founded', 'description',
         'website_url', 'gallery_email', 'phone', 'instagram', 'facebook',
         'gallery_images', 'business_name', 'business_license',
@@ -21,6 +21,7 @@ class Application extends Model
     ];
 
     protected $casts = [
+        'reviewed_at'           => 'datetime',
         'branches'              => 'array',
         'represented_artists'   => 'array',
         'persons_in_charge'     => 'array',
@@ -29,4 +30,14 @@ class Application extends Model
         'participating_artists' => 'array',
         'exhibitions'           => 'array',
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function reviewer()
+    {
+        return $this->belongsTo(User::class, 'reviewed_by');
+    }
 }

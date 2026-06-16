@@ -50,3 +50,12 @@ Route::middleware('auth')->group(function () {
     Route::get('/application', function () { return view('dashboard'); })->name('dashboard');
     Route::get('/profile', function () { return view('profile'); })->name('profile');
 });
+
+// Admin Routes
+Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/users', fn() => view('admin.users'))->name('users');
+    Route::get('/applications', fn() => view('admin.applications'))->name('applications');
+    Route::get('/applications/{application}', function (\App\Models\Application $application) {
+        return view('admin.application-detail', compact('application'));
+    })->name('applications.show');
+});

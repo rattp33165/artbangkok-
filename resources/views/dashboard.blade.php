@@ -72,7 +72,57 @@
                 $galleryComplete = $app?->gallery_type && $app?->gallery_name && $app?->year_founded &&
                                    $app?->description && $app?->website_url && $app?->gallery_email &&
                                    $app?->phone && $app?->instagram && $app?->facebook;
+                $currentStatus = $app?->status ?? 'draft';
             @endphp
+
+            {{-- Review Result Banner --}}
+            @if(in_array($currentStatus, ['submitted', 'under_review', 'approved', 'rejected']))
+            @php
+            $banner = match($currentStatus) {
+                'approved'     => [
+                    'bg'    => 'bg-green-50 border-green-200',
+                    'icon'  => 'text-green-500',
+                    'title' => 'Application Approved',
+                    'body'  => 'Congratulations! Your gallery application has been approved. Our team will be in touch with next steps.',
+                    'path'  => 'M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z',
+                ],
+                'rejected'     => [
+                    'bg'    => 'bg-red-50 border-red-200',
+                    'icon'  => 'text-red-400',
+                    'title' => 'Application Not Approved',
+                    'body'  => 'We regret to inform you that your application was not approved at this time. Please contact us if you have any questions.',
+                    'path'  => 'M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z',
+                ],
+                'under_review' => [
+                    'bg'    => 'bg-yellow-50 border-yellow-200',
+                    'icon'  => 'text-yellow-500',
+                    'title' => 'Application Under Review',
+                    'body'  => 'Your application is currently being reviewed by our team. We will notify you once a decision has been made.',
+                    'path'  => 'M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z',
+                ],
+                default        => [
+                    'bg'    => 'bg-blue-50 border-blue-200',
+                    'icon'  => 'text-blue-500',
+                    'title' => 'Application Submitted',
+                    'body'  => 'Your application has been submitted and is awaiting review. We will update you on the status shortly.',
+                    'path'  => 'M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z',
+                ],
+            };
+            @endphp
+            <div class="mb-6 rounded-2xl border p-5 flex items-start gap-4 {{ $banner['bg'] }}">
+                <svg class="w-5 h-5 mt-0.5 flex-shrink-0 {{ $banner['icon'] }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="{{ $banner['path'] }}"/>
+                </svg>
+                <div>
+                    <p class="text-sm font-semibold text-black">{{ $banner['title'] }}</p>
+                    <p class="text-xs text-gray-500 mt-0.5 leading-relaxed">{{ $banner['body'] }}</p>
+                    @if($app->reviewed_at)
+                    <p class="text-xs text-gray-400 mt-1.5">{{ $app->reviewed_at->format('d M Y, H:i') }}</p>
+                    @endif
+                </div>
+            </div>
+            @endif
+
             <div class="grid grid-cols-3 gap-4 mb-8">
                 <div class="bg-white rounded-xl border border-gray-100 p-4">
                     <p class="text-xs text-gray-400 mb-1">Gallery Info</p>
@@ -87,10 +137,26 @@
                     </p>
                 </div>
                 <div class="bg-white rounded-xl border border-gray-100 p-4">
-                    <p class="text-xs text-gray-400 mb-1">Status</p>
-                    <p class="text-sm font-semibold text-gray-600">
-                        {{ ucfirst($app?->status ?? 'draft') }}
-                    </p>
+                    <p class="text-xs text-gray-400 mb-2">Status</p>
+                    @php
+                    $badge = match($currentStatus) {
+                        'submitted'    => 'bg-blue-50 text-blue-700',
+                        'under_review' => 'bg-yellow-50 text-yellow-700',
+                        'approved'     => 'bg-green-50 text-green-700',
+                        'rejected'     => 'bg-red-50 text-red-700',
+                        default        => 'bg-gray-100 text-gray-500',
+                    };
+                    $label = match($currentStatus) {
+                        'submitted'    => 'Submitted',
+                        'under_review' => 'Under Review',
+                        'approved'     => 'Approved',
+                        'rejected'     => 'Not Approved',
+                        default        => 'Draft',
+                    };
+                    @endphp
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ $badge }}">
+                        {{ $label }}
+                    </span>
                 </div>
             </div>
 

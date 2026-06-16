@@ -83,6 +83,20 @@
                                 Profile Settings
                             </a>
                         </div>
+                        @if(Auth::user()->isAdmin())
+                        <div class="border-t border-gray-100 py-1">
+                            <a href="{{ route('admin.users') }}"
+                               class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition">
+                                <svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+                                User Management
+                            </a>
+                            <a href="{{ route('admin.applications') }}"
+                               class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition">
+                                <svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                                Applications
+                            </a>
+                        </div>
+                        @endif
                         <div class="border-t border-gray-100 py-1">
                             <form method="POST" action="{{ route('sign-out') }}">
                                 @csrf
@@ -166,6 +180,16 @@
                         <svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
                         Profile Settings
                     </a>
+                    @if(Auth::user()->isAdmin())
+                    <a href="{{ route('admin.users') }}" class="px-3 py-3 text-sm text-gray-700 hover:bg-gray-50 rounded-xl flex items-center gap-2">
+                        <svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+                        User Management
+                    </a>
+                    <a href="{{ route('admin.applications') }}" class="px-3 py-3 text-sm text-gray-700 hover:bg-gray-50 rounded-xl flex items-center gap-2">
+                        <svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                        Applications
+                    </a>
+                    @endif
                     <form method="POST" action="{{ route('sign-out') }}">
                         @csrf
                         <button type="submit" class="w-full px-3 py-3 text-sm text-red-500 hover:bg-red-50 rounded-xl flex items-center gap-2">
