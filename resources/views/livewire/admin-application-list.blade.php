@@ -4,11 +4,12 @@
     <div class="flex flex-wrap gap-2">
         @php
         $tabs = [
-            ''             => ['label' => 'All',          'count' => $counts['all']],
-            'submitted'    => ['label' => 'Submitted',    'count' => $counts['submitted']],
-            'under_review' => ['label' => 'Under Review', 'count' => $counts['under_review']],
-            'approved'     => ['label' => 'Approved',     'count' => $counts['approved']],
-            'rejected'     => ['label' => 'Rejected',     'count' => $counts['rejected']],
+            ''               => ['label' => 'All',            'count' => $counts['all']],
+            'submitted'      => ['label' => 'Submitted',      'count' => $counts['submitted']],
+            'under_review'   => ['label' => 'Under Review',   'count' => $counts['under_review']],
+            'approved'       => ['label' => 'Approved',       'count' => $counts['approved']],
+            'rejected'       => ['label' => 'Rejected',       'count' => $counts['rejected']],
+            'edit_requested' => ['label' => 'Edit Requested', 'count' => $counts['edit_requested']],
         ];
         @endphp
         @foreach($tabs as $value => $tab)
@@ -88,6 +89,12 @@
                         <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ $badge }}">
                             {{ ucwords(str_replace('_', ' ', $app->status)) }}
                         </span>
+                        @if($app->edit_requested)
+                        <span class="inline-flex items-center gap-1 mt-1 px-2 py-0.5 rounded-full text-xs font-medium bg-orange-50 text-orange-600 border border-orange-200">
+                            <span class="w-1.5 h-1.5 rounded-full bg-orange-400 inline-block"></span>
+                            Edit Requested
+                        </span>
+                        @endif
                     </td>
 
                     {{-- Progress --}}

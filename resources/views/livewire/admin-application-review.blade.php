@@ -88,7 +88,7 @@
                     <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
                         @foreach($this->application->gallery_images as $img)
                         <div class="aspect-video bg-gray-50 rounded-xl overflow-hidden">
-                            <img src="{{ $img }}" class="w-full h-full object-cover" alt="" loading="lazy">
+                            <img src="{{ Storage::url($img) }}" class="w-full h-full object-cover" alt="" loading="lazy">
                         </div>
                         @endforeach
                     </div>

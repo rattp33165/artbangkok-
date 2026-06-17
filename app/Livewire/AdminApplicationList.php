@@ -30,16 +30,18 @@ class AdminApplicationList extends Component
                               ->orWhere('email', 'like', "%{$this->search}%"));
                 });
             })
-            ->when($this->statusFilter, fn($q) => $q->where('status', $this->statusFilter))
+            ->when($this->statusFilter === 'edit_requested', fn($q) => $q->where('edit_requested', true))
+            ->when($this->statusFilter && $this->statusFilter !== 'edit_requested', fn($q) => $q->where('status', $this->statusFilter))
             ->latest()
             ->paginate($this->perPage);
 
         $counts = [
-            'all'          => Application::count(),
-            'submitted'    => Application::where('status', 'submitted')->count(),
-            'under_review' => Application::where('status', 'under_review')->count(),
-            'approved'     => Application::where('status', 'approved')->count(),
-            'rejected'     => Application::where('status', 'rejected')->count(),
+            'all'            => Application::count(),
+            'submitted'      => Application::where('status', 'submitted')->count(),
+            'under_review'   => Application::where('status', 'under_review')->count(),
+            'approved'       => Application::where('status', 'approved')->count(),
+            'rejected'       => Application::where('status', 'rejected')->count(),
+            'edit_requested' => Application::where('edit_requested', true)->count(),
         ];
 
         return view('livewire.admin-application-list', compact('applications', 'counts'));

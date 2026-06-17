@@ -146,28 +146,22 @@
 
             {{-- Lock Notice --}}
             @if($isLocked)
-            <div class="rounded-2xl border p-5 flex items-start gap-4 mb-6 {{ $editRequested ? 'bg-yellow-50 border-yellow-200' : 'bg-green-50 border-green-200' }}">
-                <svg class="w-5 h-5 mt-0.5 flex-shrink-0 {{ $editRequested ? 'text-yellow-500' : 'text-green-500' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    @if($editRequested)
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                    @else
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
-                    @endif
+            <div class="rounded-2xl border p-5 flex items-start gap-4 mb-6"
+                 x-data="{ editRequested: {{ $editRequested ? 'true' : 'false' }} }"
+                 x-on:edit-requested.window="editRequested = true"
+                 :class="editRequested ? 'bg-yellow-50 border-yellow-200' : 'bg-green-50 border-green-200'">
+                <svg class="w-5 h-5 mt-0.5 flex-shrink-0" :class="editRequested ? 'text-yellow-500' : 'text-green-500'" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path x-show="editRequested" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    <path x-show="!editRequested" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
                 </svg>
                 <div class="flex-1 min-w-0">
-                    <p class="text-sm font-semibold text-black">
-                        @if($editRequested) Edit Request Pending @else Application Locked @endif
-                    </p>
-                    <p class="text-xs text-gray-500 mt-0.5 leading-relaxed">
-                        @if($editRequested)
-                            Your edit request has been submitted. Please wait for admin approval before making changes.
-                        @else
-                            Your application has been approved and is now locked. To make changes, submit a request below.
-                        @endif
-                    </p>
+                    <p class="text-sm font-semibold text-black" x-text="editRequested ? 'Edit Request Pending' : 'Application Locked'"></p>
+                    <p class="text-xs text-gray-500 mt-0.5 leading-relaxed"
+                       x-text="editRequested ? 'Your edit request has been submitted. Please wait for admin approval before making changes.' : 'Your application has been approved and is now locked. To make changes, submit a request below.'"></p>
                 </div>
-                @if(!$editRequested && $currentStatus === 'approved')
-                <button onclick="Livewire.dispatch('request-edit')"
+                @if($currentStatus === 'approved')
+                <button x-show="!editRequested"
+                        onclick="Livewire.dispatch('request-edit')"
                         class="flex-shrink-0 text-xs border border-gray-300 hover:border-black bg-white rounded-xl px-4 py-2 transition font-medium hover:bg-gray-50">
                     Request Edit
                 </button>

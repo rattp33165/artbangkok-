@@ -506,6 +506,7 @@ class ApplicationForm extends Component
 
         $this->application->update(['edit_requested' => true]);
         $this->dispatch('toast', message: 'Edit request submitted. Awaiting admin approval.', type: 'info');
+        $this->dispatch('edit-requested');
     }
 
     private function isLocked(): bool
