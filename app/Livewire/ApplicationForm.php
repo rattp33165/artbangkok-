@@ -734,7 +734,8 @@ class ApplicationForm extends Component
         $this->application->update($this->allApplicationData() + ['status' => 'submitted']);
         $this->incompleteSections = [];
         $this->updateProgress();
-        $this->dispatch('toast', message: 'Application submitted successfully!', type: 'success');
+        session()->flash('toast', ['message' => 'Application submitted successfully!', 'type' => 'success']);
+        $this->redirect(route('dashboard'), navigate: false);
     }
 
     public function render()
