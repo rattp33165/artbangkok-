@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use Livewire\Attributes\On;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use App\Models\Application;
@@ -497,6 +498,7 @@ class ApplicationForm extends Component
 
     // ── Save methods (no validation — draft only) ──────────────────
 
+    #[On('request-edit')]
     public function requestEdit(): void
     {
         if ($this->application->status !== 'approved') return;

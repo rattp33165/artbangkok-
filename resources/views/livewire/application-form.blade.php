@@ -13,39 +13,6 @@
          }, 50)
      ">
 
-    {{-- Lock Notice --}}
-    @if($isLocked)
-    <div class="rounded-2xl border p-5 flex items-start gap-4 {{ $editRequested ? 'bg-yellow-50 border-yellow-200' : 'bg-green-50 border-green-200' }}">
-        <svg class="w-5 h-5 mt-0.5 flex-shrink-0 {{ $editRequested ? 'text-yellow-500' : 'text-green-500' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            @if($editRequested)
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-            @else
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
-            @endif
-        </svg>
-        <div class="flex-1 min-w-0">
-            <p class="text-sm font-semibold text-black">
-                @if($editRequested) Edit Request Pending @else Application Locked @endif
-            </p>
-            <p class="text-xs text-gray-500 mt-0.5 leading-relaxed">
-                @if($editRequested)
-                    Your edit request has been submitted. Please wait for admin approval before making changes.
-                @else
-                    Your application has been approved and is now locked. To make changes, submit a request below.
-                @endif
-            </p>
-        </div>
-        @if(!$editRequested)
-        <button wire:click="requestEdit"
-                wire:loading.attr="disabled"
-                class="flex-shrink-0 text-xs border border-gray-300 hover:border-black bg-white rounded-xl px-4 py-2 transition font-medium hover:bg-gray-50 disabled:opacity-60">
-            <span wire:loading.remove wire:target="requestEdit">Request Edit</span>
-            <span wire:loading wire:target="requestEdit">Sending…</span>
-        </button>
-        @endif
-    </div>
-    @endif
-
     <fieldset @if($isLocked) disabled @endif class="space-y-6 {{ $isLocked ? 'opacity-60' : '' }}">
 
     {{-- 1. Gallery Information --}}
