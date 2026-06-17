@@ -75,89 +75,171 @@
                 $currentStatus = $app?->status ?? 'draft';
             @endphp
 
-            {{-- Review Result Banner --}}
-            @if(in_array($currentStatus, ['submitted', 'under_review', 'approved', 'rejected']))
+            {{-- Application Status Tracker --}}
             @php
-            $banner = match($currentStatus) {
-                'approved'     => [
-                    'bg'    => 'bg-green-50 border-green-200',
-                    'icon'  => 'text-green-500',
-                    'title' => 'Application Approved',
-                    'body'  => 'Congratulations! Your gallery application has been approved. Our team will be in touch with next steps.',
-                    'path'  => 'M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z',
-                ],
-                'rejected'     => [
-                    'bg'    => 'bg-red-50 border-red-200',
-                    'icon'  => 'text-red-400',
-                    'title' => 'Application Not Approved',
-                    'body'  => 'We regret to inform you that your application was not approved at this time. Please contact us if you have any questions.',
-                    'path'  => 'M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z',
+            $editRequested = (bool)($app?->edit_requested ?? false);
+
+            // Step index: 0=draft, 1=submitted, 2=under_review, 3=approved/rejected
+            $stepOrder   = ['draft' => 0, 'submitted' => 1, 'under_review' => 2, 'approved' => 3, 'rejected' => 3];
+            $currentStep = $stepOrder[$currentStatus] ?? 0;
+
+            $statusBadge = match($currentStatus) {
+                'submitted'    => 'bg-blue-50 text-blue-700',
+                'under_review' => 'bg-yellow-50 text-yellow-700',
+                'approved'     => 'bg-green-50 text-green-700',
+                'rejected'     => 'bg-red-50 text-red-700',
+                default        => 'bg-gray-100 text-gray-500',
+            };
+            $statusLabel = match($currentStatus) {
+                'submitted'    => 'Submitted',
+                'under_review' => 'Under Review',
+                'approved'     => 'Approved',
+                'rejected'     => 'Not Approved',
+                default        => 'Draft',
+            };
+
+            $statusInfo = match($currentStatus) {
+                'submitted'    => [
+                    'icon'  => 'M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z',
+                    'color' => 'blue',
+                    'title' => 'Application Submitted',
+                    'body'  => 'Your application has been received and is awaiting review. Our team will process it shortly. You will be notified once the status changes.',
                 ],
                 'under_review' => [
-                    'bg'    => 'bg-yellow-50 border-yellow-200',
-                    'icon'  => 'text-yellow-500',
-                    'title' => 'Application Under Review',
-                    'body'  => 'Your application is currently being reviewed by our team. We will notify you once a decision has been made.',
-                    'path'  => 'M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z',
+                    'icon'  => 'M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z',
+                    'color' => 'yellow',
+                    'title' => 'Under Review',
+                    'body'  => 'Our team is currently reviewing your application. This may take a few business days. We will contact you once a decision has been made.',
+                ],
+                'approved'     => [
+                    'icon'  => 'M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z',
+                    'color' => 'green',
+                    'title' => 'Application Approved',
+                    'body'  => 'Congratulations! Your gallery application has been approved. Our team will be in touch with you regarding next steps for ART BANGKOK 2026.',
+                ],
+                'rejected'     => [
+                    'icon'  => 'M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z',
+                    'color' => 'red',
+                    'title' => 'Not Approved',
+                    'body'  => 'Your application was not approved at this time. You may revise your information and resubmit. Please contact us if you have any questions.',
                 ],
                 default        => [
-                    'bg'    => 'bg-blue-50 border-blue-200',
-                    'icon'  => 'text-blue-500',
-                    'title' => 'Application Submitted',
-                    'body'  => 'Your application has been submitted and is awaiting review. We will update you on the status shortly.',
-                    'path'  => 'M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z',
+                    'icon'  => 'M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z',
+                    'color' => 'gray',
+                    'title' => 'Application in Draft',
+                    'body'  => 'Complete all sections of your gallery application. Use the form below to fill in your information. You can save each section individually and come back anytime.',
                 ],
             };
-            @endphp
-            <div class="mb-6 rounded-2xl border p-5 flex items-start gap-4 {{ $banner['bg'] }}">
-                <svg class="w-5 h-5 mt-0.5 flex-shrink-0 {{ $banner['icon'] }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="{{ $banner['path'] }}"/>
-                </svg>
-                <div>
-                    <p class="text-sm font-semibold text-black">{{ $banner['title'] }}</p>
-                    <p class="text-xs text-gray-500 mt-0.5 leading-relaxed">{{ $banner['body'] }}</p>
-                    @if($app->reviewed_at)
-                    <p class="text-xs text-gray-400 mt-1.5">{{ $app->reviewed_at->format('d M Y, H:i') }}</p>
-                    @endif
-                </div>
-            </div>
-            @endif
 
-            <div class="grid grid-cols-3 gap-4 mb-8">
-                <div class="bg-white rounded-xl border border-gray-100 p-4">
-                    <p class="text-xs text-gray-400 mb-1">Gallery Info</p>
-                    <p class="text-sm font-semibold {{ $galleryComplete ? 'text-green-600' : 'text-gray-400' }}">
-                        {{ $galleryComplete ? '✓ Completed' : '○ Pending' }}
-                    </p>
-                </div>
-                <div class="bg-white rounded-xl border border-gray-100 p-4">
-                    <p class="text-xs text-gray-400 mb-1">Booth Selection</p>
-                    <p class="text-sm font-semibold {{ $app?->booth_section ? 'text-yellow-600' : 'text-gray-400' }}">
-                        {{ $app?->booth_section ? '⏳ Waiting Confirm' : '○ Pending' }}
-                    </p>
-                </div>
-                <div class="bg-white rounded-xl border border-gray-100 p-4">
-                    <p class="text-xs text-gray-400 mb-2">Status</p>
-                    @php
-                    $badge = match($currentStatus) {
-                        'submitted'    => 'bg-blue-50 text-blue-700',
-                        'under_review' => 'bg-yellow-50 text-yellow-700',
-                        'approved'     => 'bg-green-50 text-green-700',
-                        'rejected'     => 'bg-red-50 text-red-700',
-                        default        => 'bg-gray-100 text-gray-500',
-                    };
-                    $label = match($currentStatus) {
-                        'submitted'    => 'Submitted',
-                        'under_review' => 'Under Review',
-                        'approved'     => 'Approved',
-                        'rejected'     => 'Not Approved',
-                        default        => 'Draft',
-                    };
-                    @endphp
-                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ $badge }}">
-                        {{ $label }}
+            $colorMap = [
+                'blue'   => ['dot' => 'bg-blue-500',   'bg' => 'bg-blue-50',   'border' => 'border-blue-200',   'icon' => 'text-blue-500'],
+                'yellow' => ['dot' => 'bg-yellow-400',  'bg' => 'bg-yellow-50', 'border' => 'border-yellow-200', 'icon' => 'text-yellow-500'],
+                'green'  => ['dot' => 'bg-green-500',   'bg' => 'bg-green-50',  'border' => 'border-green-200',  'icon' => 'text-green-500'],
+                'red'    => ['dot' => 'bg-red-400',     'bg' => 'bg-red-50',    'border' => 'border-red-200',    'icon' => 'text-red-400'],
+                'gray'   => ['dot' => 'bg-gray-400',    'bg' => 'bg-gray-50',   'border' => 'border-gray-200',   'icon' => 'text-gray-400'],
+            ];
+            $c = $colorMap[$statusInfo['color']];
+            @endphp
+
+            <div class="bg-white rounded-2xl border border-gray-100 shadow-sm mb-8 overflow-hidden">
+
+                {{-- Header --}}
+                <div class="px-6 py-5 flex items-center justify-between border-b border-gray-50">
+                    <div>
+                        <h2 class="font-semibold text-black">Application Status</h2>
+                        <p class="text-xs text-gray-400 mt-0.5">ART BANGKOK 2026</p>
+                    </div>
+                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold {{ $statusBadge }}">
+                        {{ $statusLabel }}
                     </span>
                 </div>
+
+                {{-- Step Tracker --}}
+                <div class="px-6 py-6">
+                    @php
+                    $steps = [
+                        ['label' => 'Draft',        'sub' => 'Fill in form'],
+                        ['label' => 'Submitted',     'sub' => 'Awaiting review'],
+                        ['label' => 'Under Review',  'sub' => 'Being reviewed'],
+                        ['label' => 'Decision',      'sub' => 'Final outcome'],
+                    ];
+                    @endphp
+                    <div class="relative flex items-start justify-between">
+                        {{-- connector line --}}
+                        <div class="absolute top-3.5 left-3.5 right-3.5 h-px bg-gray-100 z-0"></div>
+                        @foreach($steps as $i => $step)
+                        @php
+                            if ($i < $currentStep) {
+                                $dotClass = 'bg-black border-black';
+                                $innerEl  = '<svg class="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>';
+                                $labelCls = 'text-black font-semibold';
+                                $subCls   = 'text-gray-400';
+                            } elseif ($i === $currentStep) {
+                                $dotClass = $c['dot'] . ' border-transparent ring-2 ring-offset-2 ring-' . $statusInfo['color'] . '-300';
+                                $innerEl  = '';
+                                $labelCls = 'text-black font-semibold';
+                                $subCls   = $c['icon'];
+                            } else {
+                                $dotClass = 'bg-white border-gray-200';
+                                $innerEl  = '';
+                                $labelCls = 'text-gray-400';
+                                $subCls   = 'text-gray-300';
+                            }
+                        @endphp
+                        <div class="relative flex flex-col items-center gap-2 flex-1 first:items-start last:items-end">
+                            <div class="w-7 h-7 rounded-full border-2 {{ $dotClass }} flex items-center justify-center z-10 transition-all">
+                                {!! $innerEl !!}
+                            </div>
+                            <div class="{{ $i === 0 ? 'text-left' : ($i === count($steps)-1 ? 'text-right' : 'text-center') }}">
+                                <p class="text-xs {{ $labelCls }} leading-tight">{{ $step['label'] }}</p>
+                                <p class="text-xs {{ $subCls }} leading-tight mt-0.5">{{ $step['sub'] }}</p>
+                            </div>
+                        </div>
+                        @endforeach
+                    </div>
+                </div>
+
+                {{-- Status Description --}}
+                <div class="px-6 pb-6">
+                    <div class="rounded-xl border p-4 {{ $c['bg'] }} {{ $c['border'] }}">
+                        <div class="flex items-start gap-3">
+                            <svg class="w-4 h-4 mt-0.5 flex-shrink-0 {{ $c['icon'] }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="{{ $statusInfo['icon'] }}"/>
+                            </svg>
+                            <div class="flex-1 min-w-0">
+                                <p class="text-sm font-semibold text-black">{{ $statusInfo['title'] }}</p>
+                                <p class="text-xs text-gray-500 mt-0.5 leading-relaxed">{{ $statusInfo['body'] }}</p>
+                                @if($app?->reviewed_at && in_array($currentStatus, ['approved', 'rejected', 'under_review']))
+                                <p class="text-xs text-gray-400 mt-1.5">{{ $app->reviewed_at->format('d M Y, H:i') }}</p>
+                                @endif
+                            </div>
+                        </div>
+
+                        {{-- Edit request notice (approved + edit_requested) --}}
+                        @if($currentStatus === 'approved' && $editRequested)
+                        <div class="mt-3 pt-3 border-t border-yellow-200 flex items-center gap-2">
+                            <svg class="w-3.5 h-3.5 text-yellow-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                            <p class="text-xs text-yellow-700 font-medium">Edit request pending — awaiting admin approval</p>
+                        </div>
+                        @endif
+                    </div>
+
+                    {{-- Form completion bar (draft only) --}}
+                    @if($currentStatus === 'draft')
+                    <div class="mt-4 pt-4 border-t border-gray-50">
+                        <div class="flex justify-between items-center mb-1.5">
+                            <span class="text-xs text-gray-400">Form completion</span>
+                            <span class="text-xs font-semibold text-black">{{ $percent }}%</span>
+                        </div>
+                        <div class="w-full bg-gray-100 rounded-full h-1.5">
+                            <div class="bg-black h-1.5 rounded-full transition-all duration-500" style="width: {{ $percent }}%"></div>
+                        </div>
+                    </div>
+                    @endif
+                </div>
+
             </div>
 
             {{-- Application Form --}}

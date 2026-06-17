@@ -497,8 +497,23 @@ class ApplicationForm extends Component
 
     // ── Save methods (no validation — draft only) ──────────────────
 
+    public function requestEdit(): void
+    {
+        if ($this->application->status !== 'approved') return;
+        if ($this->application->edit_requested) return;
+
+        $this->application->update(['edit_requested' => true]);
+        $this->dispatch('toast', message: 'Edit request submitted. Awaiting admin approval.', type: 'info');
+    }
+
+    private function isLocked(): bool
+    {
+        return in_array($this->application->status, ['submitted', 'under_review', 'approved']);
+    }
+
     public function saveGalleryInfo()
     {
+        if ($this->isLocked()) return;
         $this->resetErrorBag();
         $this->application->update([
             'gallery_type'  => $this->gallery_type ?: null,
@@ -518,6 +533,7 @@ class ApplicationForm extends Component
 
     public function saveBusinessInfo()
     {
+        if ($this->isLocked()) return;
         $this->resetErrorBag();
         $this->application->update([
             'business_name'    => $this->business_name ?: null,
@@ -530,6 +546,7 @@ class ApplicationForm extends Component
 
     public function saveHeadOffice()
     {
+        if ($this->isLocked()) return;
         $this->resetErrorBag();
         $this->application->update([
             'head_office_gallery_name' => $this->head_office_gallery_name ?: null,
@@ -548,6 +565,7 @@ class ApplicationForm extends Component
 
     public function saveBranches()
     {
+        if ($this->isLocked()) return;
         $this->resetErrorBag();
         $this->application->update([
             'branches' => collect($this->branches)->map(fn($b) => [
@@ -563,6 +581,7 @@ class ApplicationForm extends Component
 
     public function saveRepresentedArtists()
     {
+        if ($this->isLocked()) return;
         $this->resetErrorBag();
         $this->application->update([
             'represented_artists' => array_values(array_filter($this->represented_artists)),
@@ -574,6 +593,7 @@ class ApplicationForm extends Component
 
     public function saveBooth()
     {
+        if ($this->isLocked()) return;
         $this->resetErrorBag();
         $this->application->update([
             'booth_section'       => $this->booth_section ?: null,
@@ -589,6 +609,7 @@ class ApplicationForm extends Component
 
     public function saveParticipatingArtists()
     {
+        if ($this->isLocked()) return;
         $this->resetErrorBag();
         $this->application->update([
             'participating_artists' => collect($this->participating_artists)->map(fn($a) => [
@@ -606,6 +627,7 @@ class ApplicationForm extends Component
 
     public function savePersonsInCharge()
     {
+        if ($this->isLocked()) return;
         $this->resetErrorBag();
         $this->application->update([
             'persons_in_charge' => collect($this->persons_in_charge)->map(fn($p) => [
@@ -622,6 +644,7 @@ class ApplicationForm extends Component
 
     public function saveExhibitions()
     {
+        if ($this->isLocked()) return;
         $this->resetErrorBag();
         $this->application->update([
             'exhibitions' => collect($this->exhibitions)->map(fn($e) => [
@@ -639,6 +662,7 @@ class ApplicationForm extends Component
 
     public function saveArtFairs()
     {
+        if ($this->isLocked()) return;
         $this->resetErrorBag();
         $this->application->update([
             'art_fairs' => collect($this->art_fairs)->map(fn($f) => [
@@ -673,6 +697,8 @@ class ApplicationForm extends Component
 
     public function submitApplication()
     {
+        if ($this->isLocked()) return;
+
         if ($this->application->status === 'submitted') {
             $this->dispatch('toast', message: 'Your application has already been submitted.', type: 'info');
             return;
@@ -713,10 +739,12 @@ class ApplicationForm extends Component
     public function render()
     {
         return view('livewire.application-form', [
-            'boothHalls' => BoothHall::with(['activeTypes'])
+            'boothHalls'   => BoothHall::with(['activeTypes'])
                 ->where('is_active', true)
                 ->orderBy('sort_order')
                 ->get(),
+            'isLocked'     => $this->isLocked(),
+            'editRequested' => (bool) $this->application->edit_requested,
         ]);
     }
 }

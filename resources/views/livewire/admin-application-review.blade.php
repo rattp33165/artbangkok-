@@ -36,9 +36,17 @@
                 @else
                 <div></div>
                 @endif
-                <span class="flex-shrink-0 inline-flex items-center px-3 py-1 rounded-full text-xs font-medium {{ $statusBadge }}">
-                    {{ ucwords(str_replace('_', ' ', $this->application->status)) }}
-                </span>
+                <div class="flex items-center gap-2 flex-shrink-0">
+                    @if($this->application->edit_requested)
+                    <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-yellow-50 text-yellow-700 border border-yellow-200">
+                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                        Edit Requested
+                    </span>
+                    @endif
+                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium {{ $statusBadge }}">
+                        {{ ucwords(str_replace('_', ' ', $this->application->status)) }}
+                    </span>
+                </div>
             </div>
 
             <div>
@@ -446,6 +454,27 @@
                     </div>
                 </div>
                 @else
+
+                {{-- Edit Request Alert --}}
+                @if($this->application->edit_requested)
+                <div class="mb-3 p-3 rounded-xl bg-yellow-50 border border-yellow-200">
+                    <div class="flex items-start gap-2">
+                        <svg class="w-4 h-4 text-yellow-500 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                        </svg>
+                        <div>
+                            <p class="text-xs font-semibold text-yellow-800">Edit Request</p>
+                            <p class="text-xs text-yellow-600 mt-0.5">Applicant has requested permission to edit their approved application.</p>
+                        </div>
+                    </div>
+                    <button wire:click="approveEditRequest"
+                            wire:loading.attr="disabled"
+                            class="mt-2.5 w-full text-xs py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 transition disabled:opacity-60">
+                        <span wire:loading.remove wire:target="approveEditRequest">Approve Edit Request</span>
+                        <span wire:loading wire:target="approveEditRequest">Processing…</span>
+                    </button>
+                </div>
+                @endif
 
                 {{-- Action Buttons --}}
                 <div class="flex flex-col gap-2">

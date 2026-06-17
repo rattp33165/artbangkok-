@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Application extends Model
 {
     protected $fillable = [
-        'user_id', 'status', 'reviewed_by', 'reviewed_at', 'admin_notes', 'completion_percent',
+        'user_id', 'status', 'reviewed_by', 'reviewed_at', 'admin_notes', 'edit_requested', 'completion_percent',
         'gallery_type', 'gallery_name', 'year_founded', 'description',
         'website_url', 'gallery_email', 'phone', 'instagram', 'facebook',
         'gallery_images', 'business_name', 'business_license',
@@ -22,6 +22,7 @@ class Application extends Model
 
     protected $casts = [
         'reviewed_at'           => 'datetime',
+        'edit_requested'        => 'boolean',
         'branches'              => 'array',
         'represented_artists'   => 'array',
         'persons_in_charge'     => 'array',
