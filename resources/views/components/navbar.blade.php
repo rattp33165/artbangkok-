@@ -62,6 +62,7 @@
                         </div>
                         @if(Auth::user()->isAdmin())
                         <div class="border-t border-gray-100 py-1">
+                            <p class="px-4 pt-2 pb-1 text-xs font-semibold text-gray-400 uppercase tracking-widest">Admin Panel</p>
                             <a href="{{ route('admin.users') }}"
                                class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition">
                                 <svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
@@ -148,6 +149,7 @@
                         Profile Settings
                     </a>
                     @if(Auth::user()->isAdmin())
+                    <p class="px-3 pt-3 pb-1 text-xs font-semibold text-gray-400 uppercase tracking-widest">Admin Panel</p>
                     <a href="{{ route('admin.users') }}" class="px-3 py-3 text-sm text-gray-700 hover:bg-gray-50 rounded-xl flex items-center gap-2">
                         <svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
                         User Management
