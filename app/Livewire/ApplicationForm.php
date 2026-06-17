@@ -693,6 +693,7 @@ class ApplicationForm extends Component
         $percent = (int)(collect($sections)->filter()->count() / count($sections) * 100);
         $app->update(['completion_percent' => $percent]);
         $this->application = $app;
+        $this->dispatch('progress-updated', percent: $percent);
     }
 
     public function submitApplication()

@@ -27,16 +27,18 @@
 
                 {{-- Progress --}}
                 @php $app = Auth::user()->application; $percent = $app?->completion_percent ?? 0; @endphp
-                <div class="mb-6 p-4 bg-gray-50 rounded-xl">
+                <div class="mb-6 p-4 bg-gray-50 rounded-xl"
+                     x-data="{ percent: {{ $percent }} }"
+                     x-on:progress-updated.window="percent = $event.detail.percent">
                     <div class="flex justify-between items-center mb-2">
                         <span class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Application</span>
-                        <span class="text-xs font-bold text-black">{{ $percent }}%</span>
+                        <span class="text-xs font-bold text-black" x-text="percent + '%'"></span>
                     </div>
                     <div class="w-full bg-gray-200 rounded-full h-1.5">
-                        <div class="bg-black h-1.5 rounded-full transition-all duration-500" style="width: {{ $percent }}%"></div>
+                        <div class="bg-black h-1.5 rounded-full transition-all duration-500" :style="'width: ' + percent + '%'"></div>
                     </div>
                     <p class="text-xs text-gray-400 mt-2">
-                        @if($percent < 100) In progress @else Complete @endif
+                        <span x-text="percent < 100 ? 'In progress' : 'Complete'"></span>
                     </p>
                 </div>
 
