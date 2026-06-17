@@ -7,8 +7,8 @@
             <p class="text-3xl font-semibold text-black">{{ $stats['total'] }}</p>
         </div>
         <div class="bg-white border border-gray-100 rounded-2xl p-6">
-            <p class="text-xs uppercase tracking-widest text-gray-400 mb-1">Galleries</p>
-            <p class="text-3xl font-semibold text-black">{{ $stats['gallery'] }}</p>
+            <p class="text-xs uppercase tracking-widest text-gray-400 mb-1">No Application</p>
+            <p class="text-3xl font-semibold text-black">{{ $stats['no_application'] }}</p>
         </div>
         <div class="bg-white border border-gray-100 rounded-2xl p-6">
             <p class="text-xs uppercase tracking-widest text-gray-400 mb-1">Admins</p>
@@ -32,6 +32,11 @@
             <option value="">All Roles</option>
             <option value="gallery">Gallery</option>
             <option value="admin">Admin</option>
+        </select>
+        <select wire:model.live="noApplicationFilter"
+                class="border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-700 focus:outline-none focus:border-black transition bg-white">
+            <option value="">All</option>
+            <option value="1">No Application</option>
         </select>
     </div>
 

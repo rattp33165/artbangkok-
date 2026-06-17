@@ -13,12 +13,14 @@ class AdminUserManager extends Component
 
     public string $search = '';
     public string $roleFilter = '';
+    public string $noApplicationFilter = '';
     public int $perPage = 10;
     public ?int $confirmDeleteId = null;
     public string $confirmDeleteName = '';
 
     public function updatedSearch(): void { $this->resetPage(); }
     public function updatedRoleFilter(): void { $this->resetPage(); }
+    public function updatedNoApplicationFilter(): void { $this->resetPage(); }
     public function updatedPerPage(): void { $this->resetPage(); }
 
     public function changeRole(int $userId, string $role): void
@@ -75,14 +77,21 @@ class AdminUserManager extends Component
                 });
             })
             ->when($this->roleFilter, fn($q) => $q->where('role', $this->roleFilter))
+            ->when($this->noApplicationFilter === '1', fn($q) => $q->where('role', 'gallery')
+                ->where(fn($inner) => $inner->doesntHave('application')
+                    ->orWhereHas('application', fn($a) => $a->where('completion_percent', 0)))
+            )
             ->with('application:id,user_id,status,completion_percent')
             ->latest()
             ->paginate($this->perPage);
 
         $stats = [
-            'total'   => User::count(),
-            'admins'  => User::where('role', 'admin')->count(),
-            'gallery' => User::where('role', 'gallery')->count(),
+            'total'          => User::count(),
+            'admins'         => User::where('role', 'admin')->count(),
+            'no_application' => User::where('role', 'gallery')
+                ->where(fn($q) => $q->doesntHave('application')
+                    ->orWhereHas('application', fn($a) => $a->where('completion_percent', 0))
+                )->count(),
         ];
 
         return view('livewire.admin-user-manager', compact('users', 'stats'));
