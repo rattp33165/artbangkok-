@@ -135,7 +135,7 @@
             {{-- Gallery Images --}}
             <div x-data="{ previews: [] }" x-init="$wire.on('gallery-uploaded', () => { previews = [] })">
                 <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
-                    Gallery Images <span class="text-gray-400 normal-case font-normal">(max 3 — hover to remove)</span>
+                    Gallery Images <span class="text-gray-400 normal-case font-normal">(max 3 · JPG, PNG, WEBP · max 5MB each · hover to remove)</span>
                 </label>
                 <div class="flex flex-wrap gap-3 mb-3">
                     {{-- Stored images --}}
@@ -698,7 +698,7 @@
                 {{-- Artwork Images --}}
                 <div x-data="{ previews: [] }" x-init="$wire.on('artist-uploaded', () => { previews = [] })">
                     <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
-                        Images of Artwork <span class="text-gray-400 normal-case font-normal">(max 3 — hover to remove)</span>
+                        Images of Artwork <span class="text-gray-400 normal-case font-normal">(max 3 · JPG, PNG, WEBP · max 5MB each · hover to remove)</span>
                     </label>
                     <div class="flex flex-wrap gap-3 mb-3">
                         @foreach($artist['images'] ?? [] as $imgIdx => $img)
@@ -888,7 +888,7 @@
                 {{-- Installation Images --}}
                 <div x-data="{ previews: [] }" x-init="$wire.on('exhibition-uploaded', () => { previews = [] })">
                     <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
-                        Installation Images <span class="text-gray-400 normal-case font-normal">(max 3 — hover to remove)</span>
+                        Installation Images <span class="text-gray-400 normal-case font-normal">(max 3 · JPG, PNG, WEBP · max 5MB each · hover to remove)</span>
                     </label>
                     <div class="flex flex-wrap gap-3 mb-3">
                         @foreach($exhibition['images'] ?? [] as $imgIdx => $img)

@@ -137,6 +137,16 @@ class ApplicationForm extends Component
 
     public function updatedGalleryImagesUpload()
     {
+        try {
+            $this->validate([
+                'gallery_images_upload.*' => 'image|mimes:jpeg,jpg,png,webp|max:5120',
+            ]);
+        } catch (\Illuminate\Validation\ValidationException) {
+            $this->gallery_images_upload = [];
+            $this->dispatch('toast', message: 'Invalid file. Please use JPG, PNG or WEBP under 5MB.', type: 'error');
+            return;
+        }
+
         $existing = $this->gallery_images ?? [];
         foreach ((array)$this->gallery_images_upload as $file) {
             if (count($existing) >= 3) break;
@@ -166,6 +176,16 @@ class ApplicationForm extends Component
 
     public function updatedArtistImagesUpload()
     {
+        try {
+            $this->validate([
+                'artist_images_upload.*' => 'image|mimes:jpeg,jpg,png,webp|max:5120',
+            ]);
+        } catch (\Illuminate\Validation\ValidationException) {
+            $this->artist_images_upload = [];
+            $this->dispatch('toast', message: 'Invalid file. Please use JPG, PNG or WEBP under 5MB.', type: 'error');
+            return;
+        }
+
         $i = $this->active_artist_upload_index;
         $existing = $this->participating_artists[$i]['images'] ?? [];
         foreach ((array)$this->artist_images_upload as $file) {
@@ -194,6 +214,16 @@ class ApplicationForm extends Component
 
     public function updatedExhibitionImagesUpload()
     {
+        try {
+            $this->validate([
+                'exhibition_images_upload.*' => 'image|mimes:jpeg,jpg,png,webp|max:5120',
+            ]);
+        } catch (\Illuminate\Validation\ValidationException) {
+            $this->exhibition_images_upload = [];
+            $this->dispatch('toast', message: 'Invalid file. Please use JPG, PNG or WEBP under 5MB.', type: 'error');
+            return;
+        }
+
         $i = $this->active_exhibition_upload_index;
         $existing = $this->exhibitions[$i]['images'] ?? [];
         foreach ((array)$this->exhibition_images_upload as $file) {
