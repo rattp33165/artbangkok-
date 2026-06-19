@@ -5,6 +5,7 @@ namespace App\Livewire;
 use App\Models\User;
 use Livewire\Component;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\RateLimiter;
 
 class SignUp extends Component
 {
@@ -26,7 +27,17 @@ class SignUp extends Component
 
     public function submit()
     {
+        $key = 'sign-up:' . request()->ip();
+
+        if (RateLimiter::tooManyAttempts($key, 5)) {
+            $seconds = RateLimiter::availableIn($key);
+            $this->addError('email', "Too many attempts. Please try again in {$seconds} seconds.");
+            return;
+        }
+
         $this->validate();
+
+        RateLimiter::hit($key, 60);
 
         $user = User::create([
             'name'     => $this->name,
