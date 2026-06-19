@@ -77,14 +77,25 @@ class AdminApplicationReview extends Component
         }
 
         $this->application->update([
-            'status'        => 'draft',
+            'status'         => 'draft',
             'edit_requested' => false,
-            'reviewed_by'   => auth()->id(),
-            'reviewed_at'   => now(),
+            'reviewed_by'    => auth()->id(),
+            'reviewed_at'    => now(),
         ]);
 
         $this->application->refresh();
         $this->dispatch('toast', message: 'Edit request approved. Application unlocked for editing.', type: 'success');
+    }
+
+    public function rejectEditRequest(): void
+    {
+        if ($this->application->status !== 'approved' || !$this->application->edit_requested) {
+            return;
+        }
+
+        $this->application->update(['edit_requested' => false]);
+        $this->application->refresh();
+        $this->dispatch('toast', message: 'Edit request rejected.', type: 'info');
     }
 
     public function render(): View

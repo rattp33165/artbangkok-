@@ -467,12 +467,20 @@
                             <p class="text-xs text-yellow-600 mt-0.5">Applicant has requested permission to edit their approved application.</p>
                         </div>
                     </div>
-                    <button wire:click="approveEditRequest"
-                            wire:loading.attr="disabled"
-                            class="mt-2.5 w-full text-xs py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 transition disabled:opacity-60">
-                        <span wire:loading.remove wire:target="approveEditRequest">Approve Edit Request</span>
-                        <span wire:loading wire:target="approveEditRequest">Processing…</span>
-                    </button>
+                    <div class="mt-2.5 flex gap-2">
+                        <button wire:click="rejectEditRequest"
+                                wire:loading.attr="disabled"
+                                class="flex-1 text-xs py-2 border border-gray-200 text-gray-600 rounded-lg hover:border-gray-400 transition disabled:opacity-60">
+                            <span wire:loading.remove wire:target="rejectEditRequest">Reject</span>
+                            <span wire:loading wire:target="rejectEditRequest">Processing…</span>
+                        </button>
+                        <button wire:click="approveEditRequest"
+                                wire:loading.attr="disabled"
+                                class="flex-1 text-xs py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 transition disabled:opacity-60">
+                            <span wire:loading.remove wire:target="approveEditRequest">Approve</span>
+                            <span wire:loading wire:target="approveEditRequest">Processing…</span>
+                        </button>
+                    </div>
                 </div>
                 @endif
 
