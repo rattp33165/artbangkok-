@@ -32,6 +32,7 @@ class SignUp extends Component
             'name'     => $this->name,
             'email'    => $this->email,
             'password' => bcrypt($this->password),
+            'role'     => 'gallery',
         ]);
 
         Auth::login($user);

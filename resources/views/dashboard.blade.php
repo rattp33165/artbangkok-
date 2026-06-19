@@ -21,7 +21,8 @@
                     </div>
                     <p class="font-semibold text-sm text-black">{{ Auth::user()->name }}</p>
                     <p class="text-xs text-gray-400 mt-0.5">
-                        {{ Auth::user()->gallery_type === 'international' ? 'International Gallery' : (Auth::user()->gallery_type === 'thai' ? 'Thai Gallery' : 'Gallery') }}
+                        @php $sidebarGalleryType = Auth::user()->application?->gallery_type; @endphp
+                        {{ $sidebarGalleryType === 'international' ? 'International Gallery' : ($sidebarGalleryType === 'thai' ? 'Thai Gallery' : 'Gallery') }}
                     </p>
                 </div>
 
@@ -239,6 +240,12 @@
                                 <p class="text-xs text-gray-500 mt-0.5 leading-relaxed">{{ $statusInfo['body'] }}</p>
                                 @if($app?->reviewed_at && in_array($currentStatus, ['approved', 'rejected', 'under_review']))
                                 <p class="text-xs text-gray-400 mt-1.5">{{ $app->reviewed_at->format('d M Y, H:i') }}</p>
+                                @endif
+                                @if($currentStatus === 'rejected' && $app?->admin_notes)
+                                <div class="mt-3 pt-3 border-t border-red-200">
+                                    <p class="text-xs font-semibold text-red-600 mb-1">Feedback from our team</p>
+                                    <p class="text-xs text-gray-600 leading-relaxed whitespace-pre-line">{{ $app->admin_notes }}</p>
+                                </div>
                                 @endif
                             </div>
                         </div>

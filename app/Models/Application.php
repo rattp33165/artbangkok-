@@ -3,9 +3,12 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Application extends Model
 {
+    use SoftDeletes;
+
     protected $fillable = [
         'user_id', 'status', 'reviewed_by', 'reviewed_at', 'admin_notes', 'edit_requested', 'completion_percent',
         'gallery_type', 'gallery_name', 'year_founded', 'description',

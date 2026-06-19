@@ -511,11 +511,17 @@
                 <h2 class="font-semibold text-black pb-3 mb-3 border-b border-gray-100">Admin Notes</h2>
                 <textarea wire:model="adminNotes"
                           rows="6"
-                          placeholder="Internal notes (not visible to applicant)..."
+                          placeholder="Notes for internal use or feedback to applicant..."
                           class="w-full text-sm border border-gray-200 rounded-xl p-3 focus:outline-none focus:border-black transition resize-none"></textarea>
+                <p class="text-xs text-gray-400 mt-2 flex items-center gap-1">
+                    <svg class="w-3.5 h-3.5 text-red-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    Notes will be shown to the applicant if the application is rejected.
+                </p>
                 <button wire:click="saveNotes"
                         wire:loading.attr="disabled"
-                        class="mt-2 w-full text-sm py-2.5 bg-black text-white rounded-xl hover:bg-gray-800 transition disabled:opacity-60">
+                        class="mt-3 w-full text-sm py-2.5 bg-black text-white rounded-xl hover:bg-gray-800 transition disabled:opacity-60">
                     <span wire:loading.remove wire:target="saveNotes">Save Notes</span>
                     <span wire:loading wire:target="saveNotes">Saving…</span>
                 </button>

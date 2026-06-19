@@ -734,7 +734,11 @@ class ApplicationForm extends Component
             return;
         }
 
-        $this->application->update($this->allApplicationData() + ['status' => 'submitted']);
+        $this->application->update($this->allApplicationData() + [
+            'status'      => 'submitted',
+            'reviewed_at' => null,
+            'reviewed_by' => null,
+        ]);
         $this->incompleteSections = [];
         $this->updateProgress();
         session()->flash('toast', ['message' => 'Application submitted successfully!', 'type' => 'success']);

@@ -3,6 +3,7 @@
 namespace App\Livewire;
 
 use App\Models\User;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -62,7 +63,10 @@ class AdminUserManager extends Component
             return;
         }
 
-        User::findOrFail($this->confirmDeleteId)->delete();
+        $user = User::findOrFail($this->confirmDeleteId);
+        Storage::disk('public')->deleteDirectory('profiles/' . $user->id);
+        Storage::disk('public')->deleteDirectory('applications/' . $user->id);
+        $user->delete();
         $this->cancelDelete();
         $this->dispatch('toast', message: 'User deleted successfully.', type: 'success');
     }
