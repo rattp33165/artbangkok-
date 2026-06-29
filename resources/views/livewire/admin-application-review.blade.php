@@ -1,4 +1,26 @@
-<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6"
+     x-data="{
+         open: false,
+         images: [],
+         index: 0,
+         get current() { return this.images[this.index] ?? '' },
+         show(imgs, i) { this.images = imgs; this.index = i; this.open = true },
+         prev() { this.index = (this.index - 1 + this.images.length) % this.images.length },
+         next() { this.index = (this.index + 1) % this.images.length },
+         async download() {
+             try {
+                 const res = await fetch(this.current);
+                 const blob = await res.blob();
+                 const a = document.createElement('a');
+                 a.href = URL.createObjectURL(blob);
+                 a.download = this.current.split('/').pop();
+                 document.body.appendChild(a);
+                 a.click();
+                 document.body.removeChild(a);
+                 URL.revokeObjectURL(a.href);
+             } catch(e) { window.open(this.current, '_blank') }
+         }
+     }">
 
     {{-- ─────────────────── LEFT: Application Data ─────────────────── --}}
     <div class="lg:col-span-2 space-y-5">
@@ -83,12 +105,18 @@
                     @endforeach
                 </dl>
                 @if(!empty($this->application->gallery_images))
+                @php $galleryUrls = collect($this->application->gallery_images)->map(fn($p) => Storage::url($p))->values()->toArray(); @endphp
                 <div>
                     <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">Gallery Images</p>
                     <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                        @foreach($this->application->gallery_images as $img)
-                        <div class="aspect-video bg-gray-50 rounded-xl overflow-hidden">
-                            <img src="{{ Storage::url($img) }}" class="w-full h-full object-cover" alt="" loading="lazy">
+                        @foreach($this->application->gallery_images as $imgIdx => $img)
+                        <div class="aspect-video bg-gray-50 rounded-xl overflow-hidden cursor-pointer group relative"
+                             data-imgs="{{ json_encode($galleryUrls) }}"
+                             x-on:click="show(JSON.parse($el.dataset.imgs), {{ $imgIdx }})">
+                            <img src="{{ Storage::url($img) }}" class="w-full h-full object-cover group-hover:opacity-90 transition" alt="" loading="lazy">
+                            <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 bg-black/20 transition">
+                                <svg class="w-6 h-6 text-white drop-shadow" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                            </div>
                         </div>
                         @endforeach
                     </div>
@@ -293,6 +321,24 @@
                         @endif
                     @endif
                     @endforeach
+                    @if(!empty($artist['images']))
+                    @php $artistUrls = collect($artist['images'])->map(fn($p) => Storage::url($p))->values()->toArray(); @endphp
+                    <div class="sm:col-span-2 mt-2">
+                        <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Artwork Images</p>
+                        <div class="grid grid-cols-3 gap-2">
+                            @foreach($artist['images'] as $imgIdx => $img)
+                            <div class="aspect-video bg-gray-100 rounded-lg overflow-hidden cursor-pointer group relative"
+                                 data-imgs="{{ json_encode($artistUrls) }}"
+                                 x-on:click="show(JSON.parse($el.dataset.imgs), {{ $imgIdx }})">
+                                <img src="{{ Storage::url($img) }}" class="w-full h-full object-cover group-hover:opacity-90 transition" loading="lazy">
+                                <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 bg-black/20 transition">
+                                    <svg class="w-5 h-5 text-white drop-shadow" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                                </div>
+                            </div>
+                            @endforeach
+                        </div>
+                    </div>
+                    @endif
                 </div>
                 @else
                 <p class="text-sm text-gray-700 py-1">{{ $artist }}</p>
@@ -359,6 +405,24 @@
                         @endif
                     @endif
                     @endforeach
+                    @if(!empty($ex['images']))
+                    @php $exUrls = collect($ex['images'])->map(fn($p) => Storage::url($p))->values()->toArray(); @endphp
+                    <div class="sm:col-span-2 mt-2">
+                        <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Exhibition Images</p>
+                        <div class="grid grid-cols-3 gap-2">
+                            @foreach($ex['images'] as $imgIdx => $img)
+                            <div class="aspect-video bg-gray-100 rounded-lg overflow-hidden cursor-pointer group relative"
+                                 data-imgs="{{ json_encode($exUrls) }}"
+                                 x-on:click="show(JSON.parse($el.dataset.imgs), {{ $imgIdx }})">
+                                <img src="{{ Storage::url($img) }}" class="w-full h-full object-cover group-hover:opacity-90 transition" loading="lazy">
+                                <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 bg-black/20 transition">
+                                    <svg class="w-5 h-5 text-white drop-shadow" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                                </div>
+                            </div>
+                            @endforeach
+                        </div>
+                    </div>
+                    @endif
                 </div>
                 @else
                 <p class="text-sm text-gray-700 py-1">{{ $ex }}</p>
@@ -536,6 +600,71 @@
             </div>
 
 
+        </div>
+    </div>
+
+    {{-- ─────────────────── Lightbox Modal ─────────────────── --}}
+    <div x-show="open"
+         x-transition:enter="transition duration-150 ease-out"
+         x-transition:enter-start="opacity-0"
+         x-transition:enter-end="opacity-100"
+         x-transition:leave="transition duration-100 ease-in"
+         x-transition:leave-start="opacity-100"
+         x-transition:leave-end="opacity-0"
+         class="fixed inset-0 z-50 flex items-center justify-center bg-black/85 p-4"
+         @click.self="open = false"
+         @keydown.escape.window="open = false"
+         style="display:none">
+
+        <div class="relative flex flex-col items-center gap-4 max-w-5xl w-full">
+
+            {{-- Close button --}}
+            <button @click="open = false"
+                    class="absolute -top-10 right-0 p-1 text-white/60 hover:text-white transition">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+            </button>
+
+            {{-- Image --}}
+            <img :src="current"
+                 class="max-h-[80vh] max-w-full object-contain rounded-xl shadow-2xl"
+                 alt="">
+
+            {{-- Controls --}}
+            <div class="flex items-center gap-3">
+
+                <button x-show="images.length > 1"
+                        @click="prev"
+                        class="px-3 py-1.5 bg-white/10 hover:bg-white/20 text-white text-sm rounded-lg transition flex items-center gap-1.5">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                    </svg>
+                    Prev
+                </button>
+
+                <span x-show="images.length > 1"
+                      class="text-white/70 text-sm min-w-[3.5rem] text-center"
+                      x-text="(index + 1) + ' / ' + images.length"></span>
+
+                <button x-show="images.length > 1"
+                        @click="next"
+                        class="px-3 py-1.5 bg-white/10 hover:bg-white/20 text-white text-sm rounded-lg transition flex items-center gap-1.5">
+                    Next
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                    </svg>
+                </button>
+
+                <button @click="download()"
+                        class="ml-2 px-3 py-1.5 bg-white text-black text-sm font-medium rounded-lg hover:bg-gray-100 transition flex items-center gap-1.5">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                    </svg>
+                    Download
+                </button>
+
+            </div>
         </div>
     </div>
 

@@ -134,8 +134,9 @@
 
             {{-- Gallery Images --}}
             <div x-data="{ previews: [] }" x-init="$wire.on('gallery-uploaded', () => { previews = [] })">
-                <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
-                    Gallery Images <span class="text-gray-400 normal-case font-normal">(max 3 · JPG, PNG, WEBP · max 5MB each · hover to remove)</span>
+                <label class="block text-xs font-semibold @error('gallery_images') text-red-500 @else text-gray-500 @enderror uppercase tracking-wider mb-2">
+                    Gallery Images <span class="text-red-500">*</span>
+                    <span class="text-gray-400 normal-case font-normal">(max 3 · JPG, PNG, WEBP · max 5MB each · hover to remove)</span>
                 </label>
                 <div class="flex flex-wrap gap-3 mb-3">
                     {{-- Stored images --}}
@@ -171,11 +172,14 @@
                            Array.from($event.target.files).slice(0, remaining).forEach(f => previews.push(URL.createObjectURL(f)));
                        ">
                 <button type="button" @click="$refs.galleryFile.click()"
-                        class="inline-flex items-center gap-2 border border-dashed border-gray-300 hover:border-gray-500 text-sm text-gray-500 hover:text-black rounded-xl px-4 py-2.5 transition">
+                        class="inline-flex items-center gap-2 border border-dashed text-sm rounded-xl px-4 py-2.5 transition @error('gallery_images') border-red-400 text-red-400 bg-red-50 hover:border-red-500 @else border-gray-300 hover:border-gray-500 text-gray-500 hover:text-black @enderror">
                     <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
                     Choose Images
                 </button>
                 @endif
+                @error('gallery_images')
+                <p class="text-xs text-red-500 mt-2">{{ $message }}</p>
+                @enderror
             </div>
 
             <div class="flex justify-end pt-2">
@@ -697,8 +701,9 @@
                 </div>
                 {{-- Artwork Images --}}
                 <div x-data="{ previews: [] }" x-init="$wire.on('artist-uploaded', () => { previews = [] })">
-                    <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
-                        Images of Artwork <span class="text-gray-400 normal-case font-normal">(max 3 · JPG, PNG, WEBP · max 5MB each · hover to remove)</span>
+                    <label class="block text-xs font-semibold @error("participating_artists.{$i}.images") text-red-500 @else text-gray-500 @enderror uppercase tracking-wider mb-2">
+                        Images of Artwork <span class="text-red-500">*</span>
+                        <span class="text-gray-400 normal-case font-normal">(max 3 · JPG, PNG, WEBP · max 5MB each · hover to remove)</span>
                     </label>
                     <div class="flex flex-wrap gap-3 mb-3">
                         @foreach($artist['images'] ?? [] as $imgIdx => $img)
@@ -732,11 +737,14 @@
                            ">
                     <button type="button"
                             @click="$wire.call('prepareArtistUpload', {{ $i }}).then(() => $refs['artistFile{{ $i }}'].click())"
-                            class="inline-flex items-center gap-2 border border-dashed border-gray-300 hover:border-gray-500 text-sm text-gray-500 hover:text-black rounded-xl px-4 py-2.5 transition">
+                            class="inline-flex items-center gap-2 border border-dashed text-sm rounded-xl px-4 py-2.5 transition @error("participating_artists.{$i}.images") border-red-400 text-red-400 bg-red-50 hover:border-red-500 @else border-gray-300 hover:border-gray-500 text-gray-500 hover:text-black @enderror">
                         <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
                         Choose Images
                     </button>
                     @endif
+                    @error("participating_artists.{$i}.images")
+                    <p class="text-xs text-red-500 mt-2">{{ $message }}</p>
+                    @enderror
                 </div>
             </div>
             @endforeach
@@ -887,8 +895,9 @@
                 </div>
                 {{-- Installation Images --}}
                 <div x-data="{ previews: [] }" x-init="$wire.on('exhibition-uploaded', () => { previews = [] })">
-                    <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
-                        Installation Images <span class="text-gray-400 normal-case font-normal">(max 3 · JPG, PNG, WEBP · max 5MB each · hover to remove)</span>
+                    <label class="block text-xs font-semibold @error("exhibitions.{$i}.images") text-red-500 @else text-gray-500 @enderror uppercase tracking-wider mb-2">
+                        Installation Images <span class="text-red-500">*</span>
+                        <span class="text-gray-400 normal-case font-normal">(max 3 · JPG, PNG, WEBP · max 5MB each · hover to remove)</span>
                     </label>
                     <div class="flex flex-wrap gap-3 mb-3">
                         @foreach($exhibition['images'] ?? [] as $imgIdx => $img)
@@ -922,11 +931,14 @@
                            ">
                     <button type="button"
                             @click="$wire.call('prepareExhibitionUpload', {{ $i }}).then(() => $refs['exhibitionFile{{ $i }}'].click())"
-                            class="inline-flex items-center gap-2 border border-dashed border-gray-300 hover:border-gray-500 text-sm text-gray-500 hover:text-black rounded-xl px-4 py-2.5 transition">
+                            class="inline-flex items-center gap-2 border border-dashed text-sm rounded-xl px-4 py-2.5 transition @error("exhibitions.{$i}.images") border-red-400 text-red-400 bg-red-50 hover:border-red-500 @else border-gray-300 hover:border-gray-500 text-gray-500 hover:text-black @enderror">
                         <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
                         Choose Images
                     </button>
                     @endif
+                    @error("exhibitions.{$i}.images")
+                    <p class="text-xs text-red-500 mt-2">{{ $message }}</p>
+                    @enderror
                 </div>
             </div>
             @endforeach

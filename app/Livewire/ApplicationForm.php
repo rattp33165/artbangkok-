@@ -384,8 +384,11 @@ class ApplicationForm extends Component
             'exhibitions.*.date_start'  => 'required|date',
             'exhibitions.*.date_end'    => 'required|date|after_or_equal:exhibitions.*.date_start',
             'exhibitions.*.introduction' => 'required|string|max:5000',
-            'art_fairs.*.name'          => 'required|string|max:255',
-            'art_fairs.*.year'          => 'required|integer|min:2000|max:' . date('Y'),
+            'gallery_images'                 => 'required|array|min:1',
+            'participating_artists.*.images' => 'required|array|min:1',
+            'exhibitions.*.images'           => 'required|array|min:1',
+            'art_fairs.*.name'               => 'required|string|max:255',
+            'art_fairs.*.year'               => 'required|integer|min:2000|max:' . date('Y'),
         ];
     }
 
@@ -432,15 +435,18 @@ class ApplicationForm extends Component
             'exhibitions.*.date_start'   => 'Start Date',
             'exhibitions.*.date_end'     => 'End Date',
             'exhibitions.*.introduction' => 'Exhibition Introduction',
-            'art_fairs.*.name'           => 'Art Fair Name',
-            'art_fairs.*.year'           => 'Art Fair Year',
+            'gallery_images'                 => 'Gallery Images',
+            'participating_artists.*.images' => 'Artist Images',
+            'exhibitions.*.images'           => 'Exhibition Images',
+            'art_fairs.*.name'               => 'Art Fair Name',
+            'art_fairs.*.year'               => 'Art Fair Year',
         ];
     }
 
     private function sectionsFromErrors(array $errorKeys): array
     {
         $map = [
-            'section-gallery'       => ['gallery_type', 'gallery_name', 'year_founded', 'description', 'website_url', 'gallery_email', 'phone', 'instagram', 'facebook'],
+            'section-gallery'       => ['gallery_type', 'gallery_name', 'year_founded', 'description', 'website_url', 'gallery_email', 'phone', 'instagram', 'facebook', 'gallery_images'],
             'section-business'      => ['business_name', 'business_license'],
             'section-office'        => ['head_office_gallery_name', 'office_country', 'office_city', 'office_zipcode', 'office_address', 'director_name', 'director_phone', 'director_email'],
             'section-branches'      => ['branches'],
@@ -478,6 +484,7 @@ class ApplicationForm extends Component
             'phone'                    => $this->phone ?: null,
             'instagram'                => $this->instagram ?: null,
             'facebook'                 => $this->facebook ?: null,
+            'gallery_images'           => $this->gallery_images ?? [],
             'business_name'            => $this->business_name ?: null,
             'business_license'         => $this->business_license ?: null,
             'head_office_gallery_name' => $this->head_office_gallery_name ?: null,
@@ -757,9 +764,8 @@ class ApplicationForm extends Component
                 'section-fairs'         => 'Art Fairs',
             ];
             $names = array_map(fn($s) => $sectionLabels[$s] ?? $s, $this->incompleteSections);
-            $message = 'Please fix errors in: ' . implode(', ', $names);
 
-            $this->dispatch('toast', message: $message, type: 'error');
+            $this->dispatch('toast', message: 'Please complete the following sections:', lines: $names, type: 'error');
             $this->dispatch('scroll-to-error', sectionId: $this->incompleteSections[0] ?? null);
             return;
         }

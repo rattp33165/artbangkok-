@@ -61,7 +61,7 @@
             add(toast) {
                 const id = Date.now();
                 this.toasts.push({ id, ...toast });
-                setTimeout(() => this.remove(id), 4000);
+                setTimeout(() => this.remove(id), toast.lines ? 7000 : 4000);
             },
             remove(id) {
                 this.toasts = this.toasts.filter(t => t.id !== id);
@@ -100,7 +100,24 @@
                     x-text="({'success':'✓','error':'✕','info':'ℹ','warning':'⚠'})[toast.type] ?? 'ℹ'"
                     class="text-base leading-none flex-shrink-0 font-bold"
                 ></span>
-                <span x-text="toast.message" class="flex-1"></span>
+                <div class="flex-1 min-w-0">
+                    <template x-if="!toast.lines">
+                        <span x-text="toast.message"></span>
+                    </template>
+                    <template x-if="toast.lines">
+                        <div>
+                            <p x-text="toast.message" class="font-medium mb-1.5"></p>
+                            <ul class="space-y-0.5">
+                                <template x-for="line in toast.lines" :key="line">
+                                    <li class="flex items-start gap-1.5 text-xs text-gray-600">
+                                        <span class="flex-shrink-0 mt-px">•</span>
+                                        <span x-text="line"></span>
+                                    </li>
+                                </template>
+                            </ul>
+                        </div>
+                    </template>
+                </div>
                 <button
                     @click="remove(toast.id)"
                     class="text-gray-300 hover:text-gray-500 ml-1 flex-shrink-0 transition"
