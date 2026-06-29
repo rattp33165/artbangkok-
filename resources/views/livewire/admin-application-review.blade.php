@@ -302,16 +302,19 @@
                     @foreach($artist as $key => $val)
                     @if(!is_null($val) && $val !== '' && !is_array($val))
                         @if($key === 'introduction')
-                        <div class="sm:col-span-2" x-data="{ open: false }">
+                        <div class="sm:col-span-2"
+                             x-data="{ open: false, clamped: false }"
+                             x-init="$nextTick(() => { clamped = $refs.introText.scrollHeight > $refs.introText.clientHeight })">
                             <dt class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Introduction</dt>
                             <dd class="text-sm text-gray-700 leading-relaxed"
+                                x-ref="introText"
                                 :class="open ? '' : 'line-clamp-3'">{{ $val }}</dd>
-                            @if(strlen($val) > 180)
-                            <button @click="open = !open"
-                                    class="mt-1.5 text-xs text-gray-400 hover:text-black transition">
+                            <button x-show="clamped || open"
+                                    @click="open = !open"
+                                    class="mt-1.5 text-xs text-gray-400 hover:text-black transition"
+                                    style="display:none;">
                                 <span x-text="open ? 'Show less ↑' : 'Show more ↓'"></span>
                             </button>
-                            @endif
                         </div>
                         @else
                         <div>
@@ -386,16 +389,19 @@
                     @foreach($ex as $key => $val)
                     @if(!is_null($val) && $val !== '' && !is_array($val))
                         @if($key === 'introduction')
-                        <div class="sm:col-span-2" x-data="{ open: false }">
+                        <div class="sm:col-span-2"
+                             x-data="{ open: false, clamped: false }"
+                             x-init="$nextTick(() => { clamped = $refs.introText.scrollHeight > $refs.introText.clientHeight })">
                             <dt class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Introduction</dt>
                             <dd class="text-sm text-gray-700 leading-relaxed"
+                                x-ref="introText"
                                 :class="open ? '' : 'line-clamp-3'">{{ $val }}</dd>
-                            @if(strlen($val) > 180)
-                            <button @click="open = !open"
-                                    class="mt-1.5 text-xs text-gray-400 hover:text-black transition">
+                            <button x-show="clamped || open"
+                                    @click="open = !open"
+                                    class="mt-1.5 text-xs text-gray-400 hover:text-black transition"
+                                    style="display:none;">
                                 <span x-text="open ? 'Show less ↑' : 'Show more ↓'"></span>
                             </button>
-                            @endif
                         </div>
                         @else
                         <div>
