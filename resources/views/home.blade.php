@@ -13,24 +13,10 @@
         <div class="grid grid-cols-1 lg:grid-cols-5 gap-12 lg:gap-0">
 
             {{-- Left: Why text --}}
-            <div class="lg:col-span-2 lg:pr-12">
-                <h2 class="text-2xl md:text-3xl font-bold text-black font-['agenda-one'] leading-snug mb-6">
-                    Why The First Chapter?
+            <div class="lg:col-span-2 lg:pr-12 flex items-center justify-center">
+                <h2 class="text-2xl md:text-3xl font-bold text-black font-['agenda-one'] leading-snug">
+                    The First Chapter
                 </h2>
-                <p class="text-sm leading-relaxed">
-                    <span class="block font-bold text-black lowercase mt-6 mb-3">
-                        first steps into the world of collecting.
-                    </span>
-                    <span class="font-light text-gray-500">
-                        not just as a starting point for beginners, but also as the Origin of Meaning.
-                    </span>
-                    <span class="block font-bold text-black mt-3 mb-3">
-                        It is a return to the origin the moment art begins to matter personally to an individual.
-                    </span>
-                    <span class="font-light text-gray-500">
-                        We reject the standard art market ranking. Instead, we focus on the raw curiosity and the first spark that ignites a collector's journey.
-                    </span>
-                </p>
             </div>
 
             {{-- Right: 3 Feature Columns --}}

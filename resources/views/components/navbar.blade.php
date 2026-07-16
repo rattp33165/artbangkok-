@@ -2,14 +2,13 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
 
         {{-- Logo --}}
-        <a href="{{ auth()->check() ? route('dashboard') : route('sign-in') }}" class="flex items-center flex-shrink-0">
+        <a href="{{ route('home') }}" class="flex items-center flex-shrink-0">
             <img src="{{ asset('images/Logo-art_bangkok-b.png') }}"
                  alt="Art Bangkok"
                  class="h-6 w-auto">
         </a>
 
-        {{--
-        Desktop Menu — uncomment to restore
+        {{-- Desktop Menu --}}
         @php
             $navLink = 'text-xs tracking-widest uppercase transition';
             $active  = 'text-black font-semibold border-b border-black pb-0.5';
@@ -23,13 +22,12 @@
             <a href="{{ route('visitor-information') }}"
                class="{{ $navLink }} {{ request()->routeIs('visitor-information') ? $active : $inactive }}">Visitor Information</a>
             <a href="{{ route('fair-and-event') }}"
-               class="{{ $navLink }} {{ request()->routeIs('fair-and-event') ? $active : $inactive }}">Fair & Event</a>
+               class="{{ $navLink }} {{ request()->routeIs('fair-and-event') ? $active : $inactive }}">Zone & Activity</a>
             <a href="{{ route('exhibitors') }}"
                class="{{ $navLink }} {{ request()->routeIs('exhibitors') ? $active : $inactive }}">Exhibitors & Application</a>
             <a href="{{ route('ticket') }}"
                class="{{ $navLink }} {{ request()->routeIs('ticket') ? $active : $inactive }}">Ticket</a>
         </div>
-        --}}
 
         {{-- Right Side --}}
         <div class="flex items-center gap-3">
@@ -123,8 +121,7 @@
                 </a>
 
             @else
-                {{--
-                Sign In / Sign Up — uncomment to restore
+                {{-- Sign In / Sign Up --}}
                 <a href="{{ route('sign-in') }}"
                    class="hidden lg:block text-xs px-5 py-2 rounded-full border border-gray-300 text-gray-700 hover:border-gray-500 hover:text-black transition tracking-wide">
                     Sign In
@@ -133,23 +130,19 @@
                    class="hidden lg:block bg-black text-white text-xs px-5 py-2 rounded-full hover:bg-gray-800 transition tracking-wide">
                     Sign Up
                 </a>
-                --}}
             @endauth
 
-            {{--
-            Hamburger — uncomment to restore
+            {{-- Hamburger --}}
             <button @click="mobileOpen = !mobileOpen"
                     class="lg:hidden flex flex-col gap-1.5 p-2 -mr-2">
                 <span class="w-5 h-0.5 bg-black block transition-all" :class="mobileOpen ? 'rotate-45 translate-y-2' : ''"></span>
                 <span class="w-5 h-0.5 bg-black block transition-all" :class="mobileOpen ? 'opacity-0' : ''"></span>
                 <span class="w-5 h-0.5 bg-black block transition-all" :class="mobileOpen ? '-rotate-45 -translate-y-2' : ''"></span>
             </button>
-            --}}
         </div>
     </div>
 
-    {{--
-    Mobile Menu — uncomment to restore
+    {{-- Mobile Menu --}}
     <div x-show="mobileOpen"
          x-transition:enter="transition ease-out duration-200"
          x-transition:enter-start="opacity-0 -translate-y-2"
@@ -165,7 +158,7 @@
             <a href="{{ route('about') }}" class="{{ $mobileLink }} {{ request()->routeIs('about') ? 'text-black font-semibold bg-gray-50' : 'text-gray-700 hover:bg-gray-50' }}">About</a>
             <a href="{{ route('exhibition-preview') }}" class="{{ $mobileLink }} {{ request()->routeIs('exhibition-preview') ? 'text-black font-semibold bg-gray-50' : 'text-gray-700 hover:bg-gray-50' }}">Exhibition Preview</a>
             <a href="{{ route('visitor-information') }}" class="{{ $mobileLink }} {{ request()->routeIs('visitor-information') ? 'text-black font-semibold bg-gray-50' : 'text-gray-700 hover:bg-gray-50' }}">Visitor Information</a>
-            <a href="{{ route('fair-and-event') }}" class="{{ $mobileLink }} {{ request()->routeIs('fair-and-event') ? 'text-black font-semibold bg-gray-50' : 'text-gray-700 hover:bg-gray-50' }}">Fair & Event</a>
+            <a href="{{ route('fair-and-event') }}" class="{{ $mobileLink }} {{ request()->routeIs('fair-and-event') ? 'text-black font-semibold bg-gray-50' : 'text-gray-700 hover:bg-gray-50' }}">Zone & Activity</a>
             <a href="{{ route('exhibitors') }}" class="{{ $mobileLink }} {{ request()->routeIs('exhibitors') ? 'text-black font-semibold bg-gray-50' : 'text-gray-700 hover:bg-gray-50' }}">Exhibitors & Application</a>
             <a href="{{ route('ticket') }}" class="{{ $mobileLink }} {{ request()->routeIs('ticket') ? 'text-black font-semibold bg-gray-50' : 'text-gray-700 hover:bg-gray-50' }}">Ticket</a>
             <div class="border-t border-gray-100 mt-2 pt-2">
@@ -213,5 +206,4 @@
             </div>
         </div>
     </div>
-    --}}
 </nav>

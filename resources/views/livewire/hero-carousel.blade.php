@@ -38,15 +38,21 @@
             </div>
         </div>
         @empty
-        <div class="absolute inset-0 bg-black flex items-end p-10 md:p-16">
-            <div>
-                <p class="text-gray-400 tracking-[0.3em] uppercase text-xs mb-4">Bangkok · Thailand · 2026</p>
-                <h1 class="text-5xl md:text-7xl font-bold text-white font-['agenda-one'] leading-tight">
-                    Art Bangkok<br>2026
-                </h1>
-            </div>
-        </div>
+        <div class="absolute inset-0 bg-black"></div>
         @endforelse
+
+        {{-- Centered Logo & Event Info Overlay --}}
+        <div class="absolute inset-0 z-20 flex flex-col items-center justify-center pointer-events-none select-none">
+            <img src="{{ asset('images/Logo-art_bangkok-w.png') }}"
+                 alt="Art Bangkok"
+                 class="h-20 md:h-28 w-auto mb-6 drop-shadow-lg">
+            <p class="text-white text-xs md:text-sm tracking-[0.25em] uppercase font-light drop-shadow">
+                7 Oct 26 &mdash; Invitation
+            </p>
+            <p class="text-white text-xs md:text-sm tracking-[0.25em] uppercase font-light drop-shadow mt-1.5">
+                8 &ndash; 11 Oct 26 &mdash; Public ( Ticket Required )
+            </p>
+        </div>
 
         {{-- Manage Slides (admin only) --}}
         @auth
