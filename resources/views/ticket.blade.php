@@ -6,7 +6,7 @@
 <div class="pt-28 pb-24 max-w-7xl mx-auto px-4 sm:px-6">
 
     {{-- H1 & Subtitle --}}
-    <h1 class="text-4xl md:text-5xl font-bold text-black tracking-wide uppercase font-['agenda-one'] mb-4">
+    <h1 class="text-2xl md:text-3xl font-bold text-black tracking-wide uppercase font-['agenda-one'] mb-4">
         Ticket Information
     </h1>
     <p class="text-sm font-light text-gray-500 max-w-2xl leading-relaxed mb-16">

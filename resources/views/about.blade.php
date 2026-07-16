@@ -6,13 +6,13 @@
 <div class="pt-28 max-w-7xl mx-auto px-4 sm:px-6">
 
     {{-- Header --}}
-    <div class="mb-8 flex items-end gap-6">
-        <h1 class="text-4xl md:text-6xl font-light text-black font-['agenda-one'] leading-tight">
+    <div class="mb-4 flex items-center gap-4">
+        <h1 class="text-3xl md:text-4xl font-bold text-black font-['agenda-one'] leading-tight">
             About
         </h1>
         <img src="{{ asset('images/Logo-art_bangkok-b.png') }}"
              alt="Art Bangkok"
-             class="h-8 md:h-12 w-auto pb-2">
+             class="h-6 md:h-8 w-auto pt-2">
     </div>
 
     {{-- Horizontal Divider --}}

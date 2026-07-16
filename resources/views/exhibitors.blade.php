@@ -13,7 +13,7 @@
             </svg>
             Gallery Application
         </a>
-        <h1 class="text-4xl md:text-5xl font-bold text-black font-['agenda-one'] uppercase">List of Exhibitors</h1>
+        <h1 class="text-2xl md:text-3xl font-bold text-black font-['agenda-one'] uppercase">List of Exhibitors</h1>
         <a href="{{ auth()->check() ? route('dashboard') : route('sign-in') }}"
            class="hidden sm:inline-flex flex-shrink-0 items-center gap-2 bg-black text-white text-xs font-semibold tracking-widest uppercase px-5 py-3 rounded-xl hover:bg-gray-800 transition">
             <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
