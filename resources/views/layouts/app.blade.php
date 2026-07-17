@@ -9,13 +9,13 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @livewireStyles
 </head>
-<body class="bg-white font-['agenda-one']">
+<body class="bg-white font-['agenda-one'] min-h-screen flex flex-col">
 
     {{-- Navbar --}}
     @include('components.navbar')
 
     {{-- Main Content --}}
-    <main>
+    <main class="flex-1">
         @yield('content')
     </main>
 
