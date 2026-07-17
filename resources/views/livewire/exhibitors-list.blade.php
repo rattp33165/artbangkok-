@@ -1,6 +1,6 @@
 <div>
     {{-- Search --}}
-    <form wire:submit.prevent="$refresh" class="max-w-md mb-12">
+    <form wire:submit.prevent="$refresh" class="mb-12">
         <div class="relative flex gap-2">
             <div class="relative flex-1">
                 <input wire:model="search"
