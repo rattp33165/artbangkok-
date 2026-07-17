@@ -16,14 +16,6 @@ Route::get('/about', function () {
     return view('about');
 })->name('about');
 
-Route::get('/exhibition-preview', function () {
-    return view('exhibition-preview');
-})->name('exhibition-preview');
-
-Route::get('/visitor-information', function () {
-    return view('visitor-information');
-})->name('visitor-information');
-
 Route::get('/fair-and-event', function () {
     return view('fair-and-event');
 })->name('fair-and-event');

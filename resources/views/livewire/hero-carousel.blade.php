@@ -20,7 +20,7 @@
              :class="{{ $i }} === current ? 'opacity-100 z-10' : 'opacity-0 z-0'">
             @if($slide->image_path)
                 <img src="{{ Storage::url($slide->image_path) }}"
-                     class="absolute inset-0 w-full h-full object-contain">
+                     class="absolute inset-0 w-full h-full object-cover">
             @else
                 <div class="absolute inset-0 bg-black"></div>
             @endif

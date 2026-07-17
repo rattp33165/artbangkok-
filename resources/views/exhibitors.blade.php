@@ -24,6 +24,7 @@
     </div>
 
     <div class="w-full h-px bg-black mb-12"></div>
-    <p class="text-sm font-light text-gray-400">Content coming soon.</p>
+
+    @livewire('exhibitors-list')
 </div>
 @endsection

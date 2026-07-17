@@ -15,18 +15,16 @@
             $inactive = 'text-gray-700 hover:text-black';
         @endphp
         <div class="hidden lg:flex items-center gap-6">
+            <a href="{{ route('home') }}"
+               class="{{ $navLink }} {{ request()->routeIs('home') ? $active : $inactive }}">Home</a>
             <a href="{{ route('about') }}"
                class="{{ $navLink }} {{ request()->routeIs('about') ? $active : $inactive }}">About</a>
-            <a href="{{ route('exhibition-preview') }}"
-               class="{{ $navLink }} {{ request()->routeIs('exhibition-preview') ? $active : $inactive }}">Exhibition Preview</a>
-            <a href="{{ route('visitor-information') }}"
-               class="{{ $navLink }} {{ request()->routeIs('visitor-information') ? $active : $inactive }}">Visitor Information</a>
             <a href="{{ route('fair-and-event') }}"
                class="{{ $navLink }} {{ request()->routeIs('fair-and-event') ? $active : $inactive }}">Zone & Activity</a>
-            <a href="{{ route('exhibitors') }}"
-               class="{{ $navLink }} {{ request()->routeIs('exhibitors') ? $active : $inactive }}">Exhibitors & Application</a>
             <a href="{{ route('ticket') }}"
                class="{{ $navLink }} {{ request()->routeIs('ticket') ? $active : $inactive }}">Ticket</a>
+            <a href="{{ route('exhibitors') }}"
+               class="{{ $navLink }} {{ request()->routeIs('exhibitors') ? $active : $inactive }}">Exhibitors & Application</a>
         </div>
 
         {{-- Right Side --}}
@@ -155,12 +153,11 @@
 
         <div class="flex flex-col gap-1">
             @php $mobileLink = 'px-3 py-3 text-sm rounded-xl uppercase tracking-widest transition'; @endphp
+            <a href="{{ route('home') }}" class="{{ $mobileLink }} {{ request()->routeIs('home') ? 'text-black font-semibold bg-gray-50' : 'text-gray-700 hover:bg-gray-50' }}">Home</a>
             <a href="{{ route('about') }}" class="{{ $mobileLink }} {{ request()->routeIs('about') ? 'text-black font-semibold bg-gray-50' : 'text-gray-700 hover:bg-gray-50' }}">About</a>
-            <a href="{{ route('exhibition-preview') }}" class="{{ $mobileLink }} {{ request()->routeIs('exhibition-preview') ? 'text-black font-semibold bg-gray-50' : 'text-gray-700 hover:bg-gray-50' }}">Exhibition Preview</a>
-            <a href="{{ route('visitor-information') }}" class="{{ $mobileLink }} {{ request()->routeIs('visitor-information') ? 'text-black font-semibold bg-gray-50' : 'text-gray-700 hover:bg-gray-50' }}">Visitor Information</a>
             <a href="{{ route('fair-and-event') }}" class="{{ $mobileLink }} {{ request()->routeIs('fair-and-event') ? 'text-black font-semibold bg-gray-50' : 'text-gray-700 hover:bg-gray-50' }}">Zone & Activity</a>
-            <a href="{{ route('exhibitors') }}" class="{{ $mobileLink }} {{ request()->routeIs('exhibitors') ? 'text-black font-semibold bg-gray-50' : 'text-gray-700 hover:bg-gray-50' }}">Exhibitors & Application</a>
             <a href="{{ route('ticket') }}" class="{{ $mobileLink }} {{ request()->routeIs('ticket') ? 'text-black font-semibold bg-gray-50' : 'text-gray-700 hover:bg-gray-50' }}">Ticket</a>
+            <a href="{{ route('exhibitors') }}" class="{{ $mobileLink }} {{ request()->routeIs('exhibitors') ? 'text-black font-semibold bg-gray-50' : 'text-gray-700 hover:bg-gray-50' }}">Exhibitors & Application</a>
             <div class="border-t border-gray-100 mt-2 pt-2">
                 @auth
                     <div class="px-3 py-2 mb-1">
