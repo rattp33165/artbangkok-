@@ -7,13 +7,24 @@
                        type="text"
                        placeholder="Search by gallery name..."
                        class="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-black transition bg-white">
-                <svg class="absolute left-3 top-3.5 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg wire:loading.remove wire:target="$refresh" class="absolute left-3 top-3.5 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                </svg>
+                <svg wire:loading wire:target="$refresh" class="absolute left-3 top-3.5 w-4 h-4 text-gray-400 animate-spin" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
                 </svg>
             </div>
             <button type="submit"
-                    class="bg-black text-white text-xs font-semibold tracking-widest uppercase px-6 py-3 rounded-xl hover:bg-gray-800 transition">
-                Search
+                    wire:loading.attr="disabled"
+                    wire:target="$refresh"
+                    class="bg-black text-white text-xs font-semibold tracking-widest uppercase px-6 py-3 rounded-xl hover:bg-gray-800 transition disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2">
+                <svg wire:loading wire:target="$refresh" class="w-3.5 h-3.5 animate-spin" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                </svg>
+                <span wire:loading.remove wire:target="$refresh">Search</span>
+                <span wire:loading wire:target="$refresh">Searching...</span>
             </button>
         </div>
     </form>
