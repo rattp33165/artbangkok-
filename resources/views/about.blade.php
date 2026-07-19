@@ -64,42 +64,42 @@
     <div class="max-w-5xl mx-auto px-4 sm:px-6">
 
         {{-- Desktop: Circular Layout --}}
-        <div class="relative hidden lg:flex items-center justify-center" style="height: 640px;">
+        <div class="relative hidden lg:flex items-center justify-center" style="height: 700px;">
 
             {{-- Center text --}}
-            <div class="relative z-10 text-center" style="max-width: 280px;">
-                <p class="text-xl text-black flex items-end justify-center gap-3 mb-3">
+            <div class="relative z-10 text-center" style="max-width: 340px;">
+                <p class="text-2xl text-black flex items-end justify-center gap-3 mb-3 flex-nowrap whitespace-nowrap">
                     <img src="{{ asset('images/Logo-art_bangkok-b.png') }}"
                          alt="Art Bangkok"
-                         class="h-8 w-auto mb-0.5">
+                         class="h-10 w-auto mb-0.5">
                     serves as a
                 </p>
-                <p class="text-xl text-black mb-3">
+                <p class="text-2xl text-black mb-3">
                     <span class="font-bold italic">Centralized Hub</span> connecting…
                 </p>
-                <p class="text-sm font-light italic text-gray-500 leading-relaxed">
+                <p class="text-base font-light italic text-gray-500 leading-relaxed">
                     …Through a world-class international art fair designed for the future of the Asian art market
                 </p>
             </div>
 
             {{-- Orbiting Circles --}}
-            {{-- Positions based on clock: 9=(-240,0), 11=(-120,-208), 1=(120,-208), 3=(240,0), 5=(120,208), 6=(0,240), 7=(-120,208) --}}
+            {{-- Positions based on clock: 9=(-276,0), 11=(-138,-239), 1=(138,-239), 3=(276,0), 5=(195,195), 6=(0,276), 7=(-195,195) --}}
             @php
             $orbs = [
-                ['label' => 'Galleries',             'x' => -240, 'y' =>    0],
-                ['label' => 'Collectors',            'x' => -120, 'y' => -208],
-                ['label' => 'Creative Economy',      'x' =>  120, 'y' => -208],
-                ['label' => 'Real Estate',           'x' =>  240, 'y' =>    0],
-                ['label' => 'Luxury Brands',         'x' =>  170, 'y' =>  170],
-                ['label' => 'Tourism',               'x' =>    0, 'y' =>  240],
-                ['label' => 'Museum & Institutions', 'x' => -170, 'y' =>  170],
+                ['label' => 'Galleries',             'x' => -276, 'y' =>    0],
+                ['label' => 'Collectors',            'x' => -138, 'y' => -239],
+                ['label' => 'Creative Economy',      'x' =>  138, 'y' => -239],
+                ['label' => 'Real Estate',           'x' =>  276, 'y' =>    0],
+                ['label' => 'Luxury Brands',         'x' =>  195, 'y' =>  195],
+                ['label' => 'Tourism',               'x' =>    0, 'y' =>  276],
+                ['label' => 'Museum & Institutions', 'x' => -195, 'y' =>  195],
             ];
             @endphp
 
             @foreach($orbs as $orb)
             <div class="absolute rounded-full border-2 border-dashed border-black bg-white flex items-center justify-center overflow-hidden"
                  style="width:112px; height:112px; left:50%; top:50%; transform: translate(calc(-50% + {{ $orb['x'] }}px), calc(-50% + {{ $orb['y'] }}px));">
-                <span class="text-xs font-light text-black text-center leading-tight" style="max-width:90px;">{{ $orb['label'] }}</span>
+                <span class="text-base font-light text-black text-center leading-tight" style="max-width:90px;">{{ $orb['label'] }}</span>
             </div>
             @endforeach
 
@@ -107,21 +107,21 @@
 
         {{-- Mobile: Center text + pill grid --}}
         <div class="lg:hidden flex flex-col items-center text-center">
-            <p class="text-xl text-black flex items-end justify-center gap-3 mb-3">
+            <p class="text-2xl text-black flex items-end justify-center gap-3 mb-3 flex-nowrap whitespace-nowrap">
                 <img src="{{ asset('images/Logo-art_bangkok-b.png') }}"
                      alt="Art Bangkok"
-                     class="h-8 w-auto mb-0.5">
+                     class="h-10 w-auto mb-0.5">
                 serves as a
             </p>
-            <p class="text-xl text-black mb-3">
+            <p class="text-2xl text-black mb-3">
                 <span class="font-bold italic">Centralized Hub</span> connecting…
             </p>
-            <p class="text-sm font-light italic text-gray-500 leading-relaxed max-w-sm mb-8">
+            <p class="text-base font-light italic text-gray-500 leading-relaxed max-w-sm mb-8">
                 …Through a world-class international art fair designed for the future of the Asian art market
             </p>
             <div class="flex flex-wrap justify-center gap-3">
                 @foreach(['Galleries', 'Collectors', 'Creative Economy', 'Real Estate', 'Luxury Brands', 'Tourism', 'Museum & Institutions'] as $item)
-                <div class="border-2 border-dashed border-black bg-white rounded-full px-5 py-3 text-xs font-semibold text-black">
+                <div class="border-2 border-dashed border-black bg-white rounded-full px-5 py-3 text-sm font-semibold text-black">
                     {{ $item }}
                 </div>
                 @endforeach
