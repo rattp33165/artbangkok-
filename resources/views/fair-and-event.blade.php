@@ -8,14 +8,14 @@
 
     {{-- Section 1: Hero Banner --}}
     <div class="rounded-3xl overflow-hidden relative h-[400px] md:h-[520px] mb-10"
-         style="background-image: url('{{ asset('images/NEX-HALL.jpg') }}'); background-size: cover; background-position: center;">
+         style="background-image: url('{{ asset('images/zone_activity.jpg') }}'); background-size: cover; background-position: center;">
         <div class="absolute inset-0 bg-black/55"></div>
         <div class="absolute inset-0 flex flex-col items-center justify-center text-center px-6">
             <p class="text-white/90 text-lg md:text-2xl font-semibold tracking-wide mb-3">
-                The fair launches at NEXHALL,
+                The fair launches at
             </p>
             <p class="text-white text-3xl md:text-5xl font-bold font-['agenda-one'] leading-tight">
-                5th floor of Siam Paragon
+                Siam Paragon 5th floor (NEX HALL &amp; JEWEL ZONE)
             </p>
         </div>
     </div>
