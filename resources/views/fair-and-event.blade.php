@@ -20,17 +20,8 @@
         </div>
     </div>
 
-    {{-- Section 2: Floor Plan --}}
-    <div class="bg-white border border-gray-200 rounded-3xl overflow-hidden px-6 md:px-12 py-10 mb-10">
-        <p class="text-center text-base font-medium text-black tracking-wide mb-8">Floor Plan</p>
-        <div class="flex justify-center">
-            <img src="{{ asset('images/Floor-Plan-Nex-Hall.jpg') }}"
-                 alt="Floor Plan NEX HALL"
-                 class="w-full max-w-3xl h-auto object-contain">
-        </div>
-    </div>
-
     {{-- Section 3: Exhibition Zones --}}
+    <h2 class="text-xl md:text-2xl font-bold text-black font-['agenda-one'] uppercase mb-6 text-center">Present in 6 Zone 6 Chapter</h2>
     <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
 
         {{-- Card 1: Gallery Zone --}}
