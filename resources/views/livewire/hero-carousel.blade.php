@@ -24,13 +24,13 @@
             @else
                 <div class="absolute inset-0 bg-black"></div>
             @endif
-            <div class="absolute inset-0 flex items-end p-10 md:p-16">
-                <div class="relative z-10">
+            <div class="absolute inset-0 flex items-end justify-center text-center md:justify-start md:text-left p-6 md:p-16">
+                <div class="relative z-10 w-full md:w-auto">
                     @if($slide->subtitle)
                         <p class="text-gray-500 tracking-[0.3em] uppercase text-xs mb-4">{{ $slide->subtitle }}</p>
                     @endif
                     @if($slide->title)
-                        <h2 class="text-5xl md:text-7xl font-bold text-black font-['agenda-one'] leading-tight">
+                        <h2 class="text-4xl md:text-7xl font-bold text-black font-['agenda-one'] leading-tight">
                             {!! nl2br(e($slide->title)) !!}
                         </h2>
                     @endif
@@ -42,7 +42,7 @@
         @endforelse
 
         {{-- Centered Logo & Event Info Overlay --}}
-        <div class="absolute inset-0 z-20 flex flex-col items-center justify-center pointer-events-none select-none">
+        <div class="absolute inset-0 z-20 flex flex-col items-center justify-center text-center px-4 pointer-events-none select-none">
             <img src="{{ asset('images/Logo-art_bangkok-w.png') }}"
                  alt="Art Bangkok"
                  class="h-20 md:h-28 w-auto mb-6 drop-shadow-lg">
@@ -51,6 +51,9 @@
             </p>
             <p class="text-white text-xs md:text-sm tracking-[0.25em] uppercase font-light drop-shadow mt-1.5">
                 8 &ndash; 11 Oct 26 &mdash; Public ( Ticket Required )
+            </p>
+            <p class="text-white text-xs md:text-sm tracking-[0.25em] uppercase font-light drop-shadow mt-4">
+                Siam Paragon 5th floor (NEX HALL &amp; JEWEL ZONE)
             </p>
         </div>
 
