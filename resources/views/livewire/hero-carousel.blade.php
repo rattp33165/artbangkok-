@@ -45,7 +45,7 @@
         <div class="absolute inset-0 z-20 flex flex-col items-center justify-center text-center px-4 pointer-events-none select-none">
             <img src="{{ asset('images/Logo-art_bangkok-w.png') }}"
                  alt="Art Bangkok"
-                 class="h-20 md:h-28 w-auto mb-6 drop-shadow-lg">
+                 class="h-auto w-64 md:w-auto md:h-28 max-w-full object-contain mb-6 drop-shadow-lg">
             <p class="text-white text-xs md:text-sm tracking-[0.25em] uppercase font-light drop-shadow">
                 7 Oct 26 &mdash; Invitation
             </p>
