@@ -1,7 +1,7 @@
 <footer class="bg-black text-white">
     <div class="max-w-7xl mx-auto px-6 py-10">
 
-        <div class="grid grid-cols-2 gap-6">
+        <div class="flex flex-wrap justify-end gap-10 sm:gap-16">
 
             {{-- Column 1: The Company & Address (temporarily hidden)
             <div>
