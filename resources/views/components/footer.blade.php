@@ -26,7 +26,7 @@
             <div class="px-6">
                 <h4 class="text-white text-sm font-bold mb-4">Contact Us</h4>
                 <p class="text-gray-400 text-sm">info@artbangkok.org</p>
-                <p class="text-gray-400 text-sm mt-1">+66 2 000 0000</p>
+                {{-- <p class="text-gray-400 text-sm mt-1">+66 2 000 0000</p> --}}
             </div>
 
             {{-- Column 4: Follow Us --}}
