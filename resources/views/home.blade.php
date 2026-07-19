@@ -65,8 +65,9 @@
         </div>
     </section>
 
-    {{-- Facebook Feed --}}
+    {{-- Facebook Feed (disabled — not in use yet)
     <livewire:facebook-feed :limit="4" />
+    --}}
 
 </div>
 @endsection
