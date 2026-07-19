@@ -118,13 +118,14 @@
         </div>
     </div>
 
-    {{-- CTA Button --}}
+    {{-- CTA Button (disabled — not in use yet)
     <div class="flex justify-center">
         <a href="#"
            class="inline-block bg-black text-white text-sm font-medium tracking-widest uppercase px-16 py-4 text-center hover:bg-gray-800 transition">
             Get Your Ticket
         </a>
     </div>
+    --}}
 
 </div>
 @endsection
