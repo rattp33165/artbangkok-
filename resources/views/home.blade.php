@@ -14,7 +14,7 @@
 
             {{-- Left: Why text --}}
             <div class="lg:col-span-2 lg:pr-12 flex items-center justify-center">
-                <h2 class="text-2xl md:text-3xl font-bold text-black font-['agenda-one'] leading-snug">
+                <h2 class="text-4xl sm:text-5xl md:text-6xl lg:text-5xl font-bold text-black font-['agenda-one'] leading-none text-center">
                     The First Chapter
                 </h2>
             </div>
