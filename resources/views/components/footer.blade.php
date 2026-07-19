@@ -1,16 +1,17 @@
 <footer class="bg-black text-white">
     <div class="max-w-7xl mx-auto px-6 py-10">
 
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+        <div class="grid grid-cols-2 gap-6">
 
-            {{-- Column 1: The Company & Address --}}
+            {{-- Column 1: The Company & Address (temporarily hidden)
             <div>
                 <h4 class="text-white text-sm font-bold mb-4">The Company &amp; Address</h4>
                 <p class="text-gray-400 text-sm leading-relaxed">ART BANGKOK ORGANIZATION</p>
                 <p class="text-gray-400 text-sm leading-relaxed">Bangkok, Thailand</p>
             </div>
+            --}}
 
-            {{-- Column 2: Partners --}}
+            {{-- Column 2: Partners (temporarily hidden)
             <div>
                 <h4 class="text-white text-sm font-bold mb-4">Partners</h4>
                 <ul class="space-y-2">
@@ -19,6 +20,7 @@
                     <li><span class="text-gray-400 text-sm">International Gallery Network</span></li>
                 </ul>
             </div>
+            --}}
 
             {{-- Column 3: Contact Us --}}
             <div>
