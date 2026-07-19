@@ -1,7 +1,7 @@
 <footer class="bg-black text-white">
     <div class="max-w-7xl mx-auto px-6 py-10">
 
-        <div class="flex flex-wrap justify-end gap-16 sm:gap-24">
+        <div class="flex flex-wrap justify-end">
 
             {{-- Column 1: The Company & Address (temporarily hidden)
             <div>
@@ -23,14 +23,14 @@
             --}}
 
             {{-- Column 3: Contact Us --}}
-            <div>
+            <div class="px-6">
                 <h4 class="text-white text-sm font-bold mb-4">Contact Us</h4>
                 <p class="text-gray-400 text-sm">info@artbangkok.org</p>
                 <p class="text-gray-400 text-sm mt-1">+66 2 000 0000</p>
             </div>
 
             {{-- Column 4: Follow Us --}}
-            <div>
+            <div class="px-6">
                 <h4 class="text-white text-sm font-bold mb-4">Follow Us</h4>
                 <div class="flex items-center gap-3">
                     {{-- Facebook --}}
