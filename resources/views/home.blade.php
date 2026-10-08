@@ -8,15 +8,25 @@
     {{-- 1. Hero Carousel --}}
     <livewire:hero-carousel />
 
+    {{-- Sponsors --}}
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 mt-10">
+        <img src="{{ asset('images/logo-sponsor.png') }}"
+             alt="Art Bangkok Partners and Supporters"
+             class="w-full h-auto mx-auto object-contain">
+    </section>
+
     {{-- 2. Features Grid --}}
     <section class="max-w-7xl mx-auto px-4 sm:px-6 mt-12 pb-20">
         <div class="grid grid-cols-1 lg:grid-cols-5 gap-12 lg:gap-0">
 
             {{-- Left: Why text --}}
-            <div class="lg:col-span-2 lg:pr-12 flex items-center justify-center">
-                <h2 class="text-4xl sm:text-5xl md:text-6xl lg:text-5xl font-bold text-black font-['agenda-one'] leading-none text-center">
+            <div class="lg:col-span-2 lg:pr-12 flex flex-col items-center justify-center text-center">
+                <h2 class="text-4xl sm:text-5xl md:text-6xl lg:text-5xl font-bold text-black font-['agenda-one'] leading-none">
                     The First Chapter
                 </h2>
+                <p class="text-sm text-gray-500 leading-relaxed mt-4 max-w-sm">
+                    A return to the origin: The moment art begins to matter personally to an individual
+                </p>
             </div>
 
             {{-- Right: 3 Feature Columns --}}
@@ -31,7 +41,7 @@
                     </div>
                     <h3 class="font-bold text-black text-base mb-3 font-['agenda-one']">No Ranking</h3>
                     <p class="text-sm text-gray-500 leading-relaxed">
-                        We do not rank art. We value discovery over hierarchy.
+                        We do not rank art. We value discovery over hierarchy, focusing on the raw curiosity and the first spark that ignites a collector's journey.
                     </p>
                 </div>
 

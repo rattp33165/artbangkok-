@@ -22,6 +22,9 @@
     {{-- Footer --}}
     @include('components.footer')
 
+    {{-- Sticky Ticket Bar --}}
+    @include('components.ticket-bar')
+
     @livewireScripts
 
     {{-- Facebook SDK --}}

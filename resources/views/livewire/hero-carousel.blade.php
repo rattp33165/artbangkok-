@@ -55,6 +55,11 @@
             <p class="text-white text-xs md:text-sm tracking-[0.25em] uppercase font-light drop-shadow mt-4">
                 Siam Paragon 5th floor (NEX HALL &amp; JEWEL ZONE)
             </p>
+            <a href="https://www.zipeventapp.com/e/art-bangkok-2026"
+               target="_blank" rel="noopener noreferrer"
+               class="pointer-events-auto inline-block mt-6 bg-white text-black text-xs md:text-sm font-medium tracking-wide uppercase px-8 py-3 rounded-full hover:bg-gray-200 transition">
+                Get Tickets
+            </a>
         </div>
 
         {{-- Manage Slides (admin only) --}}

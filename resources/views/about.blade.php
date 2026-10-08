@@ -39,20 +39,20 @@
                 The First Chapter
             </p>
 
-            <p class="text-sm font-light text-gray-600 leading-loose lowercase mb-1">
-                first steps into the world of collecting.
+            <p class="text-sm font-light text-gray-600 leading-loose mb-1">
+                First steps into the world of collecting.
             </p>
-            <p class="text-sm text-gray-600 leading-loose lowercase">
-                not just as a starting point for beginners, but also as the Origin of Meaning.
+            <p class="text-sm text-gray-600 leading-loose">
+                Not just as a starting point for beginners, but also as the origin of meaning.
                 <span class="font-medium text-black"> It is a return to the origin the moment art begins to matter personally to an individual.</span>
                 <span class="font-light"> We reject the standard art market ranking. Instead, we focus on the raw curiosity and the first spark that ignites a collector's journey.</span>
             </p>
 
-            <p class="text-lg md:text-xl font-bold text-black lowercase tracking-wide mt-8 mb-3">
-                the essence of beginning
+            <p class="text-lg md:text-xl font-bold text-black tracking-wide mt-8 mb-3">
+                The essence of beginning
             </p>
-            <p class="text-sm font-light text-gray-600 leading-loose lowercase">
-                an art collection lies in letting your emotions guide you appreciating the intrinsic value of a piece from the heart, free from the confines of monetary valuation. This is 'The First Chapter,' the ideal origin of collecting that we aspire to cultivate within the Thai art community.
+            <p class="text-sm font-light text-gray-600 leading-loose">
+                An art collection lies in letting your emotions guide you appreciating the intrinsic value of a piece from the heart, free from the confines of monetary valuation. This is 'The First Chapter,' the ideal origin of collecting that we aspire to cultivate within the thai art community.
             </p>
         </div>
     </div>
