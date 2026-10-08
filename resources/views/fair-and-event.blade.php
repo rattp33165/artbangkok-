@@ -20,62 +20,101 @@
         </div>
     </div>
 
-    {{-- Section 3: Exhibition Zones --}}
-    <h2 class="text-xl md:text-2xl font-bold text-black font-['agenda-one'] uppercase mb-6 text-center">Present in 6 Zone 6 Chapter</h2>
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+    {{-- Section 2: Areas --}}
+    <h2 class="text-xl md:text-2xl font-bold text-black font-['agenda-one'] uppercase mb-6 text-center">3 Areas &mdash; 6 Elements</h2>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 
-        {{-- Card 1: Gallery Zone --}}
-        <div class="bg-white border border-gray-200 rounded-2xl p-6">
-            <p class="font-bold text-black text-lg mb-1">Gallery Zone</p>
-            <p class="italic text-gray-400 text-sm font-normal mb-6">Ways of Seeing</p>
-            <div class="grid grid-cols-2 gap-4">
-                <div>
-                    <p class="text-3xl font-bold text-black mb-1">10</p>
-                    <p class="text-xs text-gray-400 uppercase tracking-widest">Thai</p>
-                    <p class="text-xs text-gray-400 uppercase tracking-widest">Galleries</p>
+        {{-- Area 1: NEX Hall --}}
+        <div class="bg-white border border-gray-200 rounded-3xl overflow-hidden flex flex-col">
+            <div class="relative aspect-[4/3]">
+                <img src="{{ asset('images/Galeri-Sasha.png') }}"
+                     alt="NEX Hall"
+                     class="absolute inset-0 w-full h-full object-cover">
+                <div class="absolute inset-0 bg-linear-to-t from-black/75 via-black/20 to-transparent"></div>
+                <div class="absolute inset-x-0 bottom-0 p-6 md:p-8 flex items-end justify-between gap-4">
+                    <h3 class="text-white text-3xl md:text-4xl font-bold font-['agenda-one'] leading-none drop-shadow">
+                        NEX Hall
+                    </h3>
+                    <ul class="text-white text-xs md:text-sm tracking-wide space-y-1 drop-shadow">
+                        @foreach(['Gallery Zone', 'Art Care & Stewardship', 'VIP Lounge'] as $item)
+                        <li class="flex items-center gap-2">
+                            <span class="w-1.5 h-1.5 rounded-full bg-white shrink-0"></span>
+                            {{ $item }}
+                        </li>
+                        @endforeach
+                    </ul>
                 </div>
-                <div>
-                    <p class="text-3xl font-bold text-black mb-1">~13</p>
-                    <p class="text-xs text-gray-400 uppercase tracking-widest">Global</p>
-                    <p class="text-xs text-gray-400 uppercase tracking-widest">Galleries</p>
-                </div>
+            </div>
+            <div class="p-6 md:p-8 space-y-4 text-sm text-gray-600 leading-relaxed">
+                <p>
+                    Through <span class="font-semibold text-black">Gallery Zone</span>, we offer an expansion of vision through curation by Thai and international galleries. Focused on thematic planning rather than simple inventory display.
+                </p>
+                <p>
+                    Encounter ART BANGKOK's Unique Differentiator at <span class="font-semibold text-black">Art Care &amp; Stewardship</span>: A zone dedicated to everything about art management: Restoration, Framing, Logistics, Insurance, and Storage presented by Helutrans.
+                </p>
+                <p>
+                    Fulfilled with the richness of arts and purposeful storytelling, have a relaxing time at <span class="font-semibold text-black">VIP Lounge</span>: A special curated section exclusively for VIP guests powered by Thai Art Collector Association.
+                </p>
             </div>
         </div>
 
-        {{-- Card 2: Past Present Future --}}
-        <div class="bg-white border border-gray-200 rounded-2xl p-6">
-            <p class="font-bold text-black text-lg mb-1 uppercase">Past Present Future</p>
-            <p class="italic text-gray-400 text-sm font-normal">Featured Art in the Thai Ecosystem is a dynamic, globally open platform rooted in the Thai art scene. It brings together emerging and established artists to showcase diverse, experimental, and constantly evolving contemporary art practices.</p>
-        </div>
-
-        {{-- Card 3: Museums & Institutions --}}
-        <div class="bg-white border border-gray-200 rounded-2xl p-6">
-            <p class="font-bold text-black text-lg mb-1">Museums & Institutions</p>
-            <p class="italic text-gray-400 text-sm font-normal">Learning "how to live with art" through special exhibitions from museums and private collections. Lifestyle-oriented displays showing art in context.</p>
-        </div>
-
-        {{-- Card 4: Art Care & Stewardship --}}
-        <div class="bg-white border border-gray-200 rounded-2xl p-6">
-            <p class="font-bold text-black text-lg mb-1">Art Care & Stewardship</p>
-            <p class="italic text-gray-400 text-sm font-normal">ART BANGKOK's Unique Differentiator. A zone dedicated to everything about art management: Restoration, Framing, Logistics, Insurance, and Storage.</p>
-        </div>
-
-        {{-- Card 5: Art Eco System --}}
-        <div class="bg-white border border-gray-200 rounded-2xl p-6">
-            <p class="font-bold text-black text-lg mb-1 uppercase">Art Eco System</p>
-            <div class="space-y-0.5">
-                @foreach(['Association & Foundation', 'Press & Media', 'Art Prize', 'Collectors Community'] as $item)
-                <p class="italic text-gray-400 text-sm font-normal">{{ $item }}</p>
-                @endforeach
+        {{-- Area 2: ART Jewel --}}
+        <div class="bg-white border border-gray-200 rounded-3xl overflow-hidden flex flex-col">
+            <div class="relative aspect-[4/3]">
+                <img src="{{ asset('images/art-jewel.jpg') }}"
+                     alt="ART Jewel"
+                     class="absolute inset-0 w-full h-full object-cover">
+                <div class="absolute inset-0 bg-linear-to-t from-black/75 via-black/20 to-transparent"></div>
+                <div class="absolute inset-x-0 bottom-0 p-6 md:p-8 flex items-end justify-between gap-4">
+                    <h3 class="text-white text-3xl md:text-4xl font-bold font-['agenda-one'] leading-none drop-shadow">
+                        ART Jewel
+                    </h3>
+                    <ul class="text-white text-xs md:text-sm tracking-wide space-y-1 drop-shadow">
+                        @foreach(['PAST PRESENT FUTURE', 'Art Eco System'] as $item)
+                        <li class="flex items-center gap-2">
+                            <span class="w-1.5 h-1.5 rounded-full bg-white shrink-0"></span>
+                            {{ $item }}
+                        </li>
+                        @endforeach
+                    </ul>
+                </div>
+            </div>
+            <div class="p-6 md:p-8 space-y-4 text-sm text-gray-600 leading-relaxed">
+                <p>
+                    A collaborative exhibition by Bangkok Art Auction and Dorothy Circus Gallery; <span class="font-semibold text-black">&ldquo;PAST PRESENT FUTURE&rdquo;</span> curated by the fair team in partnership with Thai and international galleries, museums, foundations, art organizations, private collections and art prizes is held at ART Jewel area. Responding to the theme of our inaugural edition, "The First Chapter," this exhibition explores how artistic legacy continues to evolve across generations&mdash;from master artists and established contemporary voices to emerging talents shaping the future of art.
+                </p>
+                <p>
+                    Come upon inclusive art circle where Association &amp; Foundation, Press &amp; Media, Art Prize announcement from UOB: Painting of the year program and Collectors community gather around the Main Stage at <span class="font-semibold text-black">Art Eco System</span>.
+                </p>
             </div>
         </div>
 
-        {{-- Card 6: Exclusive Lounge --}}
-        <div class="bg-white border border-gray-200 rounded-2xl p-6">
-            <p class="font-bold text-black text-lg mb-1">
-                <span class="uppercase">Exclusive</span> Lounge
-            </p>
-            <p class="italic text-gray-400 text-sm font-normal">A special curated section</p>
+        {{-- Area 3: Jewel Dome --}}
+        <div class="bg-white border border-gray-200 rounded-3xl overflow-hidden flex flex-col">
+            <div class="relative aspect-[4/3]">
+                <img src="{{ asset('images/jewel-dome.png') }}"
+                     alt="Jewel Dome"
+                     class="absolute inset-0 w-full h-full object-cover">
+                <div class="absolute inset-0 bg-linear-to-t from-black/75 via-black/20 to-transparent"></div>
+                <div class="absolute inset-x-0 bottom-0 p-6 md:p-8 flex items-end justify-between gap-4">
+                    <h3 class="text-white text-3xl md:text-4xl font-bold font-['agenda-one'] leading-none drop-shadow">
+                        Jewel Dome
+                    </h3>
+                    <ul class="text-white text-xs md:text-sm tracking-wide space-y-1 drop-shadow">
+                        @foreach(['Museums & Institutions'] as $item)
+                        <li class="flex items-center gap-2">
+                            <span class="w-1.5 h-1.5 rounded-full bg-white shrink-0"></span>
+                            {{ $item }}
+                        </li>
+                        @endforeach
+                    </ul>
+                </div>
+            </div>
+            <div class="p-6 md:p-8 space-y-4 text-sm text-gray-600 leading-relaxed">
+                <p>
+                    Partnered with MoNWIC Art Museum and Office of Contemporary Art and Culture (OCAC), You can explore "How to live with art" through <span class="font-semibold text-black">Special Exhibitions</span> from museums and private distinguished public and private collections. Lifestyle-oriented displays showing art in context.
+                </p>
+            </div>
         </div>
 
     </div>
