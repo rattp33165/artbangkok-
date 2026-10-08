@@ -13,6 +13,71 @@
         All Tickets are available for purchase online exclusively. All prices are in Thai Baht (THB). Early Bird pricing applies based on purchase date.
     </p>
 
+    {{-- Ticket Price Guide --}}
+    <div class="mb-16">
+        <img src="{{ asset('images/ticket-price.jpg') }}"
+             alt="Ticket Prices & Types — VIP 780 THB (Early Bird) / 880 THB (Standard), Day Pass 250 THB (Early Bird) / 350 THB (Standard)"
+             class="w-full max-w-xl h-auto mx-auto rounded-xl border border-gray-200">
+    </div>
+
+    {{-- All Ticket Access --}}
+    <div class="mb-16">
+        <h2 class="text-sm font-bold uppercase underline underline-offset-4 text-black tracking-widest mb-6">
+            All Ticket Access
+        </h2>
+
+        @php
+        $access = [
+            ['label' => 'VIP Lounge', 'time' => null,          'vip' => true, 'day' => false],
+            ['label' => '07 Oct',     'time' => '2PM – 9PM',   'vip' => true, 'day' => false],
+            ['label' => '08 Oct',     'time' => '12PM – 7PM',  'vip' => true, 'day' => true],
+            ['label' => '09 Oct',     'time' => '12PM – 7PM',  'vip' => true, 'day' => true],
+            ['label' => '10 Oct',     'time' => '11AM – 9PM',  'vip' => true, 'day' => true],
+            ['label' => '11 Oct',     'time' => '11AM – 6PM',  'vip' => true, 'day' => true],
+        ];
+        @endphp
+
+        <div class="border border-gray-200 rounded-xl overflow-hidden">
+            <table class="w-full border-collapse text-sm">
+                <thead>
+                    <tr class="border-b border-gray-200 bg-gray-50">
+                        {{-- Split header: Ticket (columns) / Time (rows) --}}
+                        <th colspan="2" class="relative w-1/2 h-16 px-5 text-xs font-bold uppercase tracking-wider text-black"
+                            style="background-image: linear-gradient(to top right, transparent calc(50% - 0.5px), #e5e7eb calc(50% - 0.5px), #e5e7eb calc(50% + 0.5px), transparent calc(50% + 0.5px));">
+                            <span class="absolute top-2.5 right-4">Ticket</span>
+                            <span class="absolute bottom-2.5 left-4">Time</span>
+                        </th>
+                        <th class="w-1/4 px-5 py-4 text-center font-bold uppercase tracking-wider text-black text-xs border-l border-gray-200">VIP Ticket</th>
+                        <th class="w-1/4 px-5 py-4 text-center font-bold uppercase tracking-wider text-black text-xs border-l border-gray-200">1-Day Pass</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($access as $i => $row)
+                    <tr class="{{ $i < count($access) - 1 ? 'border-b border-gray-200' : '' }}">
+                        @if($row['time'])
+                            <td class="w-1/4 px-5 py-4 text-center font-medium text-black uppercase tracking-wider">{{ $row['label'] }}</td>
+                            <td class="w-1/4 px-5 py-4 text-center font-light text-gray-600 border-l border-gray-200">{{ $row['time'] }}</td>
+                        @else
+                            <td colspan="2" class="px-5 py-4 text-center font-medium text-black uppercase tracking-wider">{{ $row['label'] }}</td>
+                        @endif
+                        @foreach(['vip', 'day'] as $col)
+                        <td class="px-5 py-4 text-center border-l border-gray-200">
+                            @if($row[$col])
+                                <svg class="inline-block text-black" width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-label="Included">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
+                                </svg>
+                            @else
+                                <span class="text-gray-300" aria-label="Not included">&ndash;</span>
+                            @endif
+                        </td>
+                        @endforeach
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+    </div>
+
     {{-- Privileges & Policies --}}
     <div class="flex flex-col sm:flex-row gap-0 mb-16">
 
@@ -59,63 +124,6 @@
             </ul>
         </div>
 
-    </div>
-
-    {{-- Ticket Price Guide --}}
-    <div class="mb-12">
-        <h2 class="text-sm font-bold uppercase underline underline-offset-4 text-black tracking-widest mb-6">
-            Ticket Price Guide
-        </h2>
-
-        <div class="border border-gray-200 rounded-xl overflow-hidden">
-            <table class="w-full border-collapse text-sm">
-                <thead>
-                    <tr class="border-b border-gray-200 bg-gray-50">
-                        <th class="px-5 py-4 text-center font-bold uppercase tracking-wider text-black text-xs">Ticket Type</th>
-                        <th class="px-5 py-4 text-center font-bold uppercase tracking-wider text-black text-xs border-l border-gray-200">Valid Date</th>
-                        <th class="px-5 py-4 text-center font-bold uppercase tracking-wider text-black text-xs border-l border-gray-200">Early Bird Price</th>
-                        <th class="px-5 py-4 text-center font-bold uppercase tracking-wider text-black text-xs border-l border-gray-200">Standard Price</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @php
-                    $rows = [
-                        [
-                            'type'       => 'VIP Ticket',
-                            'date_lines' => ['Wednesday (VIP Day)', '+ Thursday – Sunday'],
-                            'early'      => '780 THB',
-                            'standard'   => '880 THB',
-                        ],
-                        [
-                            'type'       => '1-Day Pass',
-                            'date_lines' => ['Thursday – Sunday'],
-                            'early'      => '250 THB',
-                            'standard'   => '350 THB',
-                        ]
-                    ];
-                    @endphp
-
-                    @foreach($rows as $i => $row)
-                    <tr class="{{ $i < count($rows) - 1 ? 'border-b border-gray-200' : '' }}">
-                        <td class="px-5 py-4 text-center font-normal text-gray-700">
-                            {{ $row['type'] }}
-                        </td>
-                        <td class="px-5 py-4 text-center border-l border-gray-200">
-                            @foreach($row['date_lines'] as $line)
-                                <span class="block font-light text-gray-600">{{ $line }}</span>
-                            @endforeach
-                        </td>
-                        <td class="px-5 py-4 text-center font-normal text-gray-700 border-l border-gray-200">
-                            {{ $row['early'] }}
-                        </td>
-                        <td class="px-5 py-4 text-center font-normal text-gray-700 border-l border-gray-200">
-                            {{ $row['standard'] }}
-                        </td>
-                    </tr>
-                    @endforeach
-                </tbody>
-            </table>
-        </div>
     </div>
 
     {{-- CTA Button (disabled — not in use yet)
